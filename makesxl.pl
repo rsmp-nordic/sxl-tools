@@ -16,13 +16,13 @@ my $obj_path;
 my $excelfile;
 my $visible;
 GetOptions(
-	"path=s" => \$obj_path,
-	"sxl=s" => \$excelfile,
+	"output=s" => \$obj_path,
+	"input=s" => \$excelfile,
 	"visible" => \$visible,
 	);
 
 unless (defined($obj_path) and defined($excelfile)) {
-	print "usage: makesxl.sl --path [path] --sxl [sxl-file] [--visible]";
+	print "usage: makesxl.sl --input [sxl-file] --output [path] [--visible]";
 	exit 1;
 }
 
@@ -31,7 +31,7 @@ my $Excel = Win32::OLE->GetActiveObject('Excel.Application')
 
 $Excel->{DisplayAlerts}=0;
 
-my $Book = $Excel->Workbooks->Open($obj_path."\\".$excelfile);
+my $Book = $Excel->Workbooks->Open($excelfile);
 
 # Make Excel visible during export (disabled by default)
 if (defined($visible)) {
