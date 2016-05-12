@@ -39,17 +39,39 @@ sub read_sxl {
 		} elsif($sheet->{Name} eq "Aggregated status") {;
 		} elsif($sheet->{Name} eq "Alarms") {;
 		} elsif($sheet->{Name} eq "Status") {;
+			# Sanity check. Check for semicolon in the "Comment" field for the first return value
+			# TODO: Check in all the return values; not just the first one
+			my $y = 6;
+			while (test($sheet, $y, 7)) {
+				semi_check($sheet, 7, $y);
+				$y++;
+			}
 		} elsif($sheet->{Name} eq "Commands") {;
+
+			# Sanity check. Check for semicolon in the "Comment" field for the first
+			# argument in all command sections
+			# TODO: Check in all the arguments values; not just the first one
+			my $sec;
+			my $y;
+			my @sections = command_section($sheet);
+			foreach $sec (@sections) {
+				# Need to check each command section
+				$y = $sec;
+				while (test($sheet, $y, 8)) {
+					semi_check($sheet, 8, $y);
+					$y++;
+				}
+			}
 		} else {
 			# Object sheet
 			printf "Sheet: ".$sheet->{Name}."\n" if defined($all);
 			cprint($sheet, 1,1, "SiteId:        ");
 			cprint($sheet, 1,2, "Description:   ");
-			
+
 			# Print all grouped objects
 			printf "Grouped objects\n";
 			my $y = 6;
-			while (test($sheet, $y)) {
+			while (test($sheet, $y, 0)) {
 				if (defined($all)) {
 					oprint($sheet, $y);
 				}
@@ -60,11 +82,11 @@ sub read_sxl {
 			unless (defined($all)) {
 				oprint($sheet, $y-1);
 			}
-	
+
 			# Print all single objects
 			printf "Single objects\n";
 			$y = 24;
-			while (test($sheet, $y)) {
+			while (test($sheet, $y, 0)) {
 				oprint($sheet, $y) if defined($all);
 				$y++;
 			}
@@ -107,9 +129,49 @@ sub oprint {
 	}
 }
 
-# Test for contens
+# Find command section
+# Return a list of y-positions for the start of each section
+sub command_section {
+	my $sheet = shift;
+	my $y = 4; # Section won't start before row 4
+	my @list;
+	my $text;
+	while ($y<100) {
+		$text = "";
+		$text = $sheet->{Cells}[$y][0]->{Val} if(test($sheet, $y, 0));
+
+		# We're adding +2 because that's where the actual command starts
+		if($text =~ /Functional position/) {
+			push @list, $y+2;
+		} elsif( $text =~ /Functional state/) {
+			push @list, $y+2;
+		} elsif($text =~ /Manouver/) {
+			push @list, $y+2;
+		} elsif($text =~ /Parameter/) {
+			push @list, $y+2;
+			return @list;
+		} else {
+		}
+		$y++;
+	}
+	print "Error: did not find all command sections\n";
+	return;
+}
+
+# Semicolon check
+sub semi_check {
+	my $sheet = shift;
+	my $x = shift;
+	my $y = shift;
+	my $comment = $sheet->{Cells}[$y][$x]->{Val};
+
+	printf "WARNING: Found semicolon in comment field: $comment\n" if ($comment =~ /;/);
+}
+
+# Test for contens if the first column
 sub test {
 	my $sheet = shift;
 	my $y = shift;
-	return defined($sheet->{Cells}[$y][0]->{Val});
+	my $x = shift;
+	return defined($sheet->{Cells}[$y][$x]->{Val});
 }
