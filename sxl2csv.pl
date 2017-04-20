@@ -1,7 +1,10 @@
 #!/usr/bin/perl -w
 # sxl2csv.pl [SXL in xlsx-format]
 # outputs csv-file for each worksheet and saves to zip file 'Objects.zip'
-# Requires Spreadsheet::XLSX (sudo apt-get install libspreadsheet-xlsx-perl)
+# Requires Spreadsheet::XLSX and zip
+#   Ubuntu: $ sudo apt-get install libspreadsheet-xlsx-perl)
+#   Arch: $ https://aur.archlinux.org/perl-spreadsheet-xlsx.git and dependencies...
+#         $ pacman -S zip
 
 #NOTE: Supports only XLSX-format as input. See Spreadsheet::ParseExcel
 #NOTE: Untested i18n support. Encoding
