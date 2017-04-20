@@ -38,12 +38,55 @@ sub read_sxl {
 		} elsif($sheet->{Name} eq "Object types") {;
 		} elsif($sheet->{Name} eq "Aggregated status") {;
 		} elsif($sheet->{Name} eq "Alarms") {;
-		} elsif($sheet->{Name} eq "Status") {;
-			# Sanity check. Check for semicolon in the "Comment" field for the first return value
-			# TODO: Check in all the return values; not just the first one
 			my $y = 6;
 			while (test($sheet, $y, 7)) {
-				semi_check($sheet, 7, $y);
+				my $x = 0;
+				# status
+				cprint($sheet, $y, $x++, "ObjectType: ") if defined($all);
+				cprint($sheet, $y, $x++, "Object (optional): ") if defined($all);
+				cprint($sheet, $y, $x++, "alarmCodeId: ") if defined($all);
+				cprint($sheet, $y, $x++, "Description: ") if defined($all);
+				cprint($sheet, $y, $x++, "externalAlarmCodeId: ") if defined($all);
+				cprint($sheet, $y, $x++, "externalNtsAlarmCodeId: ") if defined($all);
+				cprint($sheet, $y, $x++, "Priority: ") if defined($all);
+				cprint($sheet, $y, $x++, "Category: ") if defined($all);
+
+				# return value
+				while(test($sheet, $y, $x)) {
+					cprint($sheet, $y, $x++, "Name: ") if defined($all);
+					cprint($sheet, $y, $x++, "Type: ") if defined($all);
+					cprint($sheet, $y, $x++, "Value: ") if defined($all);
+
+					# Check for semicolon in the "Comment" field
+					semi_check($sheet, $x, $y);
+
+					cprint($sheet, $y, $x++, "Comment: ") if defined($all);
+
+				}
+				$y++;
+			}
+		} elsif($sheet->{Name} eq "Status") {;
+			my $y = 6;
+			while (test($sheet, $y, 7)) {
+				my $x = 0;
+				# status
+				cprint($sheet, $y, $x++, "ObjectType: ") if defined($all);
+				cprint($sheet, $y, $x++, "Object (optional): ") if defined($all);
+				cprint($sheet, $y, $x++, "statusCodeId: ") if defined($all);
+				cprint($sheet, $y, $x++, "Description: ") if defined($all);
+
+				# return value
+				while(test($sheet, $y, $x)) {
+					cprint($sheet, $y, $x++, "Name: ") if defined($all);
+					cprint($sheet, $y, $x++, "Type: ") if defined($all);
+					cprint($sheet, $y, $x++, "Value: ") if defined($all);
+
+					# Check for semicolon in the "Comment" field
+					semi_check($sheet, $x, $y);
+
+					cprint($sheet, $y, $x++, "Comment: ") if defined($all);
+
+				}
 				$y++;
 			}
 		} elsif($sheet->{Name} eq "Commands") {;
@@ -58,7 +101,27 @@ sub read_sxl {
 				# Need to check each command section
 				$y = $sec;
 				while (test($sheet, $y, 8)) {
-					semi_check($sheet, 8, $y);
+					my $x = 0;
+					# commands
+					cprint($sheet, $y, $x++, "ObjectType: ") if defined($all);
+					cprint($sheet, $y, $x++, "Object (optional): ") if defined($all);
+					cprint($sheet, $y, $x++, "commandCodeId: ") if defined($all);
+					cprint($sheet, $y, $x++, "Description: ") if defined($all);
+
+					# argument
+					while(test($sheet, $y, $x)) {
+						cprint($sheet, $y, $x++, "Name: ") if defined($all);
+						cprint($sheet, $y, $x++, "Command: ") if defined($all);
+						cprint($sheet, $y, $x++, "Type: ") if defined($all);
+						cprint($sheet, $y, $x++, "Value: ") if defined($all);
+	
+						# Check for semicolon in the "Comment" field
+						semi_check($sheet, $x, $y);
+	
+						cprint($sheet, $y, $x++, "Comment: ") if defined($all);
+	
+					}
+
 					$y++;
 				}
 			}
@@ -105,6 +168,7 @@ sub cprint {
 	my $text = shift;
 	my $val = $sheet->{Cells}[$y][$x]->{Val};
 	if (defined($val)) {
+	        $val =~ s/%/%%/g;
 		printf $text.$val."\n";
 	} else {
 		printf "$text(not defined)\n";
