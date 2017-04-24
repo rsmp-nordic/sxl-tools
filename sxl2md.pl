@@ -5,7 +5,6 @@
 
 # TODO: Test for spaces before or after
 # TODO: Test for incorrect cId matches between single and grouped objects
-# TODO: Sheet 'Aggregated status'
 # TODO: Add dates
 
 use strict;
@@ -29,7 +28,7 @@ sub read_sxl {
 		} elsif($sheet->{Name} eq "Object types") {
 			print_object_types($sheet);
 		} elsif($sheet->{Name} eq "Aggregated status") {
-			# STUB
+			print_aggregated_status($sheet);
 		} elsif($sheet->{Name} eq "Alarms") {
 			print_alarms($sheet);
 		} elsif($sheet->{Name} eq "Status") {
@@ -59,7 +58,7 @@ sub print_version {
 	printf("--------\n");
 	printf("+ [Object types](#object_types)\n");
 	printf("+ [Objects](#objects)\n");
-	# printf("+ [Aggregated status](#aggregated_status)\n");
+	printf("+ [Aggregated status](#aggregated_status)\n");
 	printf("+ [Alarms](#alarms)\n");
 	printf("+ [Status](#status)\n");
 	printf("+ [Commands](#commands)\n");
@@ -93,6 +92,29 @@ sub print_object_types {
 		otprint($sheet, $y);
 		$y++;
 	}
+}
+
+sub print_aggregated_status {
+	my $sheet = shift;
+	# Aggregated status sheet
+	printf("<a id=\"object_types\"></a>\n");
+	printf("\nAggregated status per grouped object\n");
+	printf("====================================\n");
+
+	# Print all grouped objects
+	printf "|ObjectType|Status|functionalPosition|functionalState|Description|\n";
+	printf "|----------|------|------------------|---------------|-----------|\n";
+	my $y = 6;
+	while (test($sheet, $y, 0)) {
+		aggprint($sheet, $y);
+		$y++;
+	}
+
+	# Print all state bits
+	printf "\n|State- Bit nr (12345678)|Description|Comment|\n";
+	printf "|------------------------|-----------|-------|\n";
+	stateprint($sheet);
+
 }
 
 sub print_objects {
@@ -247,7 +269,6 @@ sub otprint {
 	my $sheet = shift;
 	my $y = shift;
 
-	# Object, componentId, NTSObjectId
 	my $objecttype = $sheet->{Cells}[$y][0]->{Val};
 	my $description = $sheet->{Cells}[$y][5]->{Val};
 
@@ -262,7 +283,6 @@ sub oprint {
 	my $sheet = shift;
 	my $y = shift;
 
-	# Object, componentId, NTSObjectId
 	my $objecttype = $sheet->{Cells}[$y][0]->{Val};
 	my $object = $sheet->{Cells}[$y][1]->{Val};
 	my $cId = $sheet->{Cells}[$y][2]->{Val};
@@ -284,6 +304,52 @@ sub oprint {
 	}
 }
 
+# Print aggregated status
+sub aggprint {
+	my $sheet = shift;
+	my $y = shift;
+
+	my $objecttype = $sheet->{Cells}[$y][0]->{Val};
+	my $state = $sheet->{Cells}[$y][1]->{Val};
+	my $functionalPosition = $sheet->{Cells}[$y][2]->{Val};
+	my $functionalState = $sheet->{Cells}[$y][3]->{Val};
+	my $description = $sheet->{Cells}[$y][4]->{Val};
+
+	printf "|$objecttype|";
+
+	printf "$state" if(defined($state));
+	printf "|";
+
+	printf "$functionalPosition" if(defined($functionalPosition));
+	printf "|";
+
+	printf "$functionalState" if(defined($functionalState));
+	printf "|";
+
+	printf "$description" if(defined($description));
+	printf "|\n";
+
+
+}
+
+# Print state bits (aggregated status)
+sub stateprint {
+	my $sheet = shift;
+	my $y;
+	my @bit;
+	for($y = 0; $y < 8; $y++) {
+		$bit[$y] = $sheet->{Cells}[$y+17][4]->{Val};
+	}
+	printf "|1|Local mode|";          print $bit[0] if(defined($bit[0])); print "|\n";
+	printf "|2|No communications|";   print $bit[1] if(defined($bit[1])); print "|\n";
+	printf "|3|High priority fault|"; print $bit[2] if(defined($bit[2])); print "|\n";
+	printf "|4|Medium priority fault|"; print $bit[3] if(defined($bit[3])); print "|\n";
+	printf "|5|Low priority fault|";  print $bit[4] if(defined($bit[4])); print "|\n";
+	printf "|6|Connected / Normal - In Use|";  print $bit[5] if(defined($bit[5])); print "|\n";
+	printf "|7|Connected / Normal - Idle|";  print $bit[6] if(defined($bit[6])); print "|\n";
+	printf "|8|Not Connected|";  print $bit[7] if(defined($bit[7])); print "|\n";
+
+}
 
 # Print alarm/status/commands
 sub aprint {
