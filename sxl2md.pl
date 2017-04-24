@@ -54,7 +54,7 @@ sub print_version {
 	cprint($sheet, 20,1, "SXL revision");
 	cprint($sheet, 20,2, "Revision date");
 	cprint($sheet, 25,1, "RSMP version");
-	printf("Sections\n");
+	printf("\nSections\n");
 	printf("--------\n");
 	printf("+ [Object types](#object_types)\n");
 	printf("+ [Objects](#objects)\n");
@@ -97,7 +97,7 @@ sub print_object_types {
 sub print_aggregated_status {
 	my $sheet = shift;
 	# Aggregated status sheet
-	printf("<a id=\"object_types\"></a>\n");
+	printf("<a id=\"aggregated_status\"></a>\n");
 	printf("\nAggregated status per grouped object\n");
 	printf("====================================\n");
 
