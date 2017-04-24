@@ -5,6 +5,7 @@
 
 # TODO: Test for spaces before or after
 # TODO: Test for incorrect cId matches between single and grouped objects
+# TODO: Add links to respective section
 # TODO: Sheet 'Object types'
 # TODO: Sheet 'Aggregated status'
 
@@ -67,12 +68,12 @@ sub print_alarms {
 	my $i;
 	printf "| ObjectType | Object (optional) | alarmCodeId | Description | externalAlarmCodeId | externalNtsAlarmCodeId | Priority | Category |";
 	for($i=0; $i<$noReturnValues; $i++) {
-		printf "|Name|Type|Value|Comment|";
+		printf "Name|Type|Value|Comment|";
 	}
 	print "\n";
 	printf "| ---------- | ----------------- |:-----------:| ----------- | ------------------- | ---------------------- |:--------:|:--------:|";
 	for($i=0; $i<$noReturnValues; $i++) {
-		printf "|----|----|-----|-------|";
+		printf "----|----|-----|-------|";
 	}
 	print "\n";
 
@@ -94,12 +95,12 @@ sub print_status {
 	my $i;
 	printf "| ObjectType | Object (optional) | statusCodeId | Description |";
 	for($i=0; $i<$noReturnValues; $i++) {
-		printf "|Name|Type|Value|Comment|";
+		printf "Name|Type|Value|Comment|";
 	}
 	print "\n";
 	printf "| ---------- | ----------------- |:-----------:| ----------- |";
 	for($i=0; $i<$noReturnValues; $i++) {
-		printf "|----|----|-----|-------|";
+		printf "----|----|-----|-------|";
 	}
 	print "\n";
 	
@@ -132,12 +133,12 @@ sub print_commands {
 	my $i;
 	printf "| ObjectType | Object (optional) | commandCodeId | Description |";
 	for($i=0; $i<$noReturnValues; $i++) {
-		printf "|Name|Command|Type|Value|Comment|";
+		printf "Name|Command|Type|Value|Comment|";
 	}
 	print "\n";
 	printf "| ---------- | ----------------- |:-----------:| ----------- |";
 	for($i=0; $i<$noReturnValues; $i++) {
-		printf "|----|----|----|------|-------|";
+		printf "----|----|----|------|-------|";
 	}
 	print "\n";
 
@@ -159,8 +160,8 @@ sub print_objects {
 	# Object sheet
 	printf("\nObjects\n");
 	printf("=======\n");
-	cprint($sheet, 1,1, "SiteId:");
-	cprint($sheet, 1,2, "Description:");
+	cprint($sheet, 1,1, "SiteId");
+	cprint($sheet, 1,2, "Description");
 
 	# Print all grouped objects
 	printf "\nGrouped objects\n";
@@ -262,7 +263,7 @@ sub aprint {
 		semi_check($sheet, $x, $y);
 
 		# Print row
-		print "|";
+		# print "|";
 		for($i = 0; $i < $col_length; $i++) {
 			# 'Value' should be split into bullet list (HTML)
 			$val[$i] =~ s/-//g;	# Remove '-'
