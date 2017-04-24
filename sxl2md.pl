@@ -45,15 +45,15 @@ sub print_version {
 	my $sheet = shift;
 	printf("# Signal Exchange List\n");
 
-	cprint($sheet, 3, 1, "+ Plant Id");
-	cprint($sheet, 5, 1, "+ Plant Name");
-	cprint($sheet, 9, 1, "+ Constructor");
-	cprint($sheet, 11,1, "+ Reviewed");
-	cprint($sheet, 14,1, "+ Approved");
-	cprint($sheet, 17,1, "+ Created date");
-	cprint($sheet, 20,1, "+ SXL revision");
-	cprint($sheet, 20,2, "+ Revision date");
-	cprint($sheet, 25,1, "+ RSMP version");
+	cprint($sheet, 3, 1, "Plant Id");
+	cprint($sheet, 5, 1, "Plant Name");
+	cprint($sheet, 9, 1, "Constructor");
+	cprint($sheet, 11,1, "Reviewed");
+	cprint($sheet, 14,1, "Approved");
+	cprint($sheet, 17,1, "Created date");
+	cprint($sheet, 20,1, "SXL revision");
+	cprint($sheet, 20,2, "Revision date");
+	cprint($sheet, 25,1, "RSMP version");
 	printf("\nSections\n");
 	printf("--------\n");
 	printf("+ [Object types](#object_types)\n");
@@ -258,7 +258,7 @@ sub cprint {
 	my $text = shift;
 	my $val = $sheet->{Cells}[$y][$x]->{Val};
 
-	printf "**$text**:";
+	printf "+ **$text**:";
         $val =~ s/%/%%/g if(defined($val)); # Needed for printf()
 	printf " $val" if(defined($val));
 	printf "\n";
@@ -338,7 +338,7 @@ sub stateprint {
 	my $y;
 	my @bit;
 	for($y = 0; $y < 8; $y++) {
-		$bit[$y] = $sheet->{Cells}[$y+17][2]->{Val};
+		$bit[$y] = $sheet->{Cells}[$y+16][2]->{Val};
 
 		# Remove line breaks
 		if(defined($bit[$y])) {
