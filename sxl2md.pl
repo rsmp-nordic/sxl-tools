@@ -5,9 +5,8 @@
 
 # TODO: Test for spaces before or after
 # TODO: Test for incorrect cId matches between single and grouped objects
-# TODO: Add links to respective section
-# TODO: Sheet 'Object types'
 # TODO: Sheet 'Aggregated status'
+# TODO: Add dates
 
 use strict;
 use Spreadsheet::XLSX;
@@ -28,7 +27,7 @@ sub read_sxl {
 		if($sheet->{Name} eq "Version") {
 			print_version($sheet);
 		} elsif($sheet->{Name} eq "Object types") {
-			# STUB
+			print_object_types($sheet);
 		} elsif($sheet->{Name} eq "Aggregated status") {
 			# STUB
 		} elsif($sheet->{Name} eq "Alarms") {
@@ -56,37 +55,81 @@ sub print_version {
 	cprint($sheet, 20,1, "SXL revision");
 	cprint($sheet, 20,2, "Revision date");
 	cprint($sheet, 25,1, "RSMP version");
+	printf("Sections\n");
+	printf("--------\n");
+	printf("+ [Object types](#object_types)\n");
+	printf("+ [Objects](#objects)\n");
+	# printf("+ [Aggregated status](#aggregated_status)\n");
+	printf("+ [Alarms](#alarms)\n");
+	printf("+ [Status](#status)\n");
+	printf("+ [Commands](#commands)\n");
 }
 
-# Print object
-sub oprint {
+sub print_object_types {
 	my $sheet = shift;
-	my $y = shift;
+	# Object types sheet
+	printf("<a id=\"object_types\"></a>\n");
+	printf("\nObject Types\n");
+	printf("============\n");
 
-	# Object, componentId, NTSObjectId
-	my $objecttype = $sheet->{Cells}[$y][0]->{Val};
-	my $object = $sheet->{Cells}[$y][1]->{Val};
-	my $cId = $sheet->{Cells}[$y][2]->{Val};
-	my $ntsoId = $sheet->{Cells}[$y][3]->{Val};
-	my $externalNtsId = $sheet->{Cells}[$y][4]->{Val};
-	my $description = $sheet->{Cells}[$y][5]->{Val};
+	# Print all grouped objects
+	printf "\nGrouped objects\n";
+	printf "---------------\n";
+	printf "|ObjectType|Description|\n";
+	printf "|----------|-----------|\n";
+	my $y = 6;
+	while (test($sheet, $y, 0)) {
+		otprint($sheet, $y);
+		$y++;
+	}
 
-	unless (defined($object) and defined($cId) and defined($ntsoId)) {
-		print STDERR "WARNING: row $y incomplete\n";
-	} else {
-		printf "|$objecttype|$object|$cId|$ntsoId|";
+	# Print all single objects
+	printf "\nSingle objects\n";
+	printf "--------------\n";
+	printf "|ObjectType|Description|\n";
+	printf "|----------|-----------|\n";
+	$y = 18;
+	while (test($sheet, $y, 0)) {
+		otprint($sheet, $y);
+		$y++;
+	}
+}
 
-		# ExternalNtsId
-		printf "$externalNtsId" if(defined($externalNtsId));
-		printf "|";
+sub print_objects {
+	my $sheet = shift;
+	# Object sheet
+	printf("<a id=\"objects\"></a>\n");
+	printf("\nSite Objects\n");
+	printf("============\n");
+	cprint($sheet, 1,1, "SiteId");
+	cprint($sheet, 1,2, "Description");
 
-		printf "$description" if(defined($description));
-		printf "|\n";
+	# Print all grouped objects
+	printf "\nGrouped objects\n";
+	printf "---------------\n";
+	printf "|ObjectType|Object|componentId|NTSObjectId|externalNtsId|Description|\n";
+	printf "|----------|------|-----------|-----------|-------------|-----------|\n";
+	my $y = 6;
+	while (test($sheet, $y, 0)) {
+		oprint($sheet, $y);
+		$y++;
+	}
+
+	# Print all single objects
+	printf "\nSingle objects\n";
+	printf "--------------\n";
+	printf "|ObjectType|Object|componentId|NTSObjectId|externalNtsId|Description|\n";
+	printf "|----------|------|-----------|-----------|-------------|-----------|\n";
+	$y = 24;
+	while (test($sheet, $y, 0)) {
+		oprint($sheet, $y);
+		$y++;
 	}
 }
 
 sub print_alarms {
 	my $sheet = shift;
+	printf("<a id=\"alarms\"></a>\n");
 	printf("\n# Alarms\n");
 	
 	my $noReturnValues = get_no_return_values($sheet, 6);
@@ -114,6 +157,7 @@ sub print_alarms {
 
 sub print_status {
 	my $sheet = shift;
+	printf("<a id=\"status\"></a>\n");
 	printf("\n# Status\n");
 
 	my $noReturnValues = get_no_return_values($sheet, 6);
@@ -141,6 +185,7 @@ sub print_status {
 
 sub print_commands {
 	my $sheet = shift;
+	printf("<a id=\"commands\"></a>\n");
 	printf("\n# Commands\n");
 
 	my $sec;
@@ -182,36 +227,6 @@ sub print_commands {
 	print "\n";
 }
 
-sub print_objects {
-	my $sheet = shift;
-	# Object sheet
-	printf("\nSite Objects\n");
-	printf("=======\n");
-	cprint($sheet, 1,1, "SiteId");
-	cprint($sheet, 1,2, "Description");
-
-	# Print all grouped objects
-	printf "\nGrouped objects\n";
-	printf "---------------\n";
-	printf "|ObjectType|Object|componentId|NTSObjectId|externalNtsId|Description|\n";
-	printf "|----------|------|-----------|-----------|-------------|-----------|\n";
-	my $y = 6;
-	while (test($sheet, $y, 0)) {
-		oprint($sheet, $y);
-		$y++;
-	}
-
-	# Print all single objects
-	printf "\nSingle objects\n";
-	printf "--------------\n";
-	printf "|ObjectType|Object|componentId|NTSObjectId|externalNtsId|Description|\n";
-	printf "|----------|------|-----------|-----------|-------------|-----------|\n";
-	$y = 24;
-	while (test($sheet, $y, 0)) {
-		oprint($sheet, $y);
-		$y++;
-	}
-}
 
 # Cell print
 sub cprint {
@@ -221,12 +236,10 @@ sub cprint {
 	my $text = shift;
 	my $val = $sheet->{Cells}[$y][$x]->{Val};
 
-	unless(defined($val)) {
-		# Warning: value not defined"
-		$val = " ";
-	}
-        $val =~ s/%/%%/g; # Needed for printf()
-	printf "**$text**: $val  \n";
+	printf "**$text**:";
+        $val =~ s/%/%%/g if(defined($val)); # Needed for printf()
+	printf " $val" if(defined($val));
+	printf "\n";
 }
 
 # Print object type
@@ -240,8 +253,37 @@ sub otprint {
 
 	printf "|$objecttype|";
 	printf "$description|" if(defined($description));
-	printf "\n";
+	printf "|\n";
 }
+
+
+# Print object
+sub oprint {
+	my $sheet = shift;
+	my $y = shift;
+
+	# Object, componentId, NTSObjectId
+	my $objecttype = $sheet->{Cells}[$y][0]->{Val};
+	my $object = $sheet->{Cells}[$y][1]->{Val};
+	my $cId = $sheet->{Cells}[$y][2]->{Val};
+	my $ntsoId = $sheet->{Cells}[$y][3]->{Val};
+	my $externalNtsId = $sheet->{Cells}[$y][4]->{Val};
+	my $description = $sheet->{Cells}[$y][5]->{Val};
+
+	unless (defined($object) and defined($cId) and defined($ntsoId)) {
+		print STDERR "WARNING: row $y incomplete\n";
+	} else {
+		printf "|$objecttype|$object|$cId|$ntsoId|";
+
+		# ExternalNtsId
+		printf "$externalNtsId" if(defined($externalNtsId));
+		printf "|";
+
+		printf "$description" if(defined($description));
+		printf "|\n";
+	}
+}
+
 
 # Print alarm/status/commands
 sub aprint {
