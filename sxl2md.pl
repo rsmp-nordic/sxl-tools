@@ -58,6 +58,33 @@ sub print_version {
 	cprint($sheet, 25,1, "RSMP version");
 }
 
+# Print object
+sub oprint {
+	my $sheet = shift;
+	my $y = shift;
+
+	# Object, componentId, NTSObjectId
+	my $objecttype = $sheet->{Cells}[$y][0]->{Val};
+	my $object = $sheet->{Cells}[$y][1]->{Val};
+	my $cId = $sheet->{Cells}[$y][2]->{Val};
+	my $ntsoId = $sheet->{Cells}[$y][3]->{Val};
+	my $externalNtsId = $sheet->{Cells}[$y][4]->{Val};
+	my $description = $sheet->{Cells}[$y][5]->{Val};
+
+	unless (defined($object) and defined($cId) and defined($ntsoId)) {
+		print STDERR "WARNING: row $y incomplete\n";
+	} else {
+		printf "|$objecttype|$object|$cId|$ntsoId|";
+
+		# ExternalNtsId
+		printf "$externalNtsId" if(defined($externalNtsId));
+		printf "|";
+
+		printf "$description" if(defined($description));
+		printf "|\n";
+	}
+}
+
 sub print_alarms {
 	my $sheet = shift;
 	printf("\n# Alarms\n");
@@ -158,7 +185,7 @@ sub print_commands {
 sub print_objects {
 	my $sheet = shift;
 	# Object sheet
-	printf("\nObjects\n");
+	printf("\nSite Objects\n");
 	printf("=======\n");
 	cprint($sheet, 1,1, "SiteId");
 	cprint($sheet, 1,2, "Description");
@@ -202,22 +229,18 @@ sub cprint {
 	printf "**$text**: $val  \n";
 }
 
-# Print object
-sub oprint {
+# Print object type
+sub otprint {
 	my $sheet = shift;
 	my $y = shift;
 
 	# Object, componentId, NTSObjectId
-	my $object = $sheet->{Cells}[$y][1]->{Val};
-	my $cId = $sheet->{Cells}[$y][2]->{Val};
-	my $ntsoId = $sheet->{Cells}[$y][3]->{Val};
-	my $externalNtsId = $sheet->{Cells}[$y][4]->{Val};
+	my $objecttype = $sheet->{Cells}[$y][0]->{Val};
+	my $description = $sheet->{Cells}[$y][5]->{Val};
 
-	unless (defined($object) and defined($cId) and defined($ntsoId)) {
-		print STDERR "WARNING: row $y incomplete\n";
-	} else {
-		printf "|$object|$cId|$ntsoId|\n";
-	}
+	printf "|$objecttype|";
+	printf "$description|" if(defined($description));
+	printf "\n";
 }
 
 # Print alarm/status/commands
