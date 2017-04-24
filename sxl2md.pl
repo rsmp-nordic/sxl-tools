@@ -338,7 +338,13 @@ sub stateprint {
 	my $y;
 	my @bit;
 	for($y = 0; $y < 8; $y++) {
-		$bit[$y] = $sheet->{Cells}[$y+17][4]->{Val};
+		$bit[$y] = $sheet->{Cells}[$y+17][2]->{Val};
+
+		# Remove line breaks
+		if(defined($bit[$y])) {
+			$bit[$y] =~ s/\r//g;
+			$bit[$y] =~ s/\n/<br>/g;
+		}
 	}
 	printf "|1|Local mode|";          print $bit[0] if(defined($bit[0])); print "|\n";
 	printf "|2|No communications|";   print $bit[1] if(defined($bit[1])); print "|\n";
@@ -396,7 +402,9 @@ sub aprint {
 		# Print row
 		# print "|";
 		for($i = 0; $i < $col_length; $i++) {
-			# 'Value' should be split into bullet list (HTML)
+			# 'Value' should be split into bullet list.
+			# Markdown don't support bullet lists in a table
+			# so use inline HTML instead
 			$val[$i] =~ s/-//g;	# Remove '-'
 			if($i == $value_list_col) {
 				# Find line breaks and convert to them to bullet list in HTML
