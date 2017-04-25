@@ -154,7 +154,7 @@ sub print_alarms {
 	printf("<a id=\"alarms\"></a>\n");
 	printf("\n# Alarms\n");
 	
-	my $noReturnValues = get_no_return_values($sheet, 6);
+	my $noReturnValues = get_no_return_values($sheet, 6, 8, 4);
 
 	# Print header
 	my $i;
@@ -182,7 +182,7 @@ sub print_status {
 	printf("<a id=\"status\"></a>\n");
 	printf("\n# Status\n");
 
-	my $noReturnValues = get_no_return_values($sheet, 6);
+	my $noReturnValues = get_no_return_values($sheet, 6, 4, 4);
 
 	# Print header
 	my $i;
@@ -218,8 +218,8 @@ sub print_commands {
 	my $noReturnValues = 0;
 	foreach $sec (@sections) {
 		$y = $sec;
-		if(get_no_return_values($sheet, $y) > $noReturnValues) {
-			$noReturnValues = get_no_return_values($sheet, $y);
+		if(get_no_return_values($sheet, $y, 4, 5) > $noReturnValues) {
+			$noReturnValues = get_no_return_values($sheet, $y, 4, 5);
 		}
 	}
 
@@ -482,13 +482,15 @@ sub test {
 sub get_no_return_values {
 	my $sheet = shift;
 	my $y = shift; # start row, alarms, status: 6, commands: variable
+	my $col_length = shift; # 8 for alarms, 4 for status and commands
+	my $return_value_col_length = shift; # 4 for alarm and status, 5 for commands
 
 	my $noReturnValues = 0;
-	my $x = 8; # first return value
-	while (test($sheet, $y, 7)) {
+	while (test($sheet, $y, 0)) {
+		my $x = $col_length; # first return value
 		while(test($sheet, $y, $x)) {
 			$noReturnValues++;
-			$x += 4;
+			$x += $return_value_col_length;
 		}
 		$y++
 	}
