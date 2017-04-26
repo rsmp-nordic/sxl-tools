@@ -11,9 +11,15 @@ use strict;
 use Spreadsheet::XLSX;
 use Getopt::Long;
 
+my $omit_objects;
+GetOptions(
+	"omit-objects" => \$omit_objects,
+);
+
 my @files = @ARGV;
 my $fname;
 my $sheet;
+
 
 foreach $fname (@files) {
 	read_sxl($fname);
@@ -36,7 +42,7 @@ sub read_sxl {
 		} elsif($sheet->{Name} eq "Commands") {
 			print_commands($sheet);
 		} else { # Objects
-			print_objects($sheet);
+			print_objects($sheet) unless(defined($omit_objects));
 		}
 	}
 }
@@ -57,7 +63,7 @@ sub print_version {
 	printf("\nSections\n");
 	printf("--------\n");
 	printf("+ [Object types](#object_types)\n");
-	printf("+ [Objects](#objects)\n");
+	printf("+ [Objects](#objects)\n") unless(defined($omit_objects));
 	printf("+ [Aggregated status](#aggregated_status)\n");
 	printf("+ [Alarms](#alarms)\n");
 	printf("+ [Status](#status)\n");
