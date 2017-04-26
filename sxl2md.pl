@@ -485,14 +485,19 @@ sub get_no_return_values {
 	my $col_length = shift; # 8 for alarms, 4 for status and commands
 	my $return_value_col_length = shift; # 4 for alarm and status, 5 for commands
 
-	my $noReturnValues = 0;
+	my $maxReturnValues = 0;
+	my $noReturnValues;
 	while (test($sheet, $y, 0)) {
 		my $x = $col_length; # first return value
+		my $noReturnValues = 0;
 		while(test($sheet, $y, $x)) {
 			$noReturnValues++;
 			$x += $return_value_col_length;
 		}
+		if($noReturnValues > $maxReturnValues) {
+			$maxReturnValues = $noReturnValues;
+		}
 		$y++
 	}
-	return $noReturnValues;
+	return $maxReturnValues;
 }
