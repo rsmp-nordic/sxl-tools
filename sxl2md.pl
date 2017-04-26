@@ -448,7 +448,8 @@ sub rprint {
 			# 'Value' should be split into bullet list.
 			# Markdown don't support bullet lists in a table
 			# so use inline HTML instead
-			$val[$i] =~ s/-//g;	# Remove '-'
+			$val[$i] =~ s/\n-/\n/g;	# Remove '-', after line break
+			$val[$i] =~ s/^-//g;	# Remove leading '-'
 			if($i == $value_list_col) {
 				# Find line breaks and convert to them to bullet list in HTML
 				if($val[$i] =~ /\r\n/) {
