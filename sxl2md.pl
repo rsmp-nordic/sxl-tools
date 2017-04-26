@@ -154,28 +154,36 @@ sub print_alarms {
 	printf("<a id=\"alarms\"></a>\n");
 	printf("\n# Alarms\n");
 	
-	my $noReturnValues = get_no_return_values($sheet, 6, 8, 4);
-
 	# Print header
 	my $i;
-	printf "| ObjectType | Object (optional) | alarmCodeId | Description | externalAlarmCodeId | externalNtsAlarmCodeId | Priority | Category |";
-	for($i=0; $i<$noReturnValues; $i++) {
-		printf "Name|Type|Value|Comment|";
-	}
-	print "\n";
-	printf "| ---------- | ----------------- |:-----------:| ----------- | ------------------- | ---------------------- |:--------:|:--------:|";
-	for($i=0; $i<$noReturnValues; $i++) {
-		printf "----|----|-----|-------|";
-	}
-	print "\n";
+	printf "| ObjectType | Object (optional) | alarmCodeId | Description | externalAlarmCodeId | externalNtsAlarmCodeId | Priority | Category |\n";
+	printf "| ---------- | ----------------- |:-----------:| ----------- | ------------------- | ---------------------- |:--------:|:--------:|\n";
 
 	# Print alarms
 	my $y = 6;
+	my $return_text = "";
 	while (test($sheet, $y, 7)) {
-		aprint($sheet, $y, 8);
-		rprint($sheet, $y, 8, 4, 2);
+		my $has_return_values = get_no_return_values($sheet, $y, 8, 4);
+		aprint($sheet, $y, 8, $has_return_values);
+		print "\n";
+
+		# Collect return values
+		if($has_return_values > 0) {
+			my $xCodeId = $sheet->{Cells}[$y][2]->{Val};
+
+			# Print header
+			$return_text .= "\n<a id=\"$xCodeId\"></a>";
+			$return_text .= "\n## Return Values for $xCodeId\n";
+			$return_text .= "|Name|Type|Value|Comment|\n";
+			$return_text .= "|----|----|-----|-------|\n";
+
+			$return_text = rprint($sheet, $y, 8, 4, 2, $return_text);
+		}
 		$y++;
 	}
+
+	# Print return values
+	print $return_text;
 }
 
 sub print_status {
@@ -183,28 +191,37 @@ sub print_status {
 	printf("<a id=\"status\"></a>\n");
 	printf("\n# Status\n");
 
-	my $noReturnValues = get_no_return_values($sheet, 6, 4, 4);
 
 	# Print header
 	my $i;
-	printf "| ObjectType | Object (optional) | statusCodeId | Description |";
-	for($i=0; $i<$noReturnValues; $i++) {
-		printf "Name|Type|Value|Comment|";
-	}
-	print "\n";
-	printf "| ---------- | ----------------- |:-----------:| ----------- |";
-	for($i=0; $i<$noReturnValues; $i++) {
-		printf "----|----|-----|-------|";
-	}
-	print "\n";
+	printf "| ObjectType | Object (optional) | statusCodeId | Description |\n";
+	printf "| ---------- | ----------------- |:------------:| ----------- |\n";
 	
 	# Print status
 	my $y = 6;
+	my $return_text = "";
 	while (test($sheet, $y, 7)) {
-		aprint($sheet, $y, 4);
-		rprint($sheet, $y, 4, 4, 2);
+		my $has_return_values = get_no_return_values($sheet, $y, 4, 4);
+		aprint($sheet, $y, 4, $has_return_values);
+		print "\n";
+
+		# Collect return values
+		if($has_return_values > 0) {
+			my $xCodeId = $sheet->{Cells}[$y][2]->{Val};
+
+			# Print header
+			$return_text .= "\n<a id=\"$xCodeId\"></a>";
+			$return_text .= "\n## Return Values for $xCodeId\n";
+			$return_text .= "|Name|Type|Value|Comment|\n";
+			$return_text .= "|----|----|-----|-------|\n";
+
+			$return_text = rprint($sheet, $y, 4, 4, 2, $return_text);
+		}
 		$y++;
 	}
+
+	# Print return values
+	print $return_text;
 }
 
 sub print_commands {
@@ -216,39 +233,42 @@ sub print_commands {
 	my $y;
 	my @sections = command_section($sheet);
 
-	# Find max number of return values in each section
-	my $noReturnValues = 0;
-	foreach $sec (@sections) {
-		$y = $sec;
-		if(get_no_return_values($sheet, $y, 4, 5) > $noReturnValues) {
-			$noReturnValues = get_no_return_values($sheet, $y, 4, 5);
-		}
-	}
-
 	# Print header
 	my $i;
-	printf "| ObjectType | Object (optional) | commandCodeId | Description |";
-	for($i=0; $i<$noReturnValues; $i++) {
-		printf "Name|Command|Type|Value|Comment|";
-	}
-	print "\n";
-	printf "| ---------- | ----------------- |:-----------:| ----------- |";
-	for($i=0; $i<$noReturnValues; $i++) {
-		printf "----|----|----|------|-------|";
-	}
-	print "\n";
+	printf "| ObjectType | Object (optional) | commandCodeId | Description |\n";
+	printf "| ---------- | ----------------- |:-------------:| ----------- |\n";
 
+	my $txt = "";
+	my $return_text = "";
 	foreach $sec (@sections) {
 		# Need to check each command section
 		$y = $sec;
 
 		# Print command
 		while (test($sheet, $y, 7)) {
-			aprint($sheet, $y, 4);
-			rprint($sheet, $y, 4, 5, 3);
+			my $has_return_values = get_no_return_values($sheet, $y, 4, 5);
+			aprint($sheet, $y, 4, $has_return_values);
+			print "\n";
+
+			# Collect return values
+			if($has_return_values > 0) {
+				my $xCodeId = $sheet->{Cells}[$y][2]->{Val};
+
+				# Print header
+				$txt = "\n<a id=\"$xCodeId\"></a>";
+				$txt .= "\n## Arguments for $xCodeId\n";
+				$txt .= "|Name|Command|Type|Value|Comment|\n";
+				$txt .= "|----|-------|----|-----|-------|\n";
+
+				$return_text .= rprint($sheet, $y, 4, 5, 3, $txt);
+
+			}
 			$y++;
 		}
 	}
+
+	# Print return values
+	print $return_text;
 	print "\n";
 }
 
@@ -365,6 +385,8 @@ sub aprint {
 	my $sheet = shift;
 	my $y = shift;  # Start row
 	my $col_length = shift; # 8 for alarms, 4 for status and commands
+	my $has_return_values = shift; # num of return values
+	my $col_link = 2; # Which column to make a link, if return values exist
 
 	# Get values for a row
 	my $i;
@@ -376,6 +398,11 @@ sub aprint {
 		unless(defined($val[$i])) {
 			$val[$i] = "";
 		}
+	}
+	
+	# Make column into a link if return values exist
+	if($has_return_values > 0) {
+		$val[$col_link] = "[".$val[$col_link]."](#".$val[$col_link].")"; 
 	}
 
 	# Print row
@@ -394,10 +421,12 @@ sub rprint {
 	my $start_x = shift; # 8 for alarms, 4 for status and commands
 	my $return_value_col_length = shift; # 4 for alarm and status, 5 for commands
 	my $value_list_col = shift; # this column of return values/arguments should be split into bullet list, 2 for alarm and status, 3 for commands
+	my $return_text = shift;
 
 	my $i;
 	my @val;
 	my $x = $start_x;
+	my $col_length;
 
 	# return values
 	while(test($sheet, $y, $x)) {
@@ -414,6 +443,7 @@ sub rprint {
 		semi_check($sheet, $x, $y);
 
 		# Print row
+		$return_text .= "|";
 		for($i = 0; $i < $col_length; $i++) {
 			# 'Value' should be split into bullet list.
 			# Markdown don't support bullet lists in a table
@@ -437,10 +467,11 @@ sub rprint {
 				$val[$i] =~ s/\r//g;
 				$val[$i] =~ s/\n/<br>/g;
 			}
-			print "$val[$i]|";
+			$return_text .= "$val[$i]|";
 		}
+		$return_text .= "\n";
 	}
-	print "\n";
+	return $return_text;
 }
 
 # Find command section
@@ -491,26 +522,18 @@ sub test {
 	return defined($sheet->{Cells}[$y][$x]->{Val});
 }
 
-# Get max number of arguments/return values
+# Get number of arguments/return values for given row
 sub get_no_return_values {
 	my $sheet = shift;
-	my $y = shift; # start row, alarms, status: 6, commands: variable
+	my $y = shift; # row
 	my $col_length = shift; # 8 for alarms, 4 for status and commands
 	my $return_value_col_length = shift; # 4 for alarm and status, 5 for commands
 
-	my $maxReturnValues = 0;
-	my $noReturnValues;
-	while (test($sheet, $y, 0)) {
-		my $x = $col_length; # first return value
-		my $noReturnValues = 0;
-		while(test($sheet, $y, $x)) {
-			$noReturnValues++;
-			$x += $return_value_col_length;
-		}
-		if($noReturnValues > $maxReturnValues) {
-			$maxReturnValues = $noReturnValues;
-		}
-		$y++
+	my $noReturnValues = 0;
+	my $x = $col_length; # first return value
+	while(test($sheet, $y, $x)) {
+		$noReturnValues++;
+		$x += $return_value_col_length;
 	}
-	return $maxReturnValues;
+	return $noReturnValues;
 }
