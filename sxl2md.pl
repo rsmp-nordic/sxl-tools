@@ -172,7 +172,8 @@ sub print_alarms {
 	# Print alarms
 	my $y = 6;
 	while (test($sheet, $y, 7)) {
-		aprint($sheet, $y, 8, 4, 2);
+		aprint($sheet, $y, 8);
+		rprint($sheet, $y, 8, 4, 2);
 		$y++;
 	}
 }
@@ -200,7 +201,8 @@ sub print_status {
 	# Print status
 	my $y = 6;
 	while (test($sheet, $y, 7)) {
-		aprint($sheet, $y, 4, 4, 2);
+		aprint($sheet, $y, 4);
+		rprint($sheet, $y, 4, 4, 2);
 		$y++;
 	}
 }
@@ -242,7 +244,8 @@ sub print_commands {
 
 		# Print command
 		while (test($sheet, $y, 7)) {
-			aprint($sheet, $y, 4, 5, 3);
+			aprint($sheet, $y, 4);
+			rprint($sheet, $y, 4, 5, 3);
 			$y++;
 		}
 	}
@@ -362,8 +365,6 @@ sub aprint {
 	my $sheet = shift;
 	my $y = shift;  # Start row
 	my $col_length = shift; # 8 for alarms, 4 for status and commands
-	my $return_value_col_length = shift; # 4 for alarm and status, 5 for commands
-	my $value_list_col = shift; # this column of return values/arguments should be split into bullet list, 2 for alarm and status, 3 for commands
 
 	# Get values for a row
 	my $i;
@@ -384,6 +385,19 @@ sub aprint {
 		$val[$i] =~ s/\n/<br>/g;
 		print "$val[$i]|";
 	}
+}
+
+# Print arguments/return values
+sub rprint {
+	my $sheet = shift;
+	my $y = shift;  # Start row
+	my $start_x = shift; # 8 for alarms, 4 for status and commands
+	my $return_value_col_length = shift; # 4 for alarm and status, 5 for commands
+	my $value_list_col = shift; # this column of return values/arguments should be split into bullet list, 2 for alarm and status, 3 for commands
+
+	my $i;
+	my @val;
+	my $x = $start_x;
 
 	# return values
 	while(test($sheet, $y, $x)) {
@@ -400,7 +414,6 @@ sub aprint {
 		semi_check($sheet, $x, $y);
 
 		# Print row
-		# print "|";
 		for($i = 0; $i < $col_length; $i++) {
 			# 'Value' should be split into bullet list.
 			# Markdown don't support bullet lists in a table
