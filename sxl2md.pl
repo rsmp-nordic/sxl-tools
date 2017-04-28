@@ -12,8 +12,13 @@ use Spreadsheet::XLSX;
 use Getopt::Long;
 
 my $omit_objects;
+my $omit_object_col;
 GetOptions(
+	# Omits object sheet
 	"omit-objects" => \$omit_objects,
+
+	# Omits object column in alarms, status and commands
+	"omit-object-col" => \$omit_object_col,
 );
 
 my @files = @ARGV;
@@ -161,9 +166,11 @@ sub print_alarms {
 	printf("\n# Alarms\n");
 	
 	# Print header
-	my $i;
-	printf "| ObjectType | Object (optional) | alarmCodeId | Description | externalAlarmCodeId | externalNtsAlarmCodeId | Priority | Category |\n";
-	printf "| ---------- | ----------------- |:-----------:| ----------- | ------------------- | ---------------------- |:--------:|:--------:|\n";
+	my $oh1 = ""; my $oh2 = "";
+	$oh1 = "| Object (optional) " unless(defined($omit_object_col));
+	$oh2 = "| ----------------- " unless(defined($omit_object_col));
+	printf "| ObjectType $oh1| alarmCodeId | Description | externalAlarmCodeId | externalNtsAlarmCodeId | Priority | Category |\n";
+	printf "| ---------- $oh2|:-----------:| ----------- | ------------------- | ---------------------- |:--------:|:--------:|\n";
 
 	# Print alarms
 	my $y = 6;
@@ -199,9 +206,11 @@ sub print_status {
 
 
 	# Print header
-	my $i;
-	printf "| ObjectType | Object (optional) | statusCodeId | Description |\n";
-	printf "| ---------- | ----------------- |:------------:| ----------- |\n";
+	my $oh1 = ""; my $oh2 = "";
+	$oh1 = "| Object (optional) " unless(defined($omit_object_col));
+	$oh2 = "| ----------------- " unless(defined($omit_object_col));
+	printf "| ObjectType $oh1| statusCodeId | Description |\n";
+	printf "| ---------- $oh2|:------------:| ----------- |\n";
 	
 	# Print status
 	my $y = 6;
@@ -240,9 +249,11 @@ sub print_commands {
 	my @sections = command_section($sheet);
 
 	# Print header
-	my $i;
-	printf "| ObjectType | Object (optional) | commandCodeId | Description |\n";
-	printf "| ---------- | ----------------- |:-------------:| ----------- |\n";
+	my $oh1 = ""; my $oh2 = "";
+	$oh1 = "| Object (optional) " unless(defined($omit_object_col));
+	$oh2 = "| ----------------- " unless(defined($omit_object_col));
+	printf "| ObjectType $oh1| commandCodeId | Description |\n";
+	printf "| ---------- $oh2|:-------------:| ----------- |\n";
 
 	my $txt = "";
 	my $return_text = "";
@@ -414,6 +425,12 @@ sub aprint {
 	# Print row
 	print "|";
 	for($i = 0; $i < $col_length; $i++) {
+
+		# Skip object column, it set
+		if(($i == 1) && defined($omit_object_col)) {
+			$i++;
+		}
+
 		$val[$i] =~ s/\r//g;
 		$val[$i] =~ s/\n/<br>/g;
 		print "$val[$i]|";
