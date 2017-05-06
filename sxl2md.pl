@@ -186,7 +186,7 @@ sub print_alarms {
 
 			# Print header
 			$return_text .= "\n<a id=\"$xCodeId\"></a>";
-			$return_text .= "\n## Return Values for $xCodeId\n";
+			$return_text .= "\n### $xCodeId\n";
 			$return_text .= "|Name|Type|Value|Comment|\n";
 			$return_text .= "|----|----|-----|-------|\n";
 
@@ -196,6 +196,7 @@ sub print_alarms {
 	}
 
 	# Print return values
+	print "## Return values\n";
 	print $return_text;
 }
 
@@ -226,7 +227,7 @@ sub print_status {
 
 			# Print header
 			$return_text .= "\n<a id=\"$xCodeId\"></a>";
-			$return_text .= "\n## Return Values for $xCodeId\n";
+			$return_text .= "\n### $xCodeId\n";
 			$return_text .= "|Name|Type|Value|Comment|\n";
 			$return_text .= "|----|----|-----|-------|\n";
 
@@ -236,6 +237,7 @@ sub print_status {
 	}
 
 	# Print return values
+	print "## Return values\n";
 	print $return_text;
 }
 
@@ -262,18 +264,18 @@ sub print_commands {
 		$y = $sec;
 
 		# Print command
-		while (test($sheet, $y, 7)) {
+		while (test($sheet, $y, 0)) {
 			my $has_return_values = get_no_return_values($sheet, $y, 4, 5);
 			aprint($sheet, $y, 4, $has_return_values);
 			print "\n";
 
-			# Collect return values
+			# Collect arguments
 			if($has_return_values > 0) {
 				my $xCodeId = $sheet->{Cells}[$y][2]->{Val};
 
 				# Print header
 				$txt = "\n<a id=\"$xCodeId\"></a>";
-				$txt .= "\n## Arguments for $xCodeId\n";
+				$txt .= "\n### $xCodeId\n";
 				$txt .= "|Name|Command|Type|Value|Comment|\n";
 				$txt .= "|----|-------|----|-----|-------|\n";
 
@@ -284,7 +286,8 @@ sub print_commands {
 		}
 	}
 
-	# Print return values
+	# Print arguments
+	print "## Arguments\n";
 	print $return_text;
 	print "\n";
 }
