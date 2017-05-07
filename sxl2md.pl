@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
-# sxlcheck.pl [SXL in xlsx-format]
-# Outputs basic SXL information
+# sxl2md.pl [SXL in xlsx format]
+# Convert signal exchange list (SXL) for RSMP in xlsx format to Markdown
 # Requires Spreadsheet::XLSX (sudo apt-get install libspreadsheet-xlsx-perl)
 
 # TODO: Test for spaces before or after
