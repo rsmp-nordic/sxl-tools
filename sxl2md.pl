@@ -13,12 +13,16 @@ use Getopt::Long;
 
 my $omit_objects;
 my $omit_object_col;
+my $omit_xnacid_col;
 GetOptions(
 	# Omits object sheet
 	"omit-objects" => \$omit_objects,
 
 	# Omits object column in alarms, status and commands
 	"omit-object-col" => \$omit_object_col,
+
+	# Omits externalNtsAlarmCodeId (xNACId) column
+	"omit-xnacid-col" => \$omit_xnacid_col,
 );
 
 my @files = @ARGV;
@@ -169,8 +173,12 @@ sub print_alarms {
 	my $oh1 = ""; my $oh2 = "";
 	$oh1 = "| Object (optional) " unless(defined($omit_object_col));
 	$oh2 = "| ----------------- " unless(defined($omit_object_col));
-	printf "| ObjectType $oh1| alarmCodeId | Description | externalAlarmCodeId | externalNtsAlarmCodeId | Priority | Category |\n";
-	printf "| ---------- $oh2|:-----------:| ----------- | ------------------- | ---------------------- |:--------:|:--------:|\n";
+	my $xnacid1 = ""; my $xnacid2 = "";
+	$xnacid1 = "| externalNtsAlarmCodeId " unless(defined($omit_xnacid_col));
+	$xnacid2 = "| ---------------------- " unless(defined($omit_xnacid_col));
+
+	printf "| ObjectType $oh1| alarmCodeId | Description | externalAlarmCodeId $xnacid1| Priority | Category |\n";
+	printf "| ---------- $oh2|:-----------:| ----------- | ------------------- $xnacid2|:--------:|:--------:|\n";
 
 	# Print alarms
 	my $y = 6;
@@ -432,6 +440,11 @@ sub aprint {
 		# Skip object column, it set
 		if(($i == 1) && defined($omit_object_col)) {
 			$i++;
+		}
+
+		# Skip externalNtsAlarmCodeId column, if set
+		if(($i == 5) && defined($omit_xnacid_col)) {
+			$i++
 		}
 
 		$val[$i] =~ s/\r//g;
