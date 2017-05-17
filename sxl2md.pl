@@ -29,7 +29,7 @@ GetOptions(
 );
 
 if(defined($help)) {
-	die("usage sxl2md.pl [--omit-objects] [--omit-object-col] [--omit-xnacid-col]");
+	die("usage sxl2md.pl [--omit-objects] [--omit-object-col] [--omit-xnacid-col] [FILE]");
 }
 
 my @files = @ARGV;
