@@ -202,6 +202,7 @@ sub print_alarms {
 			# Print header
 			$return_text .= "\n<a id=\"$xCodeId\"></a>";
 			$return_text .= "\n### $xCodeId\n";
+			$return_text .= $sheet->{Cells}[$y][3]->{Val}."\n\n"; # Description
 			$return_text .= "|Name|Type|Value|Comment|\n";
 			$return_text .= "|----|----|-----|-------|\n";
 
@@ -243,6 +244,7 @@ sub print_status {
 			# Print header
 			$return_text .= "\n<a id=\"$xCodeId\"></a>";
 			$return_text .= "\n### $xCodeId\n";
+			$return_text .= $sheet->{Cells}[$y][3]->{Val}."\n\n"; # Description
 			$return_text .= "|Name|Type|Value|Comment|\n";
 			$return_text .= "|----|----|-----|-------|\n";
 
@@ -287,10 +289,16 @@ sub print_commands {
 			# Collect arguments
 			if($has_return_values > 0) {
 				my $xCodeId = $sheet->{Cells}[$y][2]->{Val};
+				my $description = $sheet->{Cells}[$y][3]->{Val};
+
+				# Remove line breaks
+				$description =~ s/\r//g;
+				$description =~ s/\n/<br>/g;
 
 				# Print header
 				$txt = "\n<a id=\"$xCodeId\"></a>";
 				$txt .= "\n### $xCodeId\n";
+				$txt .= "$description\n\n";
 				$txt .= "|Name|Command|Type|Value|Comment|\n";
 				$txt .= "|----|-------|----|-----|-------|\n";
 
