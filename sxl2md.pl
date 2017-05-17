@@ -14,6 +14,7 @@ use Getopt::Long;
 my $omit_objects;
 my $omit_object_col;
 my $omit_xnacid_col;
+my $help;
 GetOptions(
 	# Omits object sheet
 	"omit-objects" => \$omit_objects,
@@ -23,7 +24,13 @@ GetOptions(
 
 	# Omits externalNtsAlarmCodeId (xNACId) column
 	"omit-xnacid-col" => \$omit_xnacid_col,
+
+	"h" => \$help,
 );
+
+if(defined($help)) {
+	die("usage sxl2md.pl [--omit-objects] [--omit-object-col] [--omit-xnacid-col]");
+}
 
 my @files = @ARGV;
 my $fname;
