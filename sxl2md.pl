@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 # sxl2md.pl [SXL in xlsx format]
-# Convert signal exchange list (SXL) for RSMP in xlsx format to Markdown
+# Convert signal exchange list (SXL) for RSMP in xlsx or csv format to Markdown
 # Requires Spreadsheet::XLSX (sudo apt-get install libspreadsheet-xlsx-perl)
 
 # TODO: Test for spaces before or after
@@ -14,6 +14,7 @@ use Getopt::Long;
 my $omit_objects;
 my $omit_object_col;
 my $omit_xnacid_col;
+my $csv;
 my $help;
 GetOptions(
 	# Omits object sheet
@@ -25,22 +26,26 @@ GetOptions(
 	# Omits externalNtsAlarmCodeId (xNACId) column
 	"omit-xnacid-col" => \$omit_xnacid_col,
 
+	# Read SLX as CSV-files (zipped) instead of Excel-file
+	"csv" => \$csv,
+
 	"h" => \$help,
 );
 
 if(defined($help)) {
-	die("usage sxl2md.pl [--omit-objects] [--omit-object-col] [--omit-xnacid-col] [FILE]");
+	die("usage sxl2md.pl [--omit-objects] [--omit-object-col] [--omit-xnacid-col] [--csv] [FILE]");
 }
 
 my @files = @ARGV;
 my $fname;
 my $sheet;
 
-
 foreach $fname (@files) {
-	read_sxl($fname);
+	read_sxl($fname) unless(defined($csv));
+	read_csv($fname) if(defined($csv));
 }
 
+# Read SXL in Excel format
 sub read_sxl {
 	my $fname = shift;
 	my $workbook = Spreadsheet::XLSX->new($fname);
@@ -61,6 +66,88 @@ sub read_sxl {
 			print_objects($sheet) unless(defined($omit_objects));
 		}
 	}
+}
+
+# Read SXL in CSV format
+sub read_csv {
+	my $fname = shift;
+
+	my $sheet_v;
+	my $sheet_ot;
+	my $sheet_agg;
+	my $sheet_a;
+	my $sheet_s;
+	my $sheet_c;
+	my $sheet_o;
+
+	system("unzip -q $fname");
+	my @cfile = `ls *.csv`;
+	foreach my $file (@cfile) {
+		chomp $file;
+		open(my $data, '<', $file) or die;
+
+		# Read csv file
+		my $line_break = 0; # line breaks has to be handled
+		my $y = 0;
+		my $x = 0; 
+		while(my $line = <$data>) {
+			chomp $line;
+
+			my @fields = split ";", $line;
+
+			$x = 0 if($line_break == 0);
+			foreach my $field (@fields) {
+				if($line_break == 1) {
+					$sheet->{Cells}[$y][$x]->{Val} = "$sheet->{Cells}[$y][$x]->{Val}\r\n$field";
+				} else {
+					$sheet->{Cells}[$y][$x]->{Val} = $field;
+				}
+
+				if($field =~ /"/) {
+					$sheet->{Cells}[$y][$x]->{Val} =~ s/"//;
+					if($line_break == 1) {
+						$line_break = 0;
+						$x++;
+					} else {
+						$line_break = 1;
+					}
+				} else {
+					if($line_break == 0) {
+						$x++;
+					}
+				}
+
+			}
+			$y++ if($line_break == 0);
+		}
+
+		# Check which sheet by checking values
+		if($sheet->{Cells}[1][1]->{Val} eq "Signal Exchange List") {
+			$sheet_v = $sheet;
+		} elsif($sheet->{Cells}[0][0]->{Val} eq "Object types") {
+			$sheet_ot = $sheet;
+		} elsif($sheet->{Cells}[0][0]->{Val} eq "Aggregated status per grouped object") {
+			$sheet_agg = $sheet;
+		} elsif($sheet->{Cells}[0][0]->{Val} eq "Alarms per object type") {
+			$sheet_a = $sheet;
+		} elsif($sheet->{Cells}[0][0]->{Val} eq "Status per object type") {
+			$sheet_s = $sheet;
+		} elsif($sheet->{Cells}[0][0]->{Val} eq "Commands per object type") {
+			$sheet_c = $sheet;
+		} else {
+			$sheet_o = $sheet;
+		}
+		$sheet = undef;
+	}
+	print_version($sheet_v);		# Version
+	print_object_types($sheet_ot);		# Object types
+	print_objects($sheet_o) unless(defined($omit_objects)); # Objects
+	print_aggregated_status($sheet_agg);	# Aggregated status
+	print_alarms($sheet_a);
+	print_status($sheet_s);
+	print_commands($sheet_c);
+
+	system("rm *.csv");
 }
 
 sub print_version {
@@ -574,6 +661,13 @@ sub test {
 	my $sheet = shift;
 	my $y = shift;
 	my $x = shift;
+
+	# If using CSV-files as source, treat empty values as undef
+	if(defined($sheet->{Cells}[$y][$x]->{Val})) {
+		if($sheet->{Cells}[$y][$x]->{Val} eq "") {
+			$sheet->{Cells}[$y][$x]->{Val} = undef;
+		}
+	}
 	return defined($sheet->{Cells}[$y][$x]->{Val});
 }
 
