@@ -119,7 +119,7 @@ sub print_object_types {
 sub print_aggregated_status {
 	my $sheet = shift;
 	# Aggregated status sheet
-	printf("<a id=\"aggregated_status\"></a>\n");
+	printf("\n<a id=\"aggregated_status\"></a>");
 	printf("\nAggregated status per grouped object\n");
 	printf("====================================\n");
 
@@ -173,7 +173,7 @@ sub print_objects {
 
 sub print_alarms {
 	my $sheet = shift;
-	printf("<a id=\"alarms\"></a>\n");
+	printf("\n<a id=\"alarms\"></a>");
 	printf("\n# Alarms\n");
 	
 	# Print header
@@ -212,13 +212,13 @@ sub print_alarms {
 	}
 
 	# Print return values
-	print "## Return values\n";
+	print "\n## Return values\n";
 	print $return_text;
 }
 
 sub print_status {
 	my $sheet = shift;
-	printf("<a id=\"status\"></a>\n");
+	printf("\n<a id=\"status\"></a>\n");
 	printf("\n# Status\n");
 
 
@@ -254,13 +254,13 @@ sub print_status {
 	}
 
 	# Print return values
-	print "## Return values\n";
+	print "\n## Return values\n";
 	print $return_text;
 }
 
 sub print_commands {
 	my $sheet = shift;
-	printf("<a id=\"commands\"></a>\n");
+	printf("\n<a id=\"commands\"></a>\n");
 	printf("\n# Commands\n");
 
 	my $sec;
@@ -310,7 +310,7 @@ sub print_commands {
 	}
 
 	# Print arguments
-	print "## Arguments\n";
+	print "\n## Arguments\n";
 	print $return_text;
 	print "\n";
 }
