@@ -95,6 +95,11 @@ sub read_csv {
 
 			my @fields = split ";", $line;
 
+			# This implementations has some problems dealing with
+			# quotations within CSV files. Excel quotes any cells
+			# containing illegal characters, e.g. linesbreaks and
+			# semicolon. Currently we treat everything as linebreak
+
 			$x = 0 if($line_break == 0);
 			foreach my $field (@fields) {
 				if($line_break == 1) {
@@ -413,7 +418,7 @@ sub cprint {
 
 	printf "+ **$text**:";
         $val =~ s/%/%%/g if(defined($val)); # Needed for printf()
-	printf " $val" if(defined($val));
+	printf " $val" if(defined($val) && ($val ne ""));
 	printf "\n";
 }
 
@@ -497,6 +502,11 @@ sub stateprint {
 		if(defined($bit[$y])) {
 			$bit[$y] =~ s/\r//g;
 			$bit[$y] =~ s/\n/<br>/g;
+
+			# Needed for consistency with CSV import. CSV import
+			# converts semicolon to linebreak. This makes sure xlsx is
+			# treated the same way
+			$bit[$y] =~ s/;/<br>/g;
 		}
 	}
 	printf "|1|Local mode|";          print $bit[0] if(defined($bit[0])); print "|\n";
@@ -664,7 +674,7 @@ sub test {
 
 	# If using CSV-files as source, treat empty values as undef
 	if(defined($sheet->{Cells}[$y][$x]->{Val})) {
-		if($sheet->{Cells}[$y][$x]->{Val} eq "") {
+		if(($sheet->{Cells}[$y][$x]->{Val} eq "") || ($sheet->{Cells}[$y][$x]->{Val} eq "\r")) {
 			$sheet->{Cells}[$y][$x]->{Val} = undef;
 		}
 	}
