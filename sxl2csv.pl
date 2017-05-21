@@ -43,6 +43,10 @@ foreach my $sheet (@{$workbook->{Worksheet}}) {
 					# Excel quotes the value if it contains newlines
 					$value = "\"$value\"";
 				}
+				if ($value =~ /;/) {
+					# Excel quotes the value if it contains semicolon
+					$value = "\"$value\"";
+				}
 				printf FILE "%s;", $value;
 				$semi++;
 			} else {
