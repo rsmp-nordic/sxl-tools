@@ -4,15 +4,29 @@
 #
 # TODO: :num:_table links does not work
 
+use strict;
+use Getopt::Long;
+
 # Remember number of whitespaces used in tables
 my $num_ws=0;
 
+my $dir;
+my $output;
+GetOptions(
+	# Sphinx source dir
+	"source=s" => \$dir,
+	"output=s" => \$output,
+);
+
+unless(defined($dir) && defined($output)) {
+	die("--source and --output needs to be set\n");
+}
+
 # Source
-my $dir = "/home/i0davla/rsmp/rsmp_core/sphinx/source/";
 my $file = "index.rst";
 
 # Output
-open(my $out, '>', "/home/i0davla/rsmp/rsmp_core/rst/rsmp.rst") or die;
+open(my $out, '>', "$output/rsmp.rst") or die;
 
 print $out "Contens\n";
 print $out "=======\n\n";
@@ -237,8 +251,9 @@ sub print_figtable {
 }
 
 sub generate_images {
-	system("rm /home/i0davla/rsmp/rsmp_core/rst/img/*");
-	system("make -C /home/i0davla/rsmp/rsmp_core/sphinx clean");
-	system("make -C /home/i0davla/rsmp/rsmp_core/sphinx generated-images");
-	system("cp /home/i0davla/rsmp/rsmp_core/sphinx/source/img/msc/*.png /home/i0davla/rsmp/rsmp_core/rst/img");
+	print "$dir/..\n";
+	system("rm $output/img/*");
+	system("make -C $dir/.. clean");
+	system("make -C $dir/.. generated-images");
+	system("cp $dir/img/msc/*.png $output/img");
 }
