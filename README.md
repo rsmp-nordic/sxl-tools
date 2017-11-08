@@ -1,6 +1,9 @@
 sxl-tools
 =========
 
+Export sxl
+----------
+
 Exports signal exchange lists (SXL) used by RSMP from Excel-format (xlsx) to
 various formats.
 
@@ -11,3 +14,9 @@ Requires Spreadsheet::XLSX
 * Ubuntu: `sudo apt install libspreadsheet-xlsx-perl`
 * Arch Linux: `pacman -S zip` and from AUR: `perl-spreadsheet-xlsx` and
   dependencies
+
+Export sphinx
+-------------
+
+* **sphinx2rst.pl** - Converts sphinx rst-format (reStrucutedText) to pure rst
+                      format and adds index
