@@ -160,6 +160,12 @@ sub read_rst {
 				}
 			}
 		}
+
+		# Convert :math:CO2 directive
+		if($line =~ s/:math:\`CO_\{2\}\`/CO2/g) {
+			# Compensate the removal of white space
+			$line =~ s/\|$/           |/g;
+		}
 		
 		# Convert links
 		$line =~ s/:ref:\`//g;
