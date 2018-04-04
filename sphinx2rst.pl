@@ -1,8 +1,6 @@
 #!/usr/bin/perl -w
 # sphinx2rst.pl
 # Convert sphinx sources to rst format suitable for github
-#
-# TODO: :num:_table links does not work
 
 use strict;
 use Getopt::Long;
@@ -168,6 +166,7 @@ sub read_rst {
 		}
 		
 		# Convert links
+		$line =~ s/:num:\`//g;
 		$line =~ s/:ref:\`//g;
 		$line =~ s/\`/_/g;
 
@@ -241,16 +240,20 @@ sub print_figtable {
 		$num_ws = $1;
 	}
 	$line =~ s/$num_ws//;
-	#$line =~ s/^ *//;
 
 	# Delete figtable directives
 	my $d=0;
 	$d=1 if($line =~ s/.. figtable:://);
 	$d=1 if($line =~ s/:nofig://);
-	$d=1 if($line =~ s/:label:.*//);
 	$d=1 if($line =~ s/:caption:.*//);
 	$d=1 if($line =~ s/:loc:.*//);
 	$d=1 if($line =~ s/:spec:.*//);
+	
+	# Make a link using the figtable label since we can't use :num:table links
+	if($line =~ s/:label: (.*)//) {
+		printf($out ".. _$1:\n");
+		$d=1
+	}
 
 	# Don't print directive (d=1)
 	printf($out "$line\n") if($d==0);
