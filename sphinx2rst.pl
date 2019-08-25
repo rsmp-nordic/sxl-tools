@@ -91,13 +91,29 @@ sub print_contens {
 	# Print contens
 	if($d==0) {
 		printf($out "* ");
+
+		# Open the source file and use the first reference
+		open(my $sub, '<', "$dir/$line.rst") or die;
+		my $ref = <$sub>;
+
+		# Strip reference
+		chomp $ref;
+		$ref =~ s/.. _//;
+		$ref =~ s/://;
+
+		my $end = $ref;
+		$end = ucfirst $end;
+
 		if($line =~ /\//) {
 			$line =~ s/\//\/`/;
+			my $beg = $line;
+			$beg =~ s/^(.*)\/`.*$/$1/;
+			$beg = ucfirst $beg;
+			print $out "$beg/`$end";
 		}
 		else {
-			print $out "`";
+			print $out "`$end";
 		}
-		print $out $line;
 		print $out "`_\n";
 	}
 	$line =~ s/`//g;
