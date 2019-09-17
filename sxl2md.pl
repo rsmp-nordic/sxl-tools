@@ -298,7 +298,7 @@ sub print_alarms {
 			$return_text .= "|Name|Type|Value|Comment|\n";
 			$return_text .= "|----|----|-----|-------|\n";
 
-			$return_text = rprint($sheet, $y, 8, 4, 2, $return_text);
+			$return_text = rprint($sheet, $y, 8, 4, 2, 3, $return_text);
 		}
 		$y++;
 	}
@@ -340,7 +340,7 @@ sub print_status {
 			$return_text .= "|Name|Type|Value|Comment|\n";
 			$return_text .= "|----|----|-----|-------|\n";
 
-			$return_text = rprint($sheet, $y, 4, 4, 2, $return_text);
+			$return_text = rprint($sheet, $y, 4, 4, 2, 3, $return_text);
 		}
 		$y++;
 	}
@@ -394,7 +394,7 @@ sub print_commands {
 				$txt .= "|Name|Command|Type|Value|Comment|\n";
 				$txt .= "|----|-------|----|-----|-------|\n";
 
-				$return_text .= rprint($sheet, $y, 4, 5, 3, $txt);
+				$return_text .= rprint($sheet, $y, 4, 5, 3, 4, $txt);
 
 			}
 			$y++;
@@ -572,6 +572,7 @@ sub rprint {
 	my $start_x = shift; # 8 for alarms, 4 for status and commands
 	my $return_value_col_length = shift; # 4 for alarm and status, 5 for commands
 	my $value_list_col = shift; # this column of return values/arguments should be split into bullet list, 2 for alarm and status, 3 for commands
+	my $comment_list_col = shift; # this column of return values/arguments should be split into bullet list
 	my $return_text = shift;
 
 	my $i;
@@ -599,9 +600,10 @@ sub rprint {
 			# 'Value' should be split into bullet list.
 			# Markdown don't support bullet lists in a table
 			# so use inline HTML instead
-			$val[$i] =~ s/\n-/\n/g;	# Remove '-', after line break
-			$val[$i] =~ s/^-//g;	# Remove leading '-'
 			if($i == $value_list_col) {
+				$val[$i] =~ s/\n-/\n/g;	# Remove '-', after line break
+				$val[$i] =~ s/^-//g;	# Remove leading '-'
+
 				# Find line breaks and convert to them to bullet list in HTML
 				if($val[$i] =~ /\r\n/) {
 					$val[$i] =~ s/\r//g;
@@ -613,6 +615,53 @@ sub rprint {
 					}
 					$val[$i] = $val[$i]."</ul>";
 				}
+			}
+			# 'Comment' should be split into bullet list, if possible
+			elsif($i == $comment_list_col) {
+
+				# Check if the comment field contains '-'
+				if($val[$i] =~ m/\n-/) {
+
+					# Find the first part that should not be converted to a bullet list
+					my @prelist = split("\n", $val[$i]);
+					my $pretext = "";
+					my $posttext = "";
+					foreach my $pre (@prelist) {
+						if($pre =~ m/^-/) {
+							$posttext = $posttext."\n".$pre;
+						}
+						else {
+							$pretext = $pretext."\n".$pre
+						}
+					}
+					$pretext =~ s/^\n//;
+					$posttext =~ s/^\n//;
+
+					$val[$i] = $posttext;
+					print STDERR "Debug: pretext $pretext\n";
+					print STDERR "Debug: posttext $posttext\n";
+
+					$val[$i] =~ s/\n- /\n/g; # Remove '- ', after line break
+					$val[$i] =~ s/\n-/\n/g;	# Remove '-', after line break
+					$val[$i] =~ s/^- //g;	# Remove leading '- '
+					$val[$i] =~ s/^-//g; 	# Remove leading '-'
+
+					# Find line breaks and convert to them to bullet list in HTML
+					if($val[$i] =~ /\r\n/) {
+						$val[$i] =~ s/\r//g;
+						my @list = split("\n", $val[$i]);
+						my $v;
+						$val[$i] = "<ul>";
+						foreach $v (@list) {
+							$val[$i] = $val[$i]."<li>$v</li>";
+						}
+						$val[$i] = $val[$i]."</ul>";
+					}
+					$val[$i] = $pretext . $val[$i];
+				}
+				# Remove line breaks
+				$val[$i] =~ s/\r//g;
+				$val[$i] =~ s/\n/<br>/g;
 			}
 			else {
 				# Remove line breaks
