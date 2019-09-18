@@ -638,8 +638,6 @@ sub rprint {
 					$posttext =~ s/^\n//;
 
 					$val[$i] = $posttext;
-					print STDERR "Debug: pretext $pretext\n";
-					print STDERR "Debug: posttext $posttext\n";
 
 					$val[$i] =~ s/\n- /\n/g; # Remove '- ', after line break
 					$val[$i] =~ s/\n-/\n/g;	# Remove '-', after line break
