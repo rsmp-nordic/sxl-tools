@@ -18,9 +18,3 @@ Requires Spreadsheet::XLSX
 * Ubuntu: `sudo apt install libspreadsheet-xlsx-perl`
 * Arch Linux: `pacman -S zip` and from AUR: `perl-spreadsheet-xlsx` and
   dependencies
-
-Export sphinx
--------------
-
-* **sphinx2rst.pl** - Converts sphinx rst-format (reStrucutedText) to pure rst
-                      format and adds index
