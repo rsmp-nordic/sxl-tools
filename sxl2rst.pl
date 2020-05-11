@@ -468,7 +468,7 @@ sub print_commands {
 				# Print header
 				$txt = "\n";
 				$txt .= "$xCodeId\n";
-				$txt .= "~~~~~~\n";
+				$txt .= "~~~~~\n";
 				$txt .= "\n";
 
 				$txt .= "$description\n\n";
