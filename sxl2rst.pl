@@ -13,6 +13,7 @@ use Getopt::Long;
 
 my $omit_objects;
 my $omit_object_col;
+my $omit_xnid_col;
 my $omit_xnacid_col;
 my $csv;
 my $help;
@@ -22,6 +23,9 @@ GetOptions(
 
 	# Omits object column in alarms, status and commands
 	"omit-object-col" => \$omit_object_col,
+
+	# Omits externalAlarmCodeId (xNid) column
+	"omit-xnid-col" => \$omit_xnid_col,
 
 	# Omits externalNtsAlarmCodeId (xNACId) column
 	"omit-xnacid-col" => \$omit_xnacid_col,
@@ -33,7 +37,7 @@ GetOptions(
 );
 
 if(defined($help)) {
-	die("usage sxl2md.rst [--omit-objects] [--omit-object-col] [--omit-xnacid-col] [--csv] [FILE]");
+	die("usage sxl2md.rst [--omit-objects] [--omit-object-col] [--omit-xnid-col] [--omit-xnacid-col] [--csv] [FILE]");
 }
 
 my @files = @ARGV;
@@ -232,7 +236,7 @@ sub print_aggregated_status {
 
 	# Print all grouped objects
 	printf ".. list-table:: Grouped objects\n";
-	printf "   :widths: auto\n";
+	printf "   :widths: 18 15 13 13 12\n";
 	printf "   :header-rows: 1\n";
 	printf "\n";
 	printf "   * - ObjectType\n";
@@ -249,10 +253,11 @@ sub print_aggregated_status {
 	# Print all state bits
 	printf "\n";
 	printf ".. list-table:: State bits\n";
-	printf "   :widths: auto\n";
+	printf "   :widths: 15 30 55\n";
 	printf "   :header-rows: 1\n";
 	printf "\n";
-	printf "   * - State- Bit nr (12345678)\n";
+	printf "   * - State- Bit nr\n";
+	printf "       (12345678)\n";
 	printf "     - Description\n";
 	printf "     - Comment\n";
 	stateprint($sheet);
@@ -320,14 +325,14 @@ sub print_alarms {
 	# Print header
 	printf "\n";
 	printf ".. list-table:: Alarms\n";
-	printf "   :widths: 15 10 30 30 5 5\n";
+	printf "   :widths: auto\n";
 	printf "   :header-rows: 1\n";
 	printf "\n";
 	printf "   * - ObjectType\n";
 	printf "     - Object (optional)\n" unless(defined($omit_object_col));
        	printf "     - alarmCodeId\n";
         printf "     - Description\n";
-        printf "     - externalAlarmCodeId\n";
+        printf "     - externalAlarmCodeId\n" unless(defined($omit_xnid_col));
 	printf "     - externalNtsAlarmCodeId\n" unless(defined($omit_xnacid_col));
 	printf "     - Priority\n";
 	printf "     - Category\n";
@@ -350,7 +355,7 @@ sub print_alarms {
 			$return_text .= "\n";
 			$return_text .= $sheet->{Cells}[$y][3]->{Val}."\n\n"; # Description
 			$return_text .= ".. list-table:: Return values\n";
-			$return_text .= "   :widths: auto\n";
+			$return_text .= "   :widths: 10 8 13 25\n";
 			$return_text .= "   :header-rows: 1\n";
 			$return_text .= "\n";
 			$return_text .= "   * - Name\n";
@@ -583,11 +588,7 @@ sub stateprint {
 
 		# Remove line breaks
 		if(defined($bit[$y])) {
-			if(defined($csv)) {
-				$bit[$y] = rst_line_breaks($bit[$y], "       ", ";", "|");
-			} else {
-				$bit[$y] = rst_line_breaks($bit[$y], "       ", "\n", "|");
-			}
+			$bit[$y] =~ s/\r\n/ /g;
 		}
 	}
 	printf "   * - 1\n";
@@ -648,6 +649,11 @@ sub aprint {
 		# Skip object column, it set
 		if(($i == 1) && defined($omit_object_col)) {
 			$i++;
+		}
+
+		# Skip externalAlarmCodeId column, if set
+		if(($i == 4) && defined($omit_xnid_col)) {
+			$i++
 		}
 
 		# Skip externalNtsAlarmCodeId column, if set
