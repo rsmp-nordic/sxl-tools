@@ -37,12 +37,14 @@ GetOptions(
 );
 
 if(defined($help)) {
-	die("usage sxl2md.rst [--omit-objects] [--omit-object-col] [--omit-xnid-col] [--omit-xnacid-col] [--csv] [FILE]");
+	die("usage sxl2rst.pl [--omit-objects] [--omit-object-col] [--omit-xnid-col] [--omit-xnacid-col] [--csv] [FILE]");
 }
 
 my @files = @ARGV;
 my $fname;
 my $sheet;
+
+rst_line_break_substitution();
 
 foreach $fname (@files) {
 	read_sxl($fname) unless(defined($csv));
@@ -468,7 +470,7 @@ sub print_commands {
 				my $description = $sheet->{Cells}[$y][3]->{Val};
 
 				# Fix line breaks
-				$description = rst_line_breaks($description, "", "\n", "|");
+				$description = rst_line_breaks($description, "", "\n", "|br|");
 
 				# Print header
 				$txt = "\n";
@@ -661,9 +663,7 @@ sub aprint {
 			$i++
 		}
 
-		$val[$i] = rst_line_breaks($val[$i], "       ", "\n", "|");
-		# $val[$i] =~ s/\r//g;
-		# $val[$i] =~ s/\n/<br>/g;
+		$val[$i] = rst_line_breaks($val[$i], "       ", "\n", "|br|");
 		printf "     " unless($i==0);
 		printf "- $val[$i]\n";
 	}
@@ -706,14 +706,14 @@ sub rprint {
 				$val[$i] =~ s/\n-/\n/g;	# Remove '-', after line break
 				$val[$i] =~ s/^-//g;	# Remove leading '-'
 
-				$val[$i] = rst_line_breaks($val[$i], "       ", "\n", "-");
+				$val[$i] = rst_line_breaks($val[$i], "       ", "\n", "|br|");
 			}
 			# 'Comment' should be split into bullet list, if possible
 			elsif($i == $comment_list_col) {
 				$val[$i] =~ s/\n-/\n/g;	# Remove '-', after line break
 				$val[$i] =~ s/^-//g;	# Remove leading '-'
 
-				$val[$i] = rst_line_breaks($val[$i], "       ", "\n", "|");
+				$val[$i] = rst_line_breaks($val[$i], "       ", "\n", "|br|");
 			} else {
 				# Remove line breaks
 				$val[$i] =~ s/\r//g;
@@ -796,21 +796,40 @@ sub get_no_return_values {
 	return $noReturnValues;
 }
 
-# Insert ReStructuredText line breaks or lists, e.g.
-# | Line 1
-# | Line 2
+# Insert ReStructuredText line breaks
 sub rst_line_breaks {
 	my $txt = shift;
 	my $padding = shift; # Padding on line 2+
 	my $linebreak = shift; # Usually \n; 
-	my $start = shift; # | for line break, - for bullet list
+	my $rst_lb = shift; # |br| for line break, 
 
 	$txt =~ s/\r//g;
 
+	# Remove trailing newline
+	$txt =~ s/\n$//g;
+
 	# Only insert line breaks if it needs to
 	if($txt =~ /\n/) {
-		$txt =~ s/^/$start /;
-		$txt =~ s/\n/\n$padding$start /g;
+		$txt =~ s/\n/ $rst_lb\n$padding/g;
+		 
+		# Remove extra padding for empty lines
+		$txt =~ s/\s{2,}\|br\|/\n$padding$rst_lb/g;
+
+		# Remove extra space if line starts with space
+		$txt =~ s/$padding\s{1,}/$padding/g;
 	}
 	return $txt;
 }
+
+# Normally it is not possible to insert line breaks in Sphinx
+# It is possible to use "line bock" (|), but it also adds another
+# line break in the beginning and ending which is not pretty
+# inside a table
+sub rst_line_break_substitution {
+	print ".. |br| replace:: |br_html| |br_latex|\n\n";
+	print ".. |br_html| raw:: html\n\n";
+	print "   <br>\n\n";
+	print ".. |br_latex| raw:: latex\n\n";
+	print "   \\newline\n\n";
+}
+
