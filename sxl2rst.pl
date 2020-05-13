@@ -2,10 +2,7 @@
 # sxl2rst.pl [SXL in xlsx format]
 # Convert signal exchange list (SXL) for RSMP in xlsx or csv format to ReStructuredText
 # Requires Spreadsheet::XLSX (sudo apt-get install libspreadsheet-xlsx-perl)
-
-# TODO: Test for spaces before or after
-# TODO: Test for incorrect cId matches between single and grouped objects
-# TODO: Add dates
+# and python3-tabulate for generating tables
 
 use strict;
 use Spreadsheet::XLSX;
@@ -44,12 +41,12 @@ my @files = @ARGV;
 my $fname;
 my $sheet;
 
-rst_line_break_substitution();
-
 foreach $fname (@files) {
 	read_sxl($fname) unless(defined($csv));
 	read_csv($fname) if(defined($csv));
 }
+rst_line_break_substitution();
+
 
 # Read SXL in Excel format
 sub read_sxl {
@@ -175,78 +172,117 @@ sub print_version {
 	cprint($sheet, 20,1, "SXL revision");
 	cprint($sheet, 20,2, "Revision date");
 	cprint($sheet, 25,1, "RSMP version");
-	printf("\nSections\n");
-	printf("--------\n");
-	printf("+ `Object types`_\n");
-	printf("+ `Objects`_\n") unless(defined($omit_objects));
-	printf("+ `Aggregated status`_\n");
-	printf("+ `Alarms`_\n");
-	printf("+ `Status`_\n");
-	printf("+ `Commands`_\n");
 }
 
 sub print_object_types {
 	my $sheet = shift;
+	my $y;
+	my $yf;
 	# Object types sheet
 	printf "\n";
 	printf("Object Types\n");
-	printf("============\n");
+	printf("------------\n");
 
 	# Print all grouped objects
 	printf "\n";
 	printf "Grouped objects\n";
-	printf "---------------\n";
+	printf "^^^^^^^^^^^^^^^\n";
 	printf "\n";
 
-	printf ".. list-table:: Grouped objects\n";
-	printf "   :widths: 30 70\n";
-	printf "   :header-rows: 1\n";
+	printf ".. figtable::\n";
+   	printf "   :nofig:\n";
+        printf "   :label: Grouped objects\n";
+        printf "   :caption: Grouped objects\n";
+        printf "   :loc: H\n";
+        printf "   :spec: >{\\raggedright\\arraybackslash}";
+	printf "p{0.30\\linewidth} ";
+        printf "p{0.50\\linewidth}\n";
 	printf "\n";
-	printf "   * - ObjectType\n";
-	printf "     - Description\n";
-	my $y = 6;
+	printf "   ==========     ===========\n";
+	printf "   ObjectType     Description\n";
+	printf "   ==========     ===========\n";
+	$y = 6;
 	while (test($sheet, $y, 0)) {
-		otprint($sheet, $y);
+		$yf = sprintf("%03d", $y);
+		printf "   |go-o$yf|      |go-d$yf|\n";
+		$y++;
+	}
+	printf "   ==========     ===========\n\n";
+	printf "..\n\n";
+	$y = 6;
+	while (test($sheet, $y, 0)) {
+		otprint($sheet, "go", $y);
 		$y++;
 	}
 
 	# Print all single objects
 	printf "\n";
 	printf "Single objects\n";
-	printf "--------------\n";
+	printf "^^^^^^^^^^^^^^\n";
 	printf "\n";
 
-	printf ".. list-table:: Single objects\n";
-	printf "   :widths: 30 70\n";
+	printf ".. figtable::\n";
+   	printf "   :nofig:\n";
+        printf "   :label: Single objects\n";
+        printf "   :caption: Single objects\n";
+        printf "   :loc: H\n";
+        printf "   :spec: >{\\raggedright\\arraybackslash}";
+	printf "p{0.30\\linewidth} ";
+        printf "p{0.50\\linewidth}\n";
 	printf "\n";
-	printf "   * - ObjectType\n";
-	printf "     - Description\n";
+	printf "   ==========     ===========\n";
+	printf "   ObjectType     Description\n";
+	printf "   ==========     ===========\n";
 	$y = 18;
 	while (test($sheet, $y, 0)) {
-		otprint($sheet, $y);
+		$yf = sprintf("%03d", $y);
+		printf "   |so-o$yf|      |so-d$yf|\n";
+		$y++;
+	}
+	printf "   ==========     ===========\n\n";
+	printf "..\n\n";
+	$y = 18;
+	while (test($sheet, $y, 0)) {
+		otprint($sheet, "so", $y);
 		$y++;
 	}
 }
 
 sub print_aggregated_status {
 	my $sheet = shift;
+	my $y;
+	my $yf;
 	# Aggregated status sheet
 	printf "\n";
 	printf("Aggregated status\n");
-	printf("=================\n");
+	printf("-----------------\n");
 	printf "\n";
 
-	# Print all grouped objects
-	printf ".. list-table:: Grouped objects\n";
-	printf "   :widths: 18 15 13 13 12\n";
-	printf "   :header-rows: 1\n";
+	# Print aggregated status
+	printf ".. figtable::\n";
+   	printf "   :nofig:\n";
+        printf "   :label: Aggregated status\n";
+        printf "   :caption: Aggregated status\n";
+        printf "   :loc: H\n";
+        printf "   :spec: >{\\raggedright\\arraybackslash}";
+	printf "p{0.15\\linewidth} ";
+        printf "p{0.20\\linewidth}  ";
+        printf "p{0.18\\linewidth}  ";
+        printf "p{0.18\\linewidth}  ";
+        printf "p{0.15\\linewidth}\n";
 	printf "\n";
-	printf "   * - ObjectType\n";
-	printf "     - Status\n";
-        printf "     - functionalPosition\n";
-	printf "     - functionalState\n";
-	printf "     - Description\n";
-	my $y = 6;
+	printf "   ==========     ===========  ==================  =============== ===========\n";
+	printf "   ObjectType     Status       functionalPosition  functionalState Description\n";
+	printf "   ==========     ===========  ==================  =============== ===========\n";
+	$y = 6;
+	while (test($sheet, $y, 0)) {
+		$yf = sprintf("%03d", $y);
+		printf "   |ag-1$yf|      |ag-2$yf|    |ag-3$yf|           |ag-4$yf|       |ag-5$yf|\n";
+		$y++;
+	}
+	printf "   ==========     ===========  ==================  =============== ===========\n\n";
+	printf "..\n\n";
+	$y = 6;
 	while (test($sheet, $y, 0)) {
 		aggprint($sheet, $y);
 		$y++;
@@ -254,15 +290,23 @@ sub print_aggregated_status {
 
 	# Print all state bits
 	printf "\n";
-	printf ".. list-table:: State bits\n";
-	printf "   :widths: 15 30 55\n";
-	printf "   :header-rows: 1\n";
+	printf ".. figtable::\n";
+   	printf "   :nofig:\n";
+        printf "   :label: State bits\n";
+        printf "   :caption: State bits\n";
+        printf "   :loc: H\n";
+        printf "   :spec: >{\\raggedright\\arraybackslash}";
+	printf "p{0.15\\linewidth} ";
+        printf "p{0.30\\linewidth}  ";
+        printf "p{0.45\\linewidth}\n";
 	printf "\n";
-	printf "   * - State- Bit nr\n";
-	printf "       (12345678)\n";
-	printf "     - Description\n";
-	printf "     - Comment\n";
+	printf "   =============  ===========================  ========\n";
+	printf "   |statebit|     Description                  Comment\n";
+	printf "   =============  ===========================  ========\n";
 	stateprint($sheet);
+	printf "   =============  ===========================  ========\n";
+	printf "..\n\n";
+	print ".. |statebit| replace:: State- Bit nr (1234567)\n\n";
 
 }
 
@@ -322,139 +366,150 @@ sub print_alarms {
 	my $sheet = shift;
 	printf "\n";
 	printf("Alarms\n");
-	printf("======\n");
-	
+	#printf("======\n");
+	printf("------\n");
+
 	# Print header
-	printf "\n";
-	printf ".. list-table:: Alarms\n";
-	printf "   :widths: auto\n";
-	printf "   :header-rows: 1\n";
-	printf "\n";
-	printf "   * - ObjectType\n";
-	printf "     - Object (optional)\n" unless(defined($omit_object_col));
-       	printf "     - alarmCodeId\n";
-        printf "     - Description\n";
-        printf "     - externalAlarmCodeId\n" unless(defined($omit_xnid_col));
-	printf "     - externalNtsAlarmCodeId\n" unless(defined($omit_xnacid_col));
-	printf "     - Priority\n";
-	printf "     - Category\n";
+	my @widths = ();
+	my @table_headers = ();
+	push(@table_headers, "ObjectType"); push @widths, "0.15";
+	unless(defined($omit_object_col)) {
+		push(@table_headers, "Object (optional)");
+		push(@widths, "0.10");
+	}
+	push(@table_headers, "alarmCodeId"); push @widths, "0.10";
+	unless(defined($omit_xnid_col)) {
+		push(@table_headers, "externalAlarmCodeId");
+		push(@widths, "0.10");
+	}
+	unless(defined($omit_xnacid_col)) {
+	        push(@table_headers, "externalNtsAlarmCodeId");
+		push(@widths, "0.10");
+	}
+	push(@table_headers, ("Description", "Priority", "Category"));
+	push(@widths, ("0.45", "0.07", "0.07"));
+
+	my ($fh, $file) = start_figtable(\@widths, \@table_headers, "Alarms");
 
 	# Print alarms
 	my $y = 6;
-	my $return_text = "";
 	while (test($sheet, $y, 7)) {
 		my $has_return_values = get_no_return_values($sheet, $y, 8, 4);
-		aprint($sheet, $y, 8, $has_return_values);
-
-		# Collect return values
-		if($has_return_values > 0) {
-			my $xCodeId = $sheet->{Cells}[$y][2]->{Val};
-
-			# Print header
-			$return_text .= "\n";
-			$return_text .= "$xCodeId\n";
-			$return_text .= "~~~~~\n";
-			$return_text .= "\n";
-			$return_text .= $sheet->{Cells}[$y][3]->{Val}."\n\n"; # Description
-			$return_text .= ".. list-table:: Return values\n";
-			$return_text .= "   :widths: 10 8 13 25\n";
-			$return_text .= "   :header-rows: 1\n";
-			$return_text .= "\n";
-			$return_text .= "   * - Name\n";
-			$return_text .= "     - Type\n";
-			$return_text .= "     - Value\n";
-			$return_text .= "     - Comment\n";
-
-			$return_text = rprint($sheet, $y, 8, 4, 2, 3, $return_text);
-		}
+		my @table_data = aprint($sheet, $y, 8, $has_return_values);
+		add_figtable($fh, \@table_data);
 		$y++;
 	}
+	end_figtable($fh, $file);
 
-	# Print return values
-	print "\n";
-	print "Return values\n";
-	print "-------------\n";
-	print $return_text;
+	$y = 6;
+	while (test($sheet, $y, 7)) {
+		if(get_no_return_values($sheet, $y, 8, 4) > 0) {
+			my $xCodeId = $sheet->{Cells}[$y][2]->{Val};
+			
+			# Print header
+			print "\n";
+			print "$xCodeId\n";
+			print "^^^^^\n\n";
+
+			print $sheet->{Cells}[$y][3]->{Val}."\n\n"; # Description
+
+			@widths = ("0.15", "0.08", "0.13", "0.35");
+			@table_headers = ("Name", "Type", "Value", "Comment");
+			($fh, $file) = start_figtable(\@widths, \@table_headers, $xCodeId);
+			rprint($sheet, $fh, $y, 8, 4, 2, 3);
+			end_figtable($fh, $file);
+		}
+		$y++
+	}
 }
 
 sub print_status {
 	my $sheet = shift;
 	printf("\n");
 	printf("Status\n");
-	printf("======\n");
+	#printf("======\n");
+	printf("------\n");
 	printf("\n");
+
+	# The status table can be so long it won't fit on a single page
+	print ".. raw:: latex\n\n";
+	print "    \\newpage\n\n";
 
 	# Print header
-	printf ".. list-table:: Status\n";
-	printf "   :widths: auto\n";
-	printf "   :header-rows: 1\n";
-	printf("\n");
+	my @widths = ();
+	my @table_headers = ();
 
-	printf "   * - ObjectType\n";
-	printf "     - Object (optional)\n" unless(defined($omit_object_col));
-	printf "     - statusCodeId\n";
-        printf "     - Description\n";
+	push(@table_headers, "ObjectType"); push @widths, "0.24";
+	unless(defined($omit_object_col)) {
+		push(@table_headers, "Object (optional)");
+		push(@widths, "0.10");
+	}
+	push(@table_headers, "statusCodeId"); push @widths, "0.10";
+	push(@table_headers, "Description");
+	push(@widths, "0.55");
+
+
+	my ($fh, $file) = start_figtable(\@widths, \@table_headers, "Status");
 	
 	# Print status
 	my $y = 6;
-	my $return_text = "";
 	while (test($sheet, $y, 7)) {
 		my $has_return_values = get_no_return_values($sheet, $y, 4, 4);
-		aprint($sheet, $y, 4, $has_return_values);
+		my @table_data = aprint($sheet, $y, 4, $has_return_values);
+		add_figtable($fh, \@table_data);
+		$y++;
+	}
+	end_figtable($fh, $file);
 
-		# Collect return values
-		if($has_return_values > 0) {
+	# Print return values
+
+	$y = 6;
+	while (test($sheet, $y, 7)) {
+		if(get_no_return_values($sheet, $y, 4, 4) > 0 ) {
 			my $xCodeId = $sheet->{Cells}[$y][2]->{Val};
 
 			# Print header
-			$return_text .= "\n";
-			$return_text .= "$xCodeId\n";
-			$return_text .= "~~~~~\n";
-			$return_text .= "\n";
-			$return_text .= $sheet->{Cells}[$y][3]->{Val}."\n\n"; # Description
-			$return_text .= ".. list-table:: $sheet->{Cells}[$y][3]->{Val}\n";
-			$return_text .= "   :widths: auto\n";
-			$return_text .= "   :header-rows: 1\n";
-			$return_text .= "\n";
-			$return_text .= "   * - Name\n";
-			$return_text .= "     - Type\n";
-			$return_text .= "     - Value\n";
-			$return_text .= "     - Comment\n";
+			print "\n";
+			print "$xCodeId\n";
+			print "^^^^^^^^\n";
 
-			$return_text = rprint($sheet, $y, 4, 4, 2, 3, $return_text);
+			print "\n";
+			print $sheet->{Cells}[$y][3]->{Val}."\n\n"; # Description
+
+			@widths = ("0.15", "0.08", "0.13", "0.50");
+			@table_headers = ("Name", "Type", "Value", "Comment");
+			($fh, $file) = start_figtable(\@widths, \@table_headers, $xCodeId);
+			rprint($sheet, $fh, $y, 4, 4, 2, 3);
+			end_figtable($fh, $file);
 		}
 		$y++;
 	}
-
-	# Print return values
-	print "\n";
-	print "Return values\n";
-	print "-------------\n";
-	print $return_text;
 }
 
 sub print_commands {
 	my $sheet = shift;
 	printf "\n";
 	printf "Commands\n";
-	printf "========\n";
+	#printf "========\n";
+	printf "--------\n";
 
 	my $sec;
 	my $y;
 	my @sections = command_section($sheet);
 
 	# Print header
-	printf ".. list-table:: Commands\n";
-	printf "   :widths: auto\n";
-	printf "   :header-rows: 1\n";
-	printf "\n";
-	printf "   * - ObjectType\n";
-	printf "     - Object (optional)\n" unless(defined($omit_object_col));
-	printf "     - commandCodeId\n";
-        printf "     - Description\n";
+	my @widths = ();
+	my @table_headers = ();
+	push(@table_headers, "ObjectType"); push @widths, "0.24";
+	unless(defined($omit_object_col)) {
+		push(@table_headers, "Object (optional)");
+		push(@widths, "0.10");
+	}
+	push(@table_headers, "commandCodeId"); push @widths, "0.15";
+	push(@table_headers, "Description"); push(@widths, "0.40");
 
-	my $txt = "";
-	my $return_text = "";
+	my ($fh, $file) = start_figtable(\@widths, \@table_headers, "Commands");
+
 	foreach $sec (@sections) {
 		# Need to check each command section
 		$y = $sec;
@@ -462,47 +517,47 @@ sub print_commands {
 		# Print command
 		while (test($sheet, $y, 0)) {
 			my $has_return_values = get_no_return_values($sheet, $y, 4, 5);
-			aprint($sheet, $y, 4, $has_return_values);
+			my @table_data = aprint($sheet, $y, 4, $has_return_values);
+			add_figtable($fh, \@table_data);
+			$y++;
+		}
+	}
+	end_figtable($fh, $file);
 
-			# Collect arguments
-			if($has_return_values > 0) {
+	# Print arguments
+	foreach $sec (@sections) {
+		# Need to check each command section
+		$y = $sec;
+		# Print command
+		while (test($sheet, $y, 0)) {
+			if(get_no_return_values($sheet, $y, 4, 5) > 0) {
 				my $xCodeId = $sheet->{Cells}[$y][2]->{Val};
 				my $description = $sheet->{Cells}[$y][3]->{Val};
 
 				# Fix line breaks
-				$description = rst_line_breaks($description, "", "\n", "|br|");
+				$description = rst_line_breaks($description, "\n");
 
 				# Print header
-				$txt = "\n";
-				$txt .= "$xCodeId\n";
-				$txt .= "~~~~~\n";
-				$txt .= "\n";
+				print "\n";
+				print "$xCodeId\n";
+				print "^^^^^\n";
+				print "\n";
 
-				$txt .= "$description\n\n";
-				$txt .= ".. list-table:: Arguments\n";
-				$txt .= "   :widths: auto\n";
-				$txt .= "   :header-rows: 1\n";
-				$txt .= "\n";
+				print "$description\n\n";
 
-				$txt .= "   * - Name\n";
-				$txt .= "     - Command\n";
-				$txt .= "     - Type\n";
-				$txt .= "     - Value\n";
-				$txt .= "     - Comment\n";
+				@widths = ("0.14", "0.20", "0.07", "0.15", "0.30");
+				@table_headers = ("Name", "Command", "Type", "Value", "Comment");
+				($fh, $file) = start_figtable(\@widths, \@table_headers, "Arguments");
+				rprint($sheet, $fh, $y, 4, 5, 3, 4);
+				end_figtable($fh, $file);
 
-				$return_text .= rprint($sheet, $y, 4, 5, 3, 4, $txt);
+				#$return_text .= rprint($sheet, $y, 4, 5, 3, 4, $txt);
 
 			}
 			$y++;
 		}
 	}
 
-	# Print arguments
-	print "\n";
-	print "Arguments\n";
-	print "---------\n";
-	print $return_text;
-	print "\n";
 }
 
 
@@ -523,14 +578,16 @@ sub cprint {
 # Print object type
 sub otprint {
 	my $sheet = shift;
+	my $object_type = shift; #go = grouped objects, so = single objects
 	my $y = shift;
+	my $yf = sprintf("%03d", $y);
 
 	my $objecttype = $sheet->{Cells}[$y][0]->{Val};
 	my $description = $sheet->{Cells}[$y][5]->{Val};
+	$description = "--" unless(defined($description));
 
-	printf "   * - $objecttype\n";
-	printf "     - "; printf $description if(defined($description));
-	printf "\n";
+	printf ".. |$object_type-o$yf| replace:: $objecttype\n\n";
+	printf ".. |$object_type-d$yf| replace:: $description\n\n";
 }
 
 
@@ -565,19 +622,23 @@ sub oprint {
 sub aggprint {
 	my $sheet = shift;
 	my $y = shift;
+	my $yf = sprintf("%03d", $y);
 
 	my $objecttype = $sheet->{Cells}[$y][0]->{Val};
 	my $state = $sheet->{Cells}[$y][1]->{Val};
 	my $functionalPosition = $sheet->{Cells}[$y][2]->{Val};
 	my $functionalState = $sheet->{Cells}[$y][3]->{Val};
 	my $description = $sheet->{Cells}[$y][4]->{Val};
+	$state = "--" unless(defined($state));
+	$functionalPosition = "--" unless(defined($functionalPosition));
+	$functionalState = "--" unless(defined($functionalState));
+	$description = "--" unless(defined($description));
 
-	printf "   * - $objecttype";
-	printf "\n     - "; printf "$state" if(defined($state));
-	printf "\n     - "; printf "$functionalPosition" if(defined($functionalPosition));
-	printf "\n     - "; printf "$functionalState" if(defined($functionalState));
-	printf "\n     - "; printf "$description" if(defined($description));
-	printf "\n";
+	print ".. |ag-1$yf| replace:: $objecttype\n\n";
+	print ".. |ag-2$yf| replace:: $state\n\n";
+	print ".. |ag-3$yf| replace:: $functionalPosition\n\n";
+	print ".. |ag-4$yf| replace:: $functionalState\n\n";
+	print ".. |ag-5$yf| replace:: $description\n\n";
 }
 
 # Print state bits (aggregated status)
@@ -587,36 +648,19 @@ sub stateprint {
 	my @bit;
 	for($y = 0; $y < 8; $y++) {
 		$bit[$y] = $sheet->{Cells}[$y+16][2]->{Val};
+		$bit[$y] = "--" unless(defined($bit[$y]));
 
 		# Remove line breaks
-		if(defined($bit[$y])) {
-			$bit[$y] =~ s/\r\n/ /g;
-		}
+		$bit[$y] =~ s/\r\n/ /g;
 	}
-	printf "   * - 1\n";
-	printf "     - Local mode\n";
-	printf "     - "; print $bit[0] if(defined($bit[0])); printf "\n";
-	printf "   * - 2\n";
-	printf "     - No communications\n";
-     	printf "     - "; print $bit[1] if(defined($bit[1])); printf "\n";
-	printf "   * - 3\n";
-	printf "     - High priority fault\n";
-	printf "     - "; print $bit[2] if(defined($bit[2])); printf "\n";
-	printf "   * - 4\n";
-	printf "     - Medium priority fault\n";
-        printf "     - "; print $bit[3] if(defined($bit[3])); print "\n";
-	printf "   * - 5\n";
-	printf "     - Low priority fault\n";
-	printf "     - ";  print $bit[4] if(defined($bit[4])); print "\n";
-	printf "   * - 6\n";
-	printf "     - Connected / Normal - In Use\n";
-	printf "     - "; print $bit[5] if(defined($bit[5])); print "\n";
-	printf "   * - 7\n";
-	printf "     - Connected / Normal - Idle\n";
-	printf "     - "; print $bit[6] if(defined($bit[6])); print "\n";
-	printf "   * - 8\n";
-	printf "     - Not Connected\n";
-	printf "     - "; print $bit[7] if(defined($bit[7])); print "\n";
+	printf "   1              Local mode                   $bit[0]\n";
+	printf "   2              No communications            $bit[1]\n";
+	printf "   3              High priority fault          $bit[2]\n";
+	printf "   4              Medium priority fault        $bit[3]\n";
+	printf "   5              Low priority fault           $bit[4]\n";
+	printf "   6              Connected / Normal - In Use  $bit[5]\n";
+	printf "   7              Connected / Normal - Idle    $bit[6]\n";
+	printf "   8              Not Connected                $bit[7]\n";
 }
 
 # Print alarm/status/commands
@@ -633,10 +677,7 @@ sub aprint {
 	my @val;
 	for($i = 0; $i < $col_length; $i++) {
 		$val[$i] = $sheet->{Cells}[$y][$x++]->{Val};
-
-		unless(defined($val[$i])) {
-			$val[$i] = "";
-		}
+		$val[$i] = "" unless(defined($val[$i]));
 	}
 	
 	# Make column into a link if return values exist
@@ -645,10 +686,10 @@ sub aprint {
 	}
 
 	# Print row
-	print "   * ";
+	my @row;
 	for($i = 0; $i < $col_length; $i++) {
 
-		# Skip object column, it set
+		# Skip object column, if set
 		if(($i == 1) && defined($omit_object_col)) {
 			$i++;
 		}
@@ -663,26 +704,27 @@ sub aprint {
 			$i++
 		}
 
-		$val[$i] = rst_line_breaks($val[$i], "       ", "\n", "|br|");
-		printf "     " unless($i==0);
-		printf "- $val[$i]\n";
+		$val[$i] = rst_line_breaks($val[$i], "\n");
+		push @row, $val[$i];
 	}
+	return @row;
 }
 
 # Print arguments/return values
 sub rprint {
 	my $sheet = shift;
+	my $fh = shift;
 	my $y = shift;  # Start row
 	my $start_x = shift; # 8 for alarms, 4 for status and commands
 	my $return_value_col_length = shift; # 4 for alarm and status, 5 for commands
 	my $value_list_col = shift; # this column of return values/arguments should be split into bullet list, 2 for alarm and status, 3 for commands
 	my $comment_list_col = shift; # this column of return values/arguments should be split into bullet list
-	my $return_text = shift;
 
 	my $i;
 	my @val;
 	my $x = $start_x;
 	my $col_length;
+	my @data;
 
 	# return values
 	while(test($sheet, $y, $x)) {
@@ -690,39 +732,20 @@ sub rprint {
 		$col_length = $return_value_col_length;
 		for($i = 0; $i < $col_length; $i++) {
 			$val[$i] = $sheet->{Cells}[$y][$x++]->{Val};
-			unless(defined($val[$i])) {
-				$val[$i] = "";
-			}
+			$val[$i] = "" unless(defined($val[$i]));
 		}
 
 		# Check for semicolon in the "Comment" field, which is the last one
 		semi_check($sheet, $x, $y);
 
 		# Print row
-		$return_text .= "   *";
+		@data = ();
 		for($i = 0; $i < $col_length; $i++) {
-			# 'Value' should be split into bullet list.
-			if($i == $value_list_col) {
-				$val[$i] =~ s/\n-/\n/g;	# Remove '-', after line break
-				$val[$i] =~ s/^-//g;	# Remove leading '-'
-
-				$val[$i] = rst_line_breaks($val[$i], "       ", "\n", "|br|");
-			}
-			# 'Comment' should be split into bullet list, if possible
-			elsif($i == $comment_list_col) {
-				$val[$i] =~ s/\n-/\n/g;	# Remove '-', after line break
-				$val[$i] =~ s/^-//g;	# Remove leading '-'
-
-				$val[$i] = rst_line_breaks($val[$i], "       ", "\n", "|br|");
-			} else {
-				# Remove line breaks
-				$val[$i] =~ s/\r//g;
-			}
-			$return_text .= "    " unless($i == 0);
-			$return_text .= " - $val[$i]\n";
+			$val[$i] = rst_line_breaks($val[$i], "\n");
+			push(@data, $val[$i]);
 		}
+		add_figtable($fh, \@data);
 	}
-	return $return_text;
 }
 
 # Find command section
@@ -799,25 +822,12 @@ sub get_no_return_values {
 # Insert ReStructuredText line breaks
 sub rst_line_breaks {
 	my $txt = shift;
-	my $padding = shift; # Padding on line 2+
 	my $linebreak = shift; # Usually \n; 
-	my $rst_lb = shift; # |br| for line break, 
 
 	$txt =~ s/\r//g;
+	$txt =~ s/$linebreak/ |br| /g;
+	$txt =~ s/\|br\| $//g; # Trailing line break
 
-	# Remove trailing newline
-	$txt =~ s/\n$//g;
-
-	# Only insert line breaks if it needs to
-	if($txt =~ /\n/) {
-		$txt =~ s/\n/ $rst_lb\n$padding/g;
-		 
-		# Remove extra padding for empty lines
-		$txt =~ s/\s{2,}\|br\|/\n$padding$rst_lb/g;
-
-		# Remove extra space if line starts with space
-		$txt =~ s/$padding\s{1,}/$padding/g;
-	}
 	return $txt;
 }
 
@@ -826,10 +836,62 @@ sub rst_line_breaks {
 # line break in the beginning and ending which is not pretty
 # inside a table
 sub rst_line_break_substitution {
+	print "\n";
 	print ".. |br| replace:: |br_html| |br_latex|\n\n";
 	print ".. |br_html| raw:: html\n\n";
 	print "   <br>\n\n";
 	print ".. |br_latex| raw:: latex\n\n";
 	print "   \\newline\n\n";
+}
+
+
+sub start_figtable {
+	my $widths = shift;
+	my $headers = shift;
+	my $label = shift;
+
+	printf "\n";
+	printf ".. figtable::\n";
+   	printf "   :nofig:\n";
+        printf "   :label: $label\n";
+        printf "   :caption: $label\n";
+        printf "   :loc: H\n";
+        printf "   :spec: >{\\raggedright\\arraybackslash}";
+	foreach (@$widths) {
+		printf "p{$_\\linewidth} ";
+	}
+	printf "\n\n";
+
+	use File::Temp qw(tempdir);
+	my $dir = tempdir( CLEANUP => 1 );
+	my $table_file = "$dir/table.txt";
+	open my $fh, '>', $table_file or die;
+	print $fh join(';', @$headers);
+	print $fh "\n";
+
+	return $fh, $table_file;
+}
+
+sub add_figtable {
+	my $fh = shift;
+	my $data = shift;
+
+	print $fh join(';', @$data);
+	print $fh "\n";
+}
+
+sub end_figtable {
+	my $fh = shift;
+	my $file = shift;
+	
+	# Use tabulate to generate table
+	close $fh;
+	my @output = qx{tabulate -1 -s ';' -f rst < $file};
+	foreach (@output) {
+		$_ =~ s/^/   /g;  # Adjust border
+		print $_;
+	}
+
+	printf "..\n";
 }
 
