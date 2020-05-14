@@ -547,7 +547,7 @@ sub print_commands {
 
 				@widths = ("0.14", "0.20", "0.07", "0.15", "0.30");
 				@table_headers = ("Name", "Command", "Type", "Value", "Comment");
-				($fh, $file) = start_figtable(\@widths, \@table_headers, "Arguments");
+				($fh, $file) = start_figtable(\@widths, \@table_headers, $xCodeId);
 				rprint($sheet, $fh, $y, 4, 5, 3, 4);
 				end_figtable($fh, $file);
 
