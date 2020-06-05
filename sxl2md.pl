@@ -26,7 +26,7 @@ GetOptions(
 	# Omits externalNtsAlarmCodeId (xNACId) column
 	"omit-xnacid-col" => \$omit_xnacid_col,
 
-	# Read SLX as CSV-files (zipped) instead of Excel-file
+	# Read SXL as CSV-files (zipped) instead of Excel-file
 	"csv" => \$csv,
 
 	"h|help" => \$help,
