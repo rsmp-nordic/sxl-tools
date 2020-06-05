@@ -29,7 +29,7 @@ GetOptions(
 	# Read SLX as CSV-files (zipped) instead of Excel-file
 	"csv" => \$csv,
 
-	"h" => \$help,
+	"h|help" => \$help,
 );
 
 if(defined($help)) {
