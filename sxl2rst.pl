@@ -5,9 +5,6 @@
 # and python3-tabulate for generating tables
 
 use strict;
-use FindBin;
-use lib $FindBin::Bin;
-use SXL::Excel;
 use Spreadsheet::XLSX;
 use Getopt::Long;
 
@@ -54,23 +51,22 @@ rst_line_break_substitution();
 # Read SXL in Excel format
 sub read_sxl {
 	my $fname = shift;
-	my $sxl_excel = SXL::Excel->new($fname);
-	my $workbook = $sxl_excel->load();
+	my $workbook = Spreadsheet::XLSX->new($fname);
 	foreach $sheet (@{$workbook->{Worksheet}}) {
 		if($sheet->{Name} eq "Version") {
 			print_version($sheet);
 		} elsif($sheet->{Name} eq "Object types") {
-			print_object_types($sheet, $sxl_excel);
+			print_object_types($sheet);
 		} elsif($sheet->{Name} eq "Aggregated status") {
-			print_aggregated_status($sheet, $sxl_excel);
+			print_aggregated_status($sheet);
 		} elsif($sheet->{Name} eq "Alarms") {
-			print_alarms($sheet, $sxl_excel);
+			print_alarms($sheet);
 		} elsif($sheet->{Name} eq "Status") {
-			print_status($sheet, $sxl_excel);
+			print_status($sheet);
 		} elsif($sheet->{Name} eq "Commands") {
-			print_commands($sheet, $sxl_excel);
+			print_commands($sheet);
 		} else { # Objects
-			print_objects($sheet, $sxl_excel) unless(defined($omit_objects));
+			print_objects($sheet) unless(defined($omit_objects));
 		}
 	}
 }
@@ -86,8 +82,6 @@ sub read_csv {
 	my $sheet_s;
 	my $sheet_c;
 	my $sheet_o;
-
-	my $sxl_excel = SXL::Excel();
 
 	system("unzip -q $fname");
 	my @cfile = `ls *.csv`;
@@ -153,13 +147,13 @@ sub read_csv {
 		}
 		$sheet = undef;
 	}
-	print_version($sheet_v);			# Version
-	print_object_types($sheet_ot, $sxl_excel);	# Object types
-	print_objects($sheet_o, $sxl_excel) unless(defined($omit_objects)); # Objects
-	print_aggregated_status($sheet_agg, $sxl_excel);# Aggregated status
-	print_alarms($sheet_a, $sxl_excel);
-	print_status($sheet_s, $sxl_excel);
-	print_commands($sheet_c, $sxl_excel);
+	print_version($sheet_v);		# Version
+	print_object_types($sheet_ot);		# Object types
+	print_objects($sheet_o) unless(defined($omit_objects)); # Objects
+	print_aggregated_status($sheet_agg);	# Aggregated status
+	print_alarms($sheet_a);
+	print_status($sheet_s);
+	print_commands($sheet_c);
 
 	system("rm *.csv");
 }
@@ -182,7 +176,6 @@ sub print_version {
 
 sub print_object_types {
 	my $sheet = shift;
-	my $sxl_excel = shift;
 	my $y;
 	my $yf;
 	# Object types sheet
@@ -209,7 +202,7 @@ sub print_object_types {
 	printf "   ObjectType     Description\n";
 	printf "   ==========     ===========\n";
 	$y = 6;
-	while ($sxl_excel->test($sheet, $y, 0)) {
+	while (test($sheet, $y, 0)) {
 		$yf = sprintf("%03d", $y);
 		printf "   |go-o$yf|      |go-d$yf|\n";
 		$y++;
@@ -217,7 +210,7 @@ sub print_object_types {
 	printf "   ==========     ===========\n\n";
 	printf "..\n\n";
 	$y = 6;
-	while ($sxl_excel->test($sheet, $y, 0)) {
+	while (test($sheet, $y, 0)) {
 		otprint($sheet, "go", $y);
 		$y++;
 	}
@@ -241,7 +234,7 @@ sub print_object_types {
 	printf "   ObjectType     Description\n";
 	printf "   ==========     ===========\n";
 	$y = 18;
-	while ($sxl_excel->test($sheet, $y, 0)) {
+	while (test($sheet, $y, 0)) {
 		$yf = sprintf("%03d", $y);
 		printf "   |so-o$yf|      |so-d$yf|\n";
 		$y++;
@@ -249,7 +242,7 @@ sub print_object_types {
 	printf "   ==========     ===========\n\n";
 	printf "..\n\n";
 	$y = 18;
-	while ($sxl_excel->test($sheet, $y, 0)) {
+	while (test($sheet, $y, 0)) {
 		otprint($sheet, "so", $y);
 		$y++;
 	}
@@ -257,7 +250,6 @@ sub print_object_types {
 
 sub print_aggregated_status {
 	my $sheet = shift;
-	my $sxl_excel = shift;
 	my $y;
 	my $yf;
 	# Aggregated status sheet
@@ -283,7 +275,7 @@ sub print_aggregated_status {
 	printf "   ObjectType     Status       functionalPosition  functionalState Description\n";
 	printf "   ==========     ===========  ==================  =============== ===========\n";
 	$y = 6;
-	while ($sxl_excel->test($sheet, $y, 0)) {
+	while (test($sheet, $y, 0)) {
 		$yf = sprintf("%03d", $y);
 		printf "   |ag-1$yf|      |ag-2$yf|    |ag-3$yf|           |ag-4$yf|       |ag-5$yf|\n";
 		$y++;
@@ -291,7 +283,7 @@ sub print_aggregated_status {
 	printf "   ==========     ===========  ==================  =============== ===========\n\n";
 	printf "..\n\n";
 	$y = 6;
-	while ($sxl_excel->test($sheet, $y, 0)) {
+	while (test($sheet, $y, 0)) {
 		aggprint($sheet, $y);
 		$y++;
 	}
@@ -320,7 +312,6 @@ sub print_aggregated_status {
 
 sub print_objects {
 	my $sheet = shift;
-	my $sxl_excel = shift;
 	# Object sheet
 	printf("<a id=\"objects\"></a>\n");
 	printf("\nSite Objects\n");
@@ -344,7 +335,7 @@ sub print_objects {
 	printf "     - externalNtsId\n";
 	printf "     - Description\n";
 	my $y = 6;
-	while ($sxl_excel->test($sheet, $y, 0)) {
+	while (test($sheet, $y, 0)) {
 		oprint($sheet, $y);
 		$y++;
 	}
@@ -365,7 +356,7 @@ sub print_objects {
 	printf "     - externalNtsId\n";
 	printf "     - Description\n";
 	$y = 24;
-	while ($sxl_excel->test($sheet, $y, 0)) {
+	while (test($sheet, $y, 0)) {
 		oprint($sheet, $y);
 		$y++;
 	}
@@ -373,9 +364,9 @@ sub print_objects {
 
 sub print_alarms {
 	my $sheet = shift;
-	my $sxl_excel = shift;
 	printf "\n";
 	printf("Alarms\n");
+	#printf("======\n");
 	printf("------\n");
 
 	# Print header
@@ -402,8 +393,8 @@ sub print_alarms {
 
 	# Print alarms
 	my $y = 6;
-	while ($sxl_excel->test($sheet, $y, 7)) {
-		my $has_return_values = $sxl_excel->get_no_return_values($sheet, $y, 8, 4);
+	while (test($sheet, $y, 7)) {
+		my $has_return_values = get_no_return_values($sheet, $y, 8, 4);
 		my @table_data = aprint($sheet, $y, 8, $has_return_values);
 		add_figtable($fh, \@table_data);
 		$y++;
@@ -411,8 +402,8 @@ sub print_alarms {
 	end_figtable($fh, $file);
 
 	$y = 6;
-	while ($sxl_excel->test($sheet, $y, 7)) {
-		if($sxl_excel->get_no_return_values($sheet, $y, 8, 4) > 0) {
+	while (test($sheet, $y, 7)) {
+		if(get_no_return_values($sheet, $y, 8, 4) > 0) {
 			my $xCodeId = $sheet->{Cells}[$y][2]->{Val};
 			
 			# Print header
@@ -425,7 +416,7 @@ sub print_alarms {
 			@widths = ("0.15", "0.08", "0.13", "0.35");
 			@table_headers = ("Name", "Type", "Value", "Comment");
 			($fh, $file) = start_figtable(\@widths, \@table_headers, $xCodeId);
-			rprint($sheet, $sxl_excel, $fh, $y, 8, 4, 2, 3);
+			rprint($sheet, $fh, $y, 8, 4, 2, 3);
 			end_figtable($fh, $file);
 		}
 		$y++
@@ -434,9 +425,9 @@ sub print_alarms {
 
 sub print_status {
 	my $sheet = shift;
-	my $sxl_excel = shift;
 	printf("\n");
 	printf("Status\n");
+	#printf("======\n");
 	printf("------\n");
 	printf("\n");
 
@@ -462,8 +453,8 @@ sub print_status {
 	
 	# Print status
 	my $y = 6;
-	while ($sxl_excel->test($sheet, $y, 7)) {
-		my $has_return_values = $sxl_excel->get_no_return_values($sheet, $y, 4, 4);
+	while (test($sheet, $y, 7)) {
+		my $has_return_values = get_no_return_values($sheet, $y, 4, 4);
 		my @table_data = aprint($sheet, $y, 4, $has_return_values);
 		add_figtable($fh, \@table_data);
 		$y++;
@@ -473,8 +464,8 @@ sub print_status {
 	# Print return values
 
 	$y = 6;
-	while ($sxl_excel->test($sheet, $y, 7)) {
-		if($sxl_excel->get_no_return_values($sheet, $y, 4, 4) > 0 ) {
+	while (test($sheet, $y, 7)) {
+		if(get_no_return_values($sheet, $y, 4, 4) > 0 ) {
 			my $xCodeId = $sheet->{Cells}[$y][2]->{Val};
 
 			# Print header
@@ -488,7 +479,7 @@ sub print_status {
 			@widths = ("0.15", "0.08", "0.13", "0.50");
 			@table_headers = ("Name", "Type", "Value", "Comment");
 			($fh, $file) = start_figtable(\@widths, \@table_headers, $xCodeId);
-			rprint($sheet, $sxl_excel, $fh, $y, 4, 4, 2, 3);
+			rprint($sheet, $fh, $y, 4, 4, 2, 3);
 			end_figtable($fh, $file);
 		}
 		$y++;
@@ -497,14 +488,14 @@ sub print_status {
 
 sub print_commands {
 	my $sheet = shift;
-	my $sxl_excel = shift;
 	printf "\n";
 	printf "Commands\n";
+	#printf "========\n";
 	printf "--------\n";
 
 	my $sec;
 	my $y;
-	my @sections = $sxl_excel->command_section($sheet);
+	my @sections = command_section($sheet);
 
 	# Print header
 	my @widths = ();
@@ -524,8 +515,8 @@ sub print_commands {
 		$y = $sec;
 
 		# Print command
-		while ($sxl_excel->test($sheet, $y, 0)) {
-			my $has_return_values = $sxl_excel->get_no_return_values($sheet, $y, 4, 5);
+		while (test($sheet, $y, 0)) {
+			my $has_return_values = get_no_return_values($sheet, $y, 4, 5);
 			my @table_data = aprint($sheet, $y, 4, $has_return_values);
 			add_figtable($fh, \@table_data);
 			$y++;
@@ -538,8 +529,8 @@ sub print_commands {
 		# Need to check each command section
 		$y = $sec;
 		# Print command
-		while ($sxl_excel->test($sheet, $y, 0)) {
-			if($sxl_excel->get_no_return_values($sheet, $y, 4, 5) > 0) {
+		while (test($sheet, $y, 0)) {
+			if(get_no_return_values($sheet, $y, 4, 5) > 0) {
 				my $xCodeId = $sheet->{Cells}[$y][2]->{Val};
 				my $description = $sheet->{Cells}[$y][3]->{Val};
 
@@ -557,7 +548,7 @@ sub print_commands {
 				@widths = ("0.14", "0.20", "0.07", "0.15", "0.30");
 				@table_headers = ("Name", "Command", "Type", "Value", "Comment");
 				($fh, $file) = start_figtable(\@widths, \@table_headers, $xCodeId);
-				rprint($sheet, $sxl_excel, $fh, $y, 4, 5, 3, 4);
+				rprint($sheet, $fh, $y, 4, 5, 3, 4);
 				end_figtable($fh, $file);
 
 				#$return_text .= rprint($sheet, $y, 4, 5, 3, 4, $txt);
@@ -722,7 +713,6 @@ sub aprint {
 # Print arguments/return values
 sub rprint {
 	my $sheet = shift;
-	my $sxl_excel = shift;
 	my $fh = shift;
 	my $y = shift;  # Start row
 	my $start_x = shift; # 8 for alarms, 4 for status and commands
@@ -737,7 +727,7 @@ sub rprint {
 	my @data;
 
 	# return values
-	while($sxl_excel->test($sheet, $y, $x)) {
+	while(test($sheet, $y, $x)) {
 		# Get values for a row
 		$col_length = $return_value_col_length;
 		for($i = 0; $i < $col_length; $i++) {
@@ -758,6 +748,35 @@ sub rprint {
 	}
 }
 
+# Find command section
+# Return a list of y-positions for the start of each section
+sub command_section {
+	my $sheet = shift;
+	my $y = 4; # Section won't start before row 4
+	my @list;
+	my $text;
+	while ($y<100) {
+		$text = "";
+		$text = $sheet->{Cells}[$y][0]->{Val} if(test($sheet, $y, 0));
+
+		# We're adding +2 because that's where the actual command starts
+		if($text =~ /Functional position/) {
+			push @list, $y+2;
+		} elsif( $text =~ /Functional state/) {
+			push @list, $y+2;
+		} elsif($text =~ /Manouver/) {
+			push @list, $y+2;
+		} elsif($text =~ /Parameter/) {
+			push @list, $y+2;
+			return @list;
+		} else {
+		}
+		$y++;
+	}
+	print "Error: did not find all command sections\n";
+	return;
+}
+
 # Semicolon check
 sub semi_check {
 	my $sheet = shift;
@@ -767,6 +786,37 @@ sub semi_check {
 	if(defined($comment)) {
 		printf STDERR "WARNING: Found semicolon in comment field: $comment\n" if ($comment =~ /;/);
 	}
+}
+
+# Test for contens if the first column
+sub test {
+	my $sheet = shift;
+	my $y = shift;
+	my $x = shift;
+
+	# If using CSV-files as source, treat empty values as undef
+	if(defined($sheet->{Cells}[$y][$x]->{Val})) {
+		if(($sheet->{Cells}[$y][$x]->{Val} eq "") || ($sheet->{Cells}[$y][$x]->{Val} eq "\r")) {
+			$sheet->{Cells}[$y][$x]->{Val} = undef;
+		}
+	}
+	return defined($sheet->{Cells}[$y][$x]->{Val});
+}
+
+# Get number of arguments/return values for given row
+sub get_no_return_values {
+	my $sheet = shift;
+	my $y = shift; # row
+	my $col_length = shift; # 8 for alarms, 4 for status and commands
+	my $return_value_col_length = shift; # 4 for alarm and status, 5 for commands
+
+	my $noReturnValues = 0;
+	my $x = $col_length; # first return value
+	while(test($sheet, $y, $x)) {
+		$noReturnValues++;
+		$x += $return_value_col_length;
+	}
+	return $noReturnValues;
 }
 
 # Insert ReStructuredText line breaks
