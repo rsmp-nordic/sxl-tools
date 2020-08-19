@@ -366,7 +366,6 @@ sub print_alarms {
 	my $sheet = shift;
 	printf "\n";
 	printf("Alarms\n");
-	#printf("======\n");
 	printf("------\n");
 
 	# Print header
@@ -427,7 +426,6 @@ sub print_status {
 	my $sheet = shift;
 	printf("\n");
 	printf("Status\n");
-	#printf("======\n");
 	printf("------\n");
 	printf("\n");
 
@@ -490,7 +488,6 @@ sub print_commands {
 	my $sheet = shift;
 	printf "\n";
 	printf "Commands\n";
-	#printf "========\n";
 	printf "--------\n";
 
 	my $sec;
@@ -550,9 +547,6 @@ sub print_commands {
 				($fh, $file) = start_figtable(\@widths, \@table_headers, $xCodeId);
 				rprint($sheet, $fh, $y, 4, 5, 3, 4);
 				end_figtable($fh, $file);
-
-				#$return_text .= rprint($sheet, $y, 4, 5, 3, 4, $txt);
-
 			}
 			$y++;
 		}
