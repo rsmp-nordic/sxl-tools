@@ -851,8 +851,11 @@ sub start_figtable {
         printf "   :caption: $label\n";
         printf "   :loc: H\n";
         printf "   :spec: >{\\raggedright\\arraybackslash}";
+	my $first = 1;
 	foreach (@$widths) {
-		printf "p{$_\\linewidth} ";
+		printf " " unless $first == 1;
+		$first = 0;
+		printf "p{$_\\linewidth}";
 	}
 	printf "\n\n";
 
