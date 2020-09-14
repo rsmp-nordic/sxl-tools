@@ -9,7 +9,6 @@ various formats.
 
 * **sxl2csv.pl** - Exports SXL from XLSX format to CSV files, zip compressed.
                    Suitable for use with the RSMP simulators
-* **sxl2md.pl**  - Exports SXL in XLSX or CSV format to Markdown
 * **sxl2rst.pl** - Exports SXL in XLSX or CSV format to ReStructuredText
 
 Excel macro:
