@@ -361,9 +361,16 @@ def print_commands():
                             name = argument_name
                             type = argument['type']
                             if "values" in argument:
-                                value = argument['values'].replace("\n", " |br| ")
+                                val_list = []
+                                for v in argument['values']:
+                                    val_list.append("-" + v)
+                                value = " |br| ".join(val_list)
                             else:
-                                value = ""
+                                # Extended value
+                                if "value" in argument:
+                                    value = argument['value']
+                                else:
+                                    value = ""
                             if "description" in argument:
                                 comment = argument['description'].rstrip("\n")
                                 comment = comment.replace("\n", " |br| ")
