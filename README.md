@@ -12,7 +12,7 @@ various formats.
 * **sxl2md.pl** - Exports SXL in XLSX or CSV format to Markdown
 
 Excel macro:
-* **rsmp_clean.xlsx** - 1.0.7 SXL, adapt according to cId/siteid and num SG/DET
+* **rsmp_clean.xlsm** - 1.0.7 SXL, adapt according to cId/siteid and num SG/DET
 
 Requires Spreadsheet::XLSX
 * Ubuntu: `sudo apt install libspreadsheet-xlsx-perl`
