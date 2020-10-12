@@ -25,15 +25,15 @@ Notes about xlsx2yaml
 ---------------------
 
 * Requires: gem install rubyXL
-* Prints extended version information using the -e flag
+* Usage: xlsx2yaml [options] [XLSX]
+* -s, --site. Prints site information. Includes also id, version and date
+* -e, --extended. Prints extended version information:
   constructor, reviewed, approved, created-date and rsmp-version
-* Prints site information using the -s flag,
-  id, version and date
 * If using the -s flag in combination with the -e flag,
   then also the ntsObjectId field is added
 * Since the "values" fields in alarms, statuses and commands cannot easily
-  be converted from the SXL in Excel format, the "value" field is added where
-  "values" cannot easily be used. Enable using the -e flag
+  be converted from the SXL in Excel format, the "range" field is added if type
+  is not boolean and there is predefined values to choose from. Enable using the -e flag
 * Typical usage:
   Output to rsmp_schema: No extra options needed
   Output to rst-format for the SXL TLC specification: Use the -e flag (for "value")

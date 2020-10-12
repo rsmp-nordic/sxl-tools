@@ -202,11 +202,14 @@ def print_alarms():
                                     val_list.append("-" + v)
                                 value = " |br| ".join(val_list)
                             else:
-                                # Extended value
-                                if "value" in argument:
-                                    value = argument['value']
+                                # Extended
+                                if "range" in argument:
+                                    value = argument['range']
                                 else:
-                                    value = ""
+                                    if(type == "boolean"):
+                                        value = "-True |br| -False"
+                                    else:
+                                        value = ""
                             if "description" in argument:
                                 comment = argument['description'].replace("\n", " |br| ")
                             else:
@@ -287,11 +290,14 @@ def print_status():
                                     val_list.append("-" + v)
                                 value = " |br| ".join(val_list)
                             else:
-                                # Extended value
-                                if "value" in argument:
-                                    value = argument['value']
+                                # Extended
+                                if "range" in argument:
+                                    value = argument['range']
                                 else:
-                                    value = ""
+                                    if(type == "boolean"):
+                                        value = "-False |br| -True"
+                                    else:
+                                        value = ""
                             if "description" in argument:
                                 comment = argument['description'].rstrip("\n")
                                 comment = comment.replace("\n", " |br| ")
@@ -366,11 +372,14 @@ def print_commands():
                                     val_list.append("-" + v)
                                 value = " |br| ".join(val_list)
                             else:
-                                # Extended value
-                                if "value" in argument:
-                                    value = argument['value']
+                                # Extended
+                                if "range" in argument:
+                                    value = argument['range']
                                 else:
-                                    value = ""
+                                    if(type == "boolean"):
+                                        value = "-False |br| -True"
+                                    else:
+                                        value = ""
                             if "description" in argument:
                                 comment = argument['description'].rstrip("\n")
                                 comment = comment.replace("\n", " |br| ")

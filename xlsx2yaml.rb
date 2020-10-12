@@ -149,17 +149,20 @@ workbook.each do |sheet|
             'description' => sheet[y][x+3].value
         }
 
-        # Output values in a different way
-        if sheet[y][x+2].value.start_with?("-")
-          values = sheet[y][x+2].value.split("-")
-          values.shift
-          values.each {|value|
-            value.delete!("\n")
-          }
-          rv[sheet[y][x].value]['values'] = values
-        else
-          if options[:extended]
-            rv[sheet[y][x].value]['value'] = sheet[y][x+2].value
+        # No need to output values if type is boolean
+        unless rv[sheet[y][x].value]['type'] == 'boolean'
+          # Output values in a different way
+          if sheet[y][x+2].value.start_with?("-")
+            values = sheet[y][x+2].value.split("-")
+            values.shift
+            values.each {|value|
+              value.delete!("\n")
+            }
+            rv[sheet[y][x].value]['values'] = values
+          else
+            if options[:extended]
+              rv[sheet[y][x].value]['range'] = sheet[y][x+2].value
+            end
           end
         end
 
@@ -242,18 +245,21 @@ workbook.each do |sheet|
             'type' => sheet[y][x+1].value,
             'description' => sheet[y][x+3].value
         }
-        #
-        # Output values in a different way
-        if sheet[y][x+2].value.start_with?("-")
-          values = sheet[y][x+2].value.split("-")
-          values.shift
-          values.each {|value|
-            value.delete!("\n")
-          }
-          a[sheet[y][x].value]['values'] = values
-        else
-          if options[:extended]
-            a[sheet[y][x].value]['value'] = sheet[y][x+2].value
+
+        # No need to output values if type is boolean
+        unless a[sheet[y][x].value]['type'] == 'boolean'
+          # Output values in a different way
+          if sheet[y][x+2].value.start_with?("-")
+            values = sheet[y][x+2].value.split("-")
+            values.shift
+            values.each {|value|
+              value.delete!("\n")
+            }
+            a[sheet[y][x].value]['values'] = values
+          else
+            if options[:extended]
+              a[sheet[y][x].value]['range'] = sheet[y][x+2].value
+            end
           end
         end
 
@@ -294,17 +300,20 @@ workbook.each do |sheet|
             'description' => sheet[y][x+4].value
           }
 
-          # Output values in a different way
-          if sheet[y][x+3].value.start_with?("-")
-            values = sheet[y][x+3].value.split("-")
-            values.shift
-            values.each {|value|
-              value.delete!("\n")
-            }
-            a[sheet[y][x].value]['values'] = values
-          else
-            if options[:extended]
-              a[sheet[y][x].value]['value'] = sheet[y][x+3].value
+          # No need to output values if type is boolean
+          unless a[sheet[y][x].value]['type'] == 'boolean'
+            # Output values in a different way
+            if sheet[y][x+3].value.start_with?("-")
+              values = sheet[y][x+3].value.split("-")
+              values.shift
+              values.each {|value|
+                value.delete!("\n")
+              }
+              a[sheet[y][x].value]['values'] = values
+            else
+              if options[:extended]
+                a[sheet[y][x].value]['range'] = sheet[y][x+3].value
+              end
             end
           end
 

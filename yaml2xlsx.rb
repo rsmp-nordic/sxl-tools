@@ -170,11 +170,16 @@ sxl["objects"].each { |object|
       item[1]["arguments"].each { |argument, value|
         set_cell(sheet, col, row, argument)
         set_cell(sheet, col+1, row, value["type"])
-        unless value["value"].nil?
-          set_cell(sheet, col+2, row, value["value"])
+        if value["type"] == "boolean"
+            values = "-False\n-True"
+            set_cell(sheet, col+2, row, values)
         else
-          values = "- " + value["values"].join("\n- ")
-          set_cell(sheet, col+2, row, values)
+          unless value["range"].nil?
+            set_cell(sheet, col+2, row, value["range"])
+          else
+            values = "- " + value["values"].join("\n- ")
+            set_cell(sheet, col+2, row, values)
+          end
         end
         set_cell(sheet, col+3, row, value["description"])
         col += 4
@@ -203,11 +208,16 @@ sxl["objects"].each { |object|
     item[1]["arguments"].each { |argument, value|  # in statuses, it's called return value
       set_cell(sheet, col, row, argument)
       set_cell(sheet, col+1, row, value["type"])
-      unless value["value"].nil?
-        set_cell(sheet, col+2, row, value["value"])
+      if value["type"] == "boolean"
+          values = "-False\n-True"
+          set_cell(sheet, col+2, row, values)
       else
-        values = "- " + value["values"].join("\n- ")
-        set_cell(sheet, col+2, row, values)
+        unless value["range"].nil?
+          set_cell(sheet, col+2, row, value["range"])
+        else
+          values = "- " + value["values"].join("\n- ")
+          set_cell(sheet, col+2, row, values)
+        end
       end
       set_cell(sheet, col+3, row, value["description"])
       col += 4
@@ -233,11 +243,16 @@ sxl["objects"].each { |object|
       set_cell(sheet, col, row, argument)
       set_cell(sheet, col+1, row, item[1]["command"])
       set_cell(sheet, col+2, row, value["type"])
-      unless value["value"].nil?
-        set_cell(sheet, col+3, row, value["value"])
+      if value["type"] == "boolean"
+          values = "-False\n-True"
+          set_cell(sheet, col+2, row, values)
       else
-        values = "- " + value["values"].join("\n- ")
-        set_cell(sheet, col+3, row, values)
+        unless value["range"].nil?
+          set_cell(sheet, col+3, row, value["range"])
+        else
+          values = "- " + value["values"].join("\n- ")
+          set_cell(sheet, col+3, row, values)
+        end
       end
       set_cell(sheet, col+4, row, value["description"])
       col += 5
