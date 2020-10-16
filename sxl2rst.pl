@@ -306,7 +306,7 @@ sub print_aggregated_status {
 	stateprint($sheet);
 	printf "   =============  ===========================  ========\n";
 	printf "..\n\n";
-	print ".. |statebit| replace:: State- Bit nr (1234567)\n\n";
+	print ".. |statebit| replace:: State- Bit nr (12345678)\n\n";
 
 }
 

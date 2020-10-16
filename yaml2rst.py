@@ -121,7 +121,7 @@ def print_aggregated_status():
 
 
     widths = ["0.15", "0.30", "0.45"]
-    table_headers = ["State- Bit nr (1234567)", "Description", "Comment"]
+    table_headers = ["State- Bit nr (12345678)", "Description", "Comment"]
     start_figtable(widths, "State bits")
     state_bits = []
     state_bits.append(table_headers)
