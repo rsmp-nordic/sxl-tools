@@ -49,7 +49,7 @@ Notes about yaml2xlsx
   constructor, reviewed, approved, created-date and rsmp-version
   id, version and date
 * Since the "values" fields in alarms, statuses and commands cannot easily
-  be converted from the SXL in Excel format, the "value" fields is also
+  be converted from the SXL in Excel format, the "range" fields is also
   supported.
 * The Excel file is written to "output.xlsx"
 
@@ -63,8 +63,8 @@ Notes about yaml2rst
   id, version and date
   They are generated with xlsx2yaml.rb using the -e and -s flags
 * Since the "values" fields in alarms, statuses and commands cannot easily
-  be converted from the SXL in Excel format, the "value" fields is also
-  supported. The "value" field can be added using xlsx2yaml using the -e flag
+  be converted from the SXL in Excel format, the "range" fields is also
+  supported. The "range" field can be added using xlsx2yaml using the -e flag
 
 Example usages
 --------------
