@@ -4,6 +4,7 @@
 import sys
 import argparse
 import yaml
+import re
 from tabulate import tabulate
 
 def rst_line_break_substitution():
@@ -148,47 +149,36 @@ def print_alarms():
     table_headers = ["ObjectType","alarmCodeId","Description","Priority","Category"]
     start_figtable(widths, "Alarms")
 
+    alarm_table = []
     alarms = []
-    alarms_with_return_values = []
     # For each object
     for object_name,object in yaml_sxl['objects'].items():
         for alarm_id,alarm in object['alarms'].items():
-            if "arguments" in alarm:
-                alarms.append([object_name, '`' + alarm_id + '`_', alarm['description'], alarm['priority'], alarm['category']])
-                for argument_name, argument in alarm['arguments'].items():
-                    if alarm_id not in alarms_with_return_values:
-                        alarms_with_return_values.append(alarm_id)
-            else:
-                alarms.append([object_name, alarm_id, alarm['description'], alarm['priority'], alarm['category']])
+            alarm_table.append([object_name, '`' + alarm_id + '`_', alarm['description'].splitlines()[0], alarm['priority'], alarm['category']])
+            alarms.append([object_name, alarm_id, alarm['description'], alarm['priority'], alarm['category']])
 
-    # Sort
-    alarms.sort(key=sort_cid)
-    alarms.insert(0, table_headers)
-
-    for line in tabulate(alarms, headers="firstrow", tablefmt="rst").splitlines():
+    # Print alarm table
+    # Sort and insert headers
+    alarm_table.sort(key=sort_cid)
+    alarm_table.insert(0, table_headers)
+    for line in tabulate(alarm_table, headers="firstrow", tablefmt="rst").splitlines():
         print('   ' + line)
     end_figtable()
 
-    # Return values
-    for alarm_id in alarms_with_return_values:
+    # Print detailed alarm info
+    # incl. return values
+    alarms.sort(key=sort_cid)
+    for object_name,alarm_id,description,priority,category in alarms:
+
         print("")
         print(alarm_id)
         print("^^^^^")
         print("")
 
-        # Print alarm description
-        for object_name,object in yaml_sxl['objects'].items():
-            for id,alarm in object['alarms'].items():
-                if(id == alarm_id):
-                    print(alarm['description'].replace("\n", " |br| "))
-                    print("")
-
-        widths = ["0.15", "0.08", "0.13", "0.35"]
-        table_headers = ["Name","Type","Value","Comment"]
-        start_figtable(widths, alarm_id)
+        print(description.replace("\n", " |br| "))
+        print("")
 
         return_values = []
-        return_values.append(table_headers)
         for object_name,object in yaml_sxl['objects'].items():
             for id,alarm in object['alarms'].items():
                 if(alarm_id == id):
@@ -216,9 +206,15 @@ def print_alarms():
                                 comment = ""
                             return_values.append([name, type, value, comment])
 
-        for line in tabulate(return_values, headers="firstrow", tablefmt="rst").splitlines():
-            print('   ' + line)
-        end_figtable()
+        if return_values:
+            widths = ["0.15", "0.08", "0.13", "0.35"]
+            table_headers = ["Name","Type","Value","Comment"]
+            start_figtable(widths, alarm_id)
+
+            return_values.insert(0, table_headers)
+            for line in tabulate(return_values, headers="firstrow", tablefmt="rst").splitlines():
+                print('   ' + line)
+            end_figtable()
 
 def print_status():
     print("")
@@ -235,30 +231,26 @@ def print_status():
     table_headers = ["ObjectType","statusCodeId","Description"]
     start_figtable(widths, "Status")
 
+    status_table = []
     statuses = []
-    statuses_with_return_values = []
     # For each object
     for object_name,object, in yaml_sxl['objects'].items():
         for status_id,status in object['statuses'].items():
-            if "arguments" in status:
-                statuses.append([object_name, '`' + status_id + '`_', status['description']])
-                for argument_name, argument in status['arguments'].items():
-                    if status_id not in statuses_with_return_values:
-                        statuses_with_return_values.append(status_id)
-            else:
-                statuses.append([object_name, status_id, status['description']])
+            status_table.append([object_name, '`' + status_id + '`_', status['description'].splitlines()[0]])
+            statuses.append([object_name, status_id, status['description']])
 
-    # Sort
-    statuses.sort(key=sort_cid)
-    statuses.insert(0, table_headers)
-    statuses_with_return_values.sort()
-
-    for line in tabulate(statuses, headers="firstrow", tablefmt="rst").splitlines():
+    # Print status table
+    # Sort and insert headers
+    status_table.sort(key=sort_cid)
+    status_table.insert(0, table_headers)
+    for line in tabulate(status_table, headers="firstrow", tablefmt="rst").splitlines():
         print('   ' + line)
     end_figtable()
 
-    # Return values
-    for status_id in statuses_with_return_values:
+    # Print detailed status info
+    # incl. return values
+    statuses.sort(key=sort_cid)
+    for object_name,status_id,description in statuses:
         print("")
         print(status_id)
         print("^^^^^^^^")
@@ -318,30 +310,25 @@ def print_commands():
     table_headers = ["ObjectType","commandCodeId","Description"]
     start_figtable(widths, "Commands")
 
+    command_table = []
     commands = []
-    commands_with_arguments = []
     # For each object
     for object_name,object, in yaml_sxl['objects'].items():
         for command_id,command in object['commands'].items():
-            commands.append([object_name, '`' + command_id + '`_', command['description'].replace("\n", " |br| ")])
-            if "arguments" in command:
-                for argument_name, argument in command['arguments'].items():
-                    if command_id not in commands_with_arguments:
-                        commands_with_arguments.append(command_id)
-            else:
-                commands.append([object_name, command_id, command['description']])
+            command_table.append([object_name, '`' + command_id + '`_', command['description'].splitlines()[0]])
+            commands.append([object_name, command_id, command['description'].replace("\n", " |br| ")])
 
-    # Sort
-    commands.sort(key=sort_cid)
-    commands.insert(0, table_headers)
-    commands_with_arguments.sort()
-
-    for line in tabulate(commands, headers="firstrow", tablefmt="rst").splitlines():
+    # Print command table
+    # Sort and insert headers
+    command_table.sort(key=sort_cid)
+    command_table.insert(0, table_headers)
+    for line in tabulate(command_table, headers="firstrow", tablefmt="rst").splitlines():
         print('   ' + line)
     end_figtable()
 
     # Arguments
-    for command_id in commands_with_arguments:
+    commands.sort(key=sort_cid)
+    for object_name,command_id,description in commands:
         print("")
         print(command_id)
         print("^^^^^")
