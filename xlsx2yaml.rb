@@ -86,6 +86,20 @@ def get_command_section(sheet)
   sections
 end
 
+# Get value from a description field
+# E.g. 1: value1
+#      2: value2
+def get_value(field, key)
+  value_pairs = field.split("\n")
+  value_pairs.each {|v|
+    k, val = v.split(": ")
+
+    next if val.nil?
+    return val if key == k
+  }
+  return nil
+end
+
 options = {}
 usage = "Usage: xlsx2yaml.rb [options] [XLSX]"
 OptionParser.new do |opts|
@@ -155,10 +169,24 @@ workbook.each do |sheet|
           if sheet[y][x+2].value.start_with?("-")
             values = sheet[y][x+2].value.split("-")
             values.shift
-            values.each {|value|
-              value.delete!("\n")
+            values.each {|v|
+              v.delete!("\n")
+
+              # Try to find the corresponding description in
+              # the description field
+              field = sheet[y][x+3].value
+              desc = get_value(field, v)
+              if desc.nil? then
+                desc = ''
+              end
+
+              # Add to yaml
+              if rv[sheet[y][x].value]['values']
+                rv[sheet[y][x].value]['values'][v] = desc
+              else
+                rv[sheet[y][x].value]['values'] = {v => desc}
+              end
             }
-            rv[sheet[y][x].value]['values'] = values
           else
             if options[:extended]
               rv[sheet[y][x].value]['range'] = sheet[y][x+2].value
@@ -250,12 +278,28 @@ workbook.each do |sheet|
         unless a[sheet[y][x].value]['type'] == 'boolean'
           # Output values in a different way
           if sheet[y][x+2].value.start_with?("-")
+            # Values consists of several options
             values = sheet[y][x+2].value.split("-")
             values.shift
-            values.each {|value|
-              value.delete!("\n")
+
+            values.each {|v|
+              v.delete!("\n")
+
+              # Try to find the corresponding description in
+              # the description field
+              field = sheet[y][x+3].value
+              desc = get_value(field, v)
+              if desc.nil? then
+                desc = ''
+              end
+
+              # Add to yaml
+              if a[sheet[y][x].value]['values']
+                a[sheet[y][x].value]['values'][v] = desc
+              else
+                a[sheet[y][x].value]['values'] = {v => desc}
+              end
             }
-            a[sheet[y][x].value]['values'] = values
           else
             if options[:extended]
               a[sheet[y][x].value]['range'] = sheet[y][x+2].value
@@ -306,10 +350,24 @@ workbook.each do |sheet|
             if sheet[y][x+3].value.start_with?("-")
               values = sheet[y][x+3].value.split("-")
               values.shift
-              values.each {|value|
-                value.delete!("\n")
+              values.each {|v|
+                v.delete!("\n")
+
+                # Try to find the corresponding description in
+                # the description field
+                field = sheet[y][x+4].value
+                desc = get_value(field, v)
+                if desc.nil? then
+                  desc = ''
+                end
+
+                # Add to yaml
+                if a[sheet[y][x].value]['values']
+                  a[sheet[y][x].value]['values'][v] = desc
+                else
+                  a[sheet[y][x].value]['values'] = {v => desc}
+                end
               }
-              a[sheet[y][x].value]['values'] = values
             else
               if options[:extended]
                 a[sheet[y][x].value]['range'] = sheet[y][x+3].value
