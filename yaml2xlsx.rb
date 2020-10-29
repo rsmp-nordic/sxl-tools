@@ -63,6 +63,10 @@ OptionParser.new do |opts|
   opts.on("--template [XLSX]", "SXL Template") do |p|
     options[:template] = p
   end
+
+  opts.on("--short-desc", "Short description") do |s|
+    options[:short] = s
+  end
 end.parse!
 
 abort("--template needs to be set") if options[:template].nil?
@@ -162,7 +166,11 @@ sxl["objects"].each { |object|
   object[1]["alarms"].each { |item|
     set_cell(sheet, 1, row, object[0])              # object type
     set_cell(sheet, 3, row, item[0])                # alarmCodeId
-    set_cell(sheet, 4, row, item[1]["description"])
+    if options[:short].nil?
+      set_cell(sheet, 4, row, item[1]["description"])
+    else
+      set_cell(sheet, 4, row, item[1]["description"].lines.first.chomp)
+    end
     set_cell(sheet, 7, row, item[1]["priority"])
     set_cell(sheet, 8, row, item[1]["category"])
 
@@ -219,7 +227,11 @@ sxl["objects"].each { |object|
   object[1]["statuses"].each { |item|
     set_cell(sheet, 1, row, object[0])      # object type
     set_cell(sheet, 3, row, item[0])
-    set_cell(sheet, 4, row, item[1]["description"])
+    if options[:short].nil?
+      set_cell(sheet, 4, row, item[1]["description"])
+    else
+      set_cell(sheet, 4, row, item[1]["description"].lines.first.chomp)
+    end
 
     # Return values
     col = 5
@@ -268,7 +280,11 @@ sxl["objects"].each { |object|
   object[1]["commands"].each { |item|
     set_cell(sheet, 1, row, object[0])    # object type
     set_cell(sheet, 3, row, item[0])
-    set_cell(sheet, 4, row, item[1]["description"])
+    if options[:short].nil?
+      set_cell(sheet, 4, row, item[1]["description"])
+    else
+      set_cell(sheet, 4, row, item[1]["description"].lines.first.chomp)
+    end
  
     # Arguments
     col = 5
