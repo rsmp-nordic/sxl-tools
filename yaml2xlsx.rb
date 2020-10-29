@@ -116,14 +116,16 @@ sxl["sites"].each { |site|
     unless object[1]["aggregated_status"].nil?
 
       site[1]["objects"][object[0]].each { |grouped|
-        set_cell(sheet, 1, gy, grouped[0])
+        set_cell(sheet, 1, gy, object[0])
+        set_cell(sheet, 2, gy, grouped[0])
         set_cell(sheet, 3, gy, grouped[1]["componentId"])
         set_cell(sheet, 4, gy, grouped[1]["ntsObjectId"])
         gy = gy + 1
       }
     else
       site[1]["objects"][object[0]].each { |single|
-        set_cell(sheet, 1, sy, single[0])
+        set_cell(sheet, 1, sy, object[0])
+        set_cell(sheet, 2, sy, single[0])
         set_cell(sheet, 3, sy, single[1]["componentId"])
         set_cell(sheet, 4, sy, single[1]["ntsObjectId"])
         sy = sy + 1
@@ -177,7 +179,23 @@ sxl["objects"].each { |object|
           unless value["range"].nil?
             set_cell(sheet, col+2, row, value["range"])
           else
-            values = "- " + value["values"].join("\n- ")
+            # Make a list of values and append to description
+            values = ""
+            description = ""
+            value["values"].each { |v, desc |
+              values += "-" + v + "\n"
+              unless desc.empty?
+                description += + v + ": " + desc + "\n"
+              end
+            }
+            values.chomp!
+            description.chomp!
+            if value["description"].nil?
+              value["description"] = description
+            else
+              value["description"].concat("\n" + description)
+              value["description"].chomp!
+            end
             set_cell(sheet, col+2, row, values)
           end
         end
@@ -215,7 +233,22 @@ sxl["objects"].each { |object|
         unless value["range"].nil?
           set_cell(sheet, col+2, row, value["range"])
         else
-          values = "- " + value["values"].join("\n- ")
+          # Make a list of values and append to description
+          values = ""
+          description = ""
+          value["values"].each { |v, desc |
+            values += "-" + v.to_s + "\n"
+            unless desc.empty?
+              description += + v.to_s + ": " + desc + "\n"
+            end
+          }
+          values.chomp!
+          description.chomp!
+          if value["description"].nil?
+            value["description"] = description
+          else
+            value["description"].concat("\n" + description)
+          end
           set_cell(sheet, col+2, row, values)
         end
       end
@@ -245,12 +278,27 @@ sxl["objects"].each { |object|
       set_cell(sheet, col+2, row, value["type"])
       if value["type"] == "boolean"
           values = "-False\n-True"
-          set_cell(sheet, col+2, row, values)
+          set_cell(sheet, col+3, row, values)
       else
         unless value["range"].nil?
           set_cell(sheet, col+3, row, value["range"])
         else
-          values = "- " + value["values"].join("\n- ")
+          # Make a list of values and append to description
+          values = ""
+          description = ""
+          value["values"].each { |v, desc |
+            values += "-" + v + "\n"
+            unless desc.empty?
+              description += + v + ": " + desc + "\n"
+            end
+          }
+          values.chomp!
+          description.chomp!
+          if value["description"].nil?
+            value["description"] = description
+          else
+            value["description"].concat("\n" + description)
+          end
           set_cell(sheet, col+3, row, values)
         end
       end
