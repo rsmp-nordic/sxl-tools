@@ -191,6 +191,7 @@ def print_alarms():
                                 for v in argument['values']:
                                     val_list.append("-" + v)
                                 value = " |br| ".join(val_list)
+
                             else:
                                 # Extended
                                 if "range" in argument:
@@ -204,6 +205,13 @@ def print_alarms():
                                 comment = argument['description'].replace("\n", " |br| ")
                             else:
                                 comment = ""
+
+                            # Add the full description in the comment
+                            if "values" in argument:
+                                for n,desc in argument['values'].items():
+                                    if desc:
+                                        comment += " |br| " + n + ": " + desc
+
                             return_values.append([name, type, value, comment])
 
         if return_values:
@@ -279,7 +287,7 @@ def print_status():
                             if "values" in argument:
                                 val_list = []
                                 for v in argument['values']:
-                                    val_list.append("-" + v)
+                                    val_list.append("-" + str(v))
                                 value = " |br| ".join(val_list)
                             else:
                                 # Extended
@@ -295,6 +303,15 @@ def print_status():
                                 comment = comment.replace("\n", " |br| ")
                             else:
                                 comment = ""
+
+                            # Add the full description in the comment
+                            if "values" in argument:
+                                for n,desc in argument['values'].items():
+                                    if desc:
+                                        if comment != "":
+                                            comment += " |br| "
+                                        comment += str(n) + ": " + str(desc)
+
                             return_values.append([name, type, value, comment])
 
         for line in tabulate(return_values, headers="firstrow", tablefmt="rst").splitlines():
@@ -372,6 +389,15 @@ def print_commands():
                                 comment = comment.replace("\n", " |br| ")
                             else:
                                 comment = ""
+
+                            # Add the full description in the comment
+                            if "values" in argument:
+                                for n,desc in argument['values'].items():
+                                    if desc:
+                                        if comment != "":
+                                            comment += " |br| "
+                                        comment += str(n) + ": " + str(desc)
+
                             arguments.append([name, command['command'], type, value, comment])
 
         arguments.insert(0, table_headers)
