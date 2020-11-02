@@ -95,9 +95,25 @@ def get_value(field, key)
     k, val = v.split(": ")
 
     next if val.nil?
-    return val if key == k
+    if key == k
+      # Remove pair from field
+      replace = k + ": " + val
+      field.gsub! replace, ''
+      while field.chomp! do
+        field.chomp!
+      end
+      return val
+    end
   }
   return nil
+end
+
+def to_integer(val)
+  v = Integer(val) rescue false
+  if v == false
+    v = val
+  end
+  v
 end
 
 options = {}
@@ -173,7 +189,8 @@ workbook.each do |sheet|
               v.delete!("\n")
 
               # Try to find the corresponding description in
-              # the description field
+              # the description field using "key: value" format
+              # Removes the key in description on match
               field = sheet[y][x+3].value
               desc = get_value(field, v)
               if desc.nil? then
@@ -181,6 +198,7 @@ workbook.each do |sheet|
               end
 
               # Add to yaml
+              v = to_integer(v)
               if rv[sheet[y][x].value]['values']
                 rv[sheet[y][x].value]['values'][v] = desc
               else
@@ -192,6 +210,11 @@ workbook.each do |sheet|
               rv[sheet[y][x].value]['range'] = sheet[y][x+2].value
             end
           end
+        end
+
+        # Remove the description field if it is empty
+        if rv[sheet[y][x].value]['description'].empty?
+          rv[sheet[y][x].value].delete('description')
         end
 
         x = x + 4
@@ -271,7 +294,7 @@ workbook.each do |sheet|
       while(sheet[y][x] != nil and sheet[y][x].value != nil and !sheet[y][x].value.empty?) do
         a[sheet[y][x].value] = {
             'type' => sheet[y][x+1].value,
-            'description' => sheet[y][x+3].value
+             'description' => sheet[y][x+3].value
         }
 
         # No need to output values if type is boolean
@@ -286,7 +309,8 @@ workbook.each do |sheet|
               v.delete!("\n")
 
               # Try to find the corresponding description in
-              # the description field
+              # the description field using "key: value" format
+              # Removes the key in description on match
               field = sheet[y][x+3].value
               desc = get_value(field, v)
               if desc.nil? then
@@ -294,6 +318,7 @@ workbook.each do |sheet|
               end
 
               # Add to yaml
+              v = to_integer(v)
               if a[sheet[y][x].value]['values']
                 a[sheet[y][x].value]['values'][v] = desc
               else
@@ -305,6 +330,11 @@ workbook.each do |sheet|
               a[sheet[y][x].value]['range'] = sheet[y][x+2].value
             end
           end
+        end
+
+        # Remove the description field if it is empty
+        if a[sheet[y][x].value]['description'].empty?
+          a[sheet[y][x].value].delete('description')
         end
 
         x = x + 4
@@ -354,7 +384,8 @@ workbook.each do |sheet|
                 v.delete!("\n")
 
                 # Try to find the corresponding description in
-                # the description field
+                # the description field using "key: value" format
+                # Removes the key in description on match
                 field = sheet[y][x+4].value
                 desc = get_value(field, v)
                 if desc.nil? then
@@ -362,10 +393,11 @@ workbook.each do |sheet|
                 end
 
                 # Add to yaml
+                v = to_integer(v)
                 if a[sheet[y][x].value]['values']
-                  a[sheet[y][x].value]['values'][v] = desc
+                  a[sheet[y][x].value]['values'][v.to_s] = desc
                 else
-                  a[sheet[y][x].value]['values'] = {v => desc}
+                  a[sheet[y][x].value]['values'] = {v.to_s => desc}
                 end
               }
             else
@@ -374,6 +406,12 @@ workbook.each do |sheet|
               end
             end
           end
+
+          # Remove the description field if it is empty
+          if a[sheet[y][x].value]['description'].empty?
+            a[sheet[y][x].value].delete('description')
+          end
+
 
           co = sheet[y][x+1].value # command
           x = x + 5
