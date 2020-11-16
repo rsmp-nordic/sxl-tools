@@ -49,6 +49,7 @@ def get_object_section(sheet, y, options)
       else
         if options[:extended]
           objects[key] = { object[1] => { 'componentId' => object[2], 'ntsObjectId' => object[3] } }
+          objects[key][object[1]].store("externalNtsId", to_integer(object[4])) if object[4] != nil
         else
           objects[key] = { object[1] => object[2] }
         end
@@ -56,6 +57,7 @@ def get_object_section(sheet, y, options)
     else
         if options[:extended]
           newobject = { object[1] => { 'componentId' => object[2], 'ntsObjectId' => object[3] } }
+          newobject[object[1]].store("externalNtsId", to_integer(object[4])) if object[4] != nil
         else
           newobject = { object[1] => object[2] }
         end
@@ -244,6 +246,9 @@ workbook.each do |sheet|
         'priority' => a[6],
         'category' => a[7]
       }
+      alarm.store("object", a[1]) if a[1] != nil
+      alarm.store("externalAlarmCodeId", a[4]) if a[4] != nil
+      alarm.store("externalNtsAlarmCodeId", to_integer(a[5])) if a[5] != nil
 
       if !rv.empty?
         alarm['arguments'] = rv
@@ -362,6 +367,7 @@ workbook.each do |sheet|
         'description' => s[3],
         'arguments' => a
       }
+      status.store("object", s[1]) if s[1] != nil
 
       # Add to yaml
       if sxl["objects"][s[0]]
@@ -441,6 +447,7 @@ workbook.each do |sheet|
           'arguments' => a,
           'command' => co
         }
+        command.store("object", c[1]) if c[1] != nil
 
         # Add to yaml
         if sxl["objects"][c[0]]
