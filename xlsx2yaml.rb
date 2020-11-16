@@ -116,6 +116,25 @@ def to_integer(val)
   v
 end
 
+# Re-indent code due to ruby yaml output fails to indent multiline text
+# properly when blank lines occurs in the middle of text
+def reindent(text)
+  prev_line = ""
+  prev_indent = ""
+  text.each_line do |line|
+    if line == "\n"
+      # Check white spaces in the beginning of previous line
+      indent =  prev_line.match(/^([ ]+)/)[0] rescue false
+      if indent == false
+        indent = prev_indent
+      end
+      line = indent + "\n"
+    end
+    print line
+    prev_line = line
+  end
+end
+
 options = {}
 usage = "Usage: xlsx2yaml.rb [options] [XLSX]"
 OptionParser.new do |opts|
@@ -463,5 +482,5 @@ workbook.each do |sheet|
 end
 
 sxl["sites"] = sites if options[:site]
-print sxl.to_yaml
+reindent(sxl.to_yaml)
 
