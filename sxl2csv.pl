@@ -77,6 +77,7 @@ system("zip -q -j Objects.zip Objects/*");
 system("rm -rf Objects");
 
 # FIXME: Rename after source name
+$fname =~ s/ /_/g;
 $fname =~ s/.xlsx//;
 system("mv Objects.zip $fname.zip");
 
