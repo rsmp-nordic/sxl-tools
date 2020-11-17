@@ -128,6 +128,8 @@ sxl["sites"].each { |site|
         set_cell(sheet, 2, gy, grouped[0])
         set_cell(sheet, 3, gy, grouped[1]["componentId"])
         set_cell(sheet, 4, gy, grouped[1]["ntsObjectId"])
+        set_cell(sheet, 5, gy, grouped[1]["externalNtsId"])
+        set_cell(sheet, 6, gy, grouped[1]["description"])
         gy = gy + 1
       }
     else
@@ -136,6 +138,8 @@ sxl["sites"].each { |site|
         set_cell(sheet, 2, sy, single[0])
         set_cell(sheet, 3, sy, single[1]["componentId"])
         set_cell(sheet, 4, sy, single[1]["ntsObjectId"])
+        set_cell(sheet, 5, sy, single[1]["externalNtsId"])
+        set_cell(sheet, 6, sy, single[1]["description"])
         sy = sy + 1
       }
     end
@@ -169,12 +173,15 @@ row = 7
 sxl["objects"].each { |object|
   object[1]["alarms"].each { |item|
     set_cell(sheet, 1, row, object[0])              # object type
+    set_cell(sheet, 2, row, item[1]["object"])      # object
     set_cell(sheet, 3, row, item[0])                # alarmCodeId
     if options[:short].nil?
       set_cell(sheet, 4, row, item[1]["description"])
     else
       set_cell(sheet, 4, row, item[1]["description"].lines.first.chomp)
     end
+    set_cell(sheet, 5, row, item[1]["externalAlarmCodeId"])
+    set_cell(sheet, 6, row, item[1]["externalNtsAlarmCodeId"])
     set_cell(sheet, 7, row, item[1]["priority"])
     set_cell(sheet, 8, row, item[1]["category"])
 
@@ -229,7 +236,8 @@ insert_return_value(sheet)
 # for each object type in yaml, look at all the statuses
 sxl["objects"].each { |object|
   object[1]["statuses"].each { |item|
-    set_cell(sheet, 1, row, object[0])      # object type
+    set_cell(sheet, 1, row, object[0])         # object type
+    set_cell(sheet, 2, row, item[1]["object"]) # object
     set_cell(sheet, 3, row, item[0])
     if options[:short].nil?
       set_cell(sheet, 4, row, item[1]["description"])
@@ -282,7 +290,8 @@ row = 25
 # for each object type in yaml, look at all the commands
 sxl["objects"].each { |object|
   object[1]["commands"].each { |item|
-    set_cell(sheet, 1, row, object[0])    # object type
+    set_cell(sheet, 1, row, object[0])           # object type
+    set_cell(sheet, 2, row, item[1]["object"])   # object
     set_cell(sheet, 3, row, item[0])
     if options[:short].nil?
       set_cell(sheet, 4, row, item[1]["description"])

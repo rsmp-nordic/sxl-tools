@@ -14,25 +14,30 @@ def get_object(sheet, y)
 
   # Empty description/object field
   if sheet[y][1] == nil
-    return [ sheet[y][0].value, nil, nil, nil, nil ]
+    return [ sheet[y][0].value, nil, nil, nil, nil, nil ]
   end
 
   # Empty component id
   if sheet[y][2] == nil
-    return [ sheet[y][0].value, sheet[y][1].value, nil, nil, nil ]
+    return [ sheet[y][0].value, sheet[y][1].value, nil, nil, nil, nil ]
   end
 
   # Empty NTSObjectId
   if sheet[y][3] == nil
-    return [ sheet[y][0].value, sheet[y][1].value, sheet[y][2].value, nil, nil ]
+    return [ sheet[y][0].value, sheet[y][1].value, sheet[y][2].value, nil, nil, nil ]
   end
 
   # Empty externalNtsId
   if sheet[y][4] == nil
-    return [ sheet[y][0].value, sheet[y][1].value, sheet[y][2].value, sheet[y][3].value, nil ]
+    return [ sheet[y][0].value, sheet[y][1].value, sheet[y][2].value, sheet[y][3].value, nil, nil ]
   end
 
-  [ sheet[y][0].value, sheet[y][1].value, sheet[y][2].value, sheet[y][3].value, sheet[y][4].value ]
+  # Empty description
+  if sheet[y][5] == nil
+    return [ sheet[y][0].value, sheet[y][1].value, sheet[y][2].value, sheet[y][3].value, sheet[y][4].value, nil ]
+  end
+
+  [ sheet[y][0].value, sheet[y][1].value, sheet[y][2].value, sheet[y][3].value, sheet[y][4].value, sheet[y][5].value]
 end
 
 # Get objects from a given section in the object sheet
@@ -50,6 +55,7 @@ def get_object_section(sheet, y, options)
         if options[:extended]
           objects[key] = { object[1] => { 'componentId' => object[2], 'ntsObjectId' => object[3] } }
           objects[key][object[1]].store("externalNtsId", to_integer(object[4])) if object[4] != nil
+          objects[key][object[1]].store("description", object[5]) if object[5] != nil
         else
           objects[key] = { object[1] => object[2] }
         end
@@ -58,6 +64,7 @@ def get_object_section(sheet, y, options)
         if options[:extended]
           newobject = { object[1] => { 'componentId' => object[2], 'ntsObjectId' => object[3] } }
           newobject[object[1]].store("externalNtsId", to_integer(object[4])) if object[4] != nil
+          newobject[object[1]].store("description", object[5]) if object[5] != nil
         else
           newobject = { object[1] => object[2] }
         end
