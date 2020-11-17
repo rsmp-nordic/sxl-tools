@@ -56,7 +56,7 @@ def insert_return_value(sheet)
 end
 
 options = {}
-usage = "Usage: yaml2xlsx.rb [--template <FILE>]"
+usage = "Usage: yaml2xlsx.rb [--template <XLSX>]"
 OptionParser.new do |opts|
   opts.banner = usage
 
@@ -66,6 +66,10 @@ OptionParser.new do |opts|
 
   opts.on("--short-desc", "Short description") do |s|
     options[:short] = s
+  end
+
+  opts.on("--stdout", "Output xlsx on STDOUT") do |o|
+    options[:stdout] = o
   end
 end.parse!
 
@@ -326,7 +330,9 @@ sxl["objects"].each { |object|
 }
 
 # Save
-workbook.write("output.xlsx")
-
-# write to stdout instead
-#workbook.steam
+if options[:stdout].nil?
+  workbook.write("output.xlsx")
+else
+  # write to stdout instead
+  print workbook.stream.string
+end

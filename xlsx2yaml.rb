@@ -149,13 +149,14 @@ OptionParser.new do |opts|
 end.parse!
 
 if ARGV.length < 1
-  puts usage
-  exit 1
+  # Read from STDIN instead
+  buffer = STDIN.read
+  workbook = RubyXL::Parser.parse_buffer(buffer)
+else
+  XLSX = ARGV[0]
+  workbook = RubyXL::Parser.parse(XLSX)
 end
-
-XLSX = ARGV[0]
 sxl = Hash.new
-workbook = RubyXL::Parser.parse(XLSX)
 
 sites = {}
 workbook.each do |sheet|
