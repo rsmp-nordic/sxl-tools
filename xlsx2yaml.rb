@@ -122,14 +122,11 @@ end
 # properly when blank lines occurs in the middle of text
 def reindent(text)
   prev_line = ""
-  prev_indent = ""
+  indent = ""
   text.each_line do |line|
     if line == "\n"
       # Check white spaces in the beginning of previous line
-      indent =  prev_line.match(/^([ ]+)/)[0] rescue false
-      if indent == false
-        indent = prev_indent
-      end
+      indent = prev_line.match(/^([ ]+)/)[0] rescue false
       line = indent + "\n"
     end
     print line
