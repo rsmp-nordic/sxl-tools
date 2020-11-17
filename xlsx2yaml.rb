@@ -209,8 +209,7 @@ workbook.each do |sheet|
               # Try to find the corresponding description in
               # the description field using "key: value" format
               # Removes the key in description on match
-              field = sheet[y][x+3].value
-              desc = get_value(field, v)
+              desc = get_value(rv[sheet[y][x].value]['description'], v)
               if desc.nil? then
                 desc = ''
               end
@@ -331,9 +330,7 @@ workbook.each do |sheet|
 
               # Try to find the corresponding description in
               # the description field using "key: value" format
-              # Removes the key in description on match
-              field = sheet[y][x+3].value
-              desc = get_value(field, v)
+              desc = get_value(a[sheet[y][x].value]['description'], v)
               if desc.nil? then
                 desc = ''
               end
@@ -408,8 +405,7 @@ workbook.each do |sheet|
                 # Try to find the corresponding description in
                 # the description field using "key: value" format
                 # Removes the key in description on match
-                field = sheet[y][x+4].value
-                desc = get_value(field, v)
+                desc = get_value(a[sheet[y][x].value]['description'], v)
                 if desc.nil? then
                   desc = ''
                 end
