@@ -238,7 +238,7 @@ workbook.each do |sheet|
         end
 
         # Remove the description field if it is empty
-        if rv[sheet[y][x].value]['description'].empty?
+        if rv[sheet[y][x].value]['description'] and rv[sheet[y][x].value]['description'].empty?
           rv[sheet[y][x].value].delete('description')
         end
 
@@ -359,7 +359,7 @@ workbook.each do |sheet|
         end
 
         # Remove the description field if it is empty
-        if a[sheet[y][x].value]['description'].empty?
+        if a[sheet[y][x].value]['description'] and a[sheet[y][x].value]['description'].empty?
           a[sheet[y][x].value].delete('description')
         end
 
@@ -434,7 +434,7 @@ workbook.each do |sheet|
           end
 
           # Remove the description field if it is empty
-          if a[sheet[y][x].value]['description'].empty?
+          if a[sheet[y][x].value]['description'] and a[sheet[y][x].value]['description'].empty?
             a[sheet[y][x].value].delete('description')
           end
 
