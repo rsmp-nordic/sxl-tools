@@ -194,7 +194,12 @@ workbook.each do |sheet|
       # Get basic alarm info
       a = [ sheet[y][0].value, sheet[y][1].value, sheet[y][2].value,
             sheet[y][3].value, sheet[y][4].value, sheet[y][5].value,
-            sheet[y][6].value, sheet[y][7].value]
+            sheet[y][6].value, sheet[y][7].value] rescue false
+      
+      if a == false
+        y = y + 1
+        next
+      end
 
       # Get each argument
       x = 8
@@ -311,7 +316,7 @@ workbook.each do |sheet|
     end
   when "Status"
     y = 6
-    while(sheet[y][0] != nil and sheet[y][0].value != nil) do
+    while(sheet[y] and sheet[y][0] and sheet[y][0].value) do
       # Get the basic status info
       s = [ sheet[y][0].value, sheet[y][1].value, sheet[y][2].value,
             sheet[y][3].value ]
@@ -328,7 +333,7 @@ workbook.each do |sheet|
         # No need to output values if type is boolean
         unless a[sheet[y][x].value]['type'] == 'boolean'
           # Output values in a different way
-          if sheet[y][x+2].value.start_with?("-")
+          if sheet[y][x+2].value and sheet[y][x+2].value.start_with?("-")
             # Values consists of several options
             values = sheet[y][x+2].value.split("-")
             values.shift
