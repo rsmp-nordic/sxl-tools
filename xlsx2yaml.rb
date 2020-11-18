@@ -99,6 +99,8 @@ end
 # E.g. 1: value1
 #      2: value2
 def get_value(field, key)
+  return if field == nil
+
   value_pairs = field.split("\n")
   value_pairs.each {|v|
     k, val = v.split(": ")
