@@ -257,9 +257,11 @@ workbook.each do |sheet|
         'priority' => a[6],
         'category' => a[7]
       }
-      alarm.store("object", a[1]) if a[1] != nil
-      alarm.store("externalAlarmCodeId", a[4]) if a[4] != nil
-      alarm.store("externalNtsAlarmCodeId", to_integer(a[5])) if a[5] != nil
+      if options[:extended]
+        alarm.store("object", a[1]) if a[1] != nil
+        alarm.store("externalAlarmCodeId", a[4]) if a[4] != nil
+        alarm.store("externalNtsAlarmCodeId", to_integer(a[5])) if a[5] != nil
+      end
 
       if !rv.empty?
         alarm['arguments'] = rv
@@ -376,7 +378,9 @@ workbook.each do |sheet|
         'description' => s[3],
         'arguments' => a
       }
-      status.store("object", s[1]) if s[1] != nil
+      if options[:extended]
+        status.store("object", s[1]) if s[1] != nil
+      end
 
       # Add to yaml
       if sxl["objects"][s[0]]
@@ -455,7 +459,9 @@ workbook.each do |sheet|
           'arguments' => a,
           'command' => co
         }
-        command.store("object", c[1]) if c[1] != nil
+        if options[:extended]
+          command.store("object", c[1]) if c[1] != nil
+        end
 
         # Add to yaml
         if sxl["objects"][c[0]]
