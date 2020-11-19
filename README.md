@@ -81,6 +81,95 @@ List of fields:
 * `functional_position` (aggregated status)
 * `functional_state` (aggregated status)
 
+Mapping between XLSX and YAML format of the SXL
+-----------------------------------------------
+Version sheet
+
+| Cell 	| Name in Excel   	| YAML         	| extended? 	|
+|------	|-----------------	|--------------	|-----------	|
+| B2   	| Plant id        	| id           	|           	|
+| B6   	| Plant name      	| description  	|           	|
+| B10  	| Constructor     	| constructor  	| yes       	|
+| B12  	| Reviewed        	| reviewed     	| yes       	|
+| B15  	| Approved        	| approved     	| yes       	|
+| B18  	| Created date    	| created-date 	| yes       	|
+| B21  	| Revision number 	| version      	|           	|
+| C21  	| Revision date   	| date         	|           	|
+| B26  	| RSMP version    	| rsmp-version 	| yes       	|
+
+Object types
+
+| Cell 	| Name in Excel       	| YAML         	| extended? 	|
+|------	|---------------------	|--------------	|-----------	|
+| A7.. 	| ObjectType          	| [ObjectType] 	|           	|
+| B7.. 	| Description/comment 	| description  	| yes       	|
+
+Objects
+
+| Cell 	| Name in Excel 	| YAML                    	| extended? 	|
+|------	|---------------	|-------------------------	|-----------	|
+| A7.. 	| ObjectType    	| [ObjectType]            	|           	|
+| B7.. 	| Object        	| [Object]                	|           	|
+| C7.. 	| componentId   	| [Object]: [componentId] 	|           	|
+| D7.. 	| NTSObjectId   	| ntsObjectid             	| yes       	|
+| E7.. 	| externalNtsId 	| externalNtsId           	| yes       	|
+| F7.. 	| Description   	| description             	| yes       	|
+
+Aggregated status
+
+| Cell  	| Name in Excel      	| YAML                	| extended? 	|
+|-------	|--------------------	|---------------------	|-----------	|
+| C7..  	| functionalPosition 	| functional_position 	| yes       	|
+| D7..  	| functionalState    	| functionalState     	| yes       	|
+| A17.. 	| Comment            	| description         	| yes       	|
+
+Alarms
+
+| Cell  	| Name in Excel          	| YAML                   	| extended? 	|
+|-------	|------------------------	|------------------------	|-----------	|
+| A7..  	| ObjectType             	| [ObjectType]           	|           	|
+| B7..  	| Object (optional)      	| [Object]               	| yes       	|
+| C7..  	| alarmCodeId            	| [alarmCodeId]          	|           	|
+| D7..  	| Description            	| description            	|           	|
+| E7..  	| externalAlarmCodeId    	| externalAlarmCodeId    	| yes       	|
+| F7..  	| externalNtsAlarmCodeId 	| externalNtsAlarmCodeId 	| yes       	|
+| G7..  	| Priority               	| priority               	|           	|
+| H7..  	| Category               	| category               	|           	|
+| I7..  	| Name                   	| [Name]                 	|           	|
+| J7..  	| Type                   	| type                   	|           	|
+| K7..  	| Value                  	| values (list)          	|           	|
+| K7..  	| Value                  	| range (if not boolean) 	| yes       	|
+| L7..  	| Comment                	| description            	|           	|
+
+Status
+
+| Cell  	| Name in Excel     	| YAML                   	| extended? 	|
+|-------	|-------------------	|------------------------	|-----------	|
+| A7..  	| ObjectType        	| [ObjectType]           	|           	|
+| B7..  	| Object (optional) 	| [Object]               	| yes       	|
+| C7..  	| statusCodeId      	| [statusCodeId]         	|           	|
+| D7..  	| Description       	| description            	|           	|
+| E7..  	| Name              	| [Name]                 	|           	|
+| F7..  	| Type              	| type                   	|           	|
+| G7..  	| Value             	| values (list)          	|           	|
+| G7..  	| Value             	| range (if not boolean) 	| yes       	|
+| H7..  	| Comment           	| description            	|           	|
+
+Commands
+
+| Cell  	| Name in Excel     	| YAML                   	| extended? 	|
+|-------	|-------------------	|------------------------	|-----------	|
+| A7..  	| ObjectType        	| [ObjectType]           	|           	|
+| B7..  	| Object (optional) 	| [Object]               	| yes       	|
+| C7..  	| commandCodeId     	| [commandCodeId]        	|           	|
+| D7..  	| Description       	| description            	|           	|
+| E7..  	| Name              	| [Name]                 	|           	|
+| F7..  	| Command           	| command                	|           	|
+| G7..  	| Type              	| type                   	|           	|
+| H7..  	| Value             	| values (list)          	|           	|
+| H7..  	| Value             	| range (if not boolean) 	| yes       	|
+| I7..  	| Comment           	| description            	|           	|
+
 Example usages
 --------------
 
