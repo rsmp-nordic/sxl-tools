@@ -55,7 +55,7 @@ Notes about yaml2rst
 --------------------
 
 * Requires: pip3 install tabulate --user (or apt install python3-tabulate)
-* Prints some of the [extended version information](#extended) if they are present
+* Prints some of the [extended information](#extended) if they are present
   They are generated with xlsx2yaml.rb using the -e and -s flags
 * Since the "values" fields in alarms, statuses and commands cannot easily
   be converted from the SXL in Excel format, the "range" fields is also
@@ -73,7 +73,7 @@ List of fields:
 * `approved` (version)
 * `created-date` (version)
 * `rsmp-version` (version)
-* `externalNtsId` (objects) only if the --site is ued
+* `externalNtsId` (objects) only if the --site is used
 * `range` (alarms, status, commands)
 * `object` (alarms, status, commands) only if --site is used
 * `externalAlarmCodeId` (alarms)
