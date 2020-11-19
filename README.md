@@ -26,7 +26,7 @@ Notes about xlsx2yaml
 
 * Requires: gem install rubyXL
 * Usage: xlsx2yaml [options] [XLSX]
-* -s, --site. Prints site information. Includes also id, version and date
+* -s, --site. Prints [site information](#site). Includes also id, version and date
 * -e, --extended. Prints [extended information](#extended)
 * If using the -s flag in combination with the -e flag,
   then also the ntsObjectId field is added
@@ -61,6 +61,13 @@ Notes about yaml2rst
   be converted from the SXL in Excel format, the "range" fields is also
   supported. The "range" field can be added using xlsx2yaml using the -e flag
 
+<a name="site"></a>
+Site information
+----------------
+Site fields contains all the individual components of a specific site. This
+is needed by the RSMP simulator to tie a specific component (object) to an
+alarm, status or command, but is not needed to construct a JSon schema.
+
 <a name="extended"></a>
 Extended information
 --------------------
@@ -73,9 +80,10 @@ List of fields:
 * `approved` (version)
 * `created-date` (version)
 * `rsmp-version` (version)
-* `externalNtsId` (objects) only if the --site is used
+* `ntsObjectId` (objects) only if site information is enabled
+* `externalNtsId` (objects) only if site information is enabled
 * `range` (alarms, status, commands)
-* `object` (alarms, status, commands) only if --site is used
+* `object` (alarms, status, commands) only if site information is enabled
 * `externalAlarmCodeId` (alarms)
 * `externalNtsAlarmCodeId` (alarms)
 * `functional_position` (aggregated status)
@@ -104,7 +112,7 @@ Object types
 | A7.. 	| ObjectType          	| [ObjectType] 	|           	|
 | B7.. 	| Description/comment 	| description  	| yes       	|
 
-Objects
+Objects ([site information](#site))
 
 | Cell 	| Name in Excel 	| YAML                    	| extended? 	|
 |------	|---------------	|-------------------------	|-----------	|
