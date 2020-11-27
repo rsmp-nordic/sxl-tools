@@ -181,20 +181,20 @@ Commands
 Example usages
 --------------
 
-Example 1: Convert the SXL from Excel to YAML
+Example 1: Convert the SXL from Excel to YAML.
 
 ```
 xlsx2yaml.rb SXL_Traffic_Controller.xlsx
 ```
 
-Example 2: Convert the SXL from Excel format to RST, including extended attributes
+Example 2: Convert the SXL from Excel format to RST, including extended attributes.
 
 ```
 xlsx2yaml.rb -e SXL_Traffic_Controller.xlsx | yaml2rst.py > sxl_traffic_light_controller.rst
 ```
 
-Example 3: Convert the SXL from Excel format to YAML, and then back again to Excel
-           Includes extended attributes and site information
+Example 3: Convert the SXL from Excel format to YAML, and then back again to Excel using a template.
+Includes extended attributes and site information
 
 ```
 xlsx2yaml.rb -s -e SXL_Traffic_Controller.xlsx | yaml2xlsx.rb --template "RSMP_Template_SignalExchangeList-20120117.xlsx"
