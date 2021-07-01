@@ -54,7 +54,7 @@ Notes about yaml2xlsx
 Notes about yaml2rst
 --------------------
 
-* Requires: pip3 install tabulate --user (or apt install python3-tabulate)
+* Requires: pip3 install pyyaml tabulate --user (or apt install python3-tabulate)
 * Prints some of the [extended information](#extended) if they are present
   They are generated with xlsx2yaml.rb using the -e and -s flags
 * Since the "values" fields in alarms, statuses and commands cannot easily
