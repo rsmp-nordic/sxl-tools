@@ -238,6 +238,13 @@ workbook.each do |sheet|
               end
             }
           else
+            # Set 'max' and 'min' if type is integer
+            if rv[sheet[y][x].value]['type'] == 'integer'
+              values = sheet[y][x+2].value.split("-")
+              rv[sheet[y][x].value]['min'] == values[0]
+              rv[sheet[y][x].value]['max'] == values[1]
+            end
+
             if options[:extended]
               rv[sheet[y][x].value]['range'] = sheet[y][x+2].value
             end
@@ -361,6 +368,13 @@ workbook.each do |sheet|
               end
             }
           else
+            # Set 'max' and 'min' if type is integer
+            if rv[sheet[y][x].value]['type'] == 'integer'
+              values = sheet[y][x+2].value.split("-")
+              rv[sheet[y][x].value]['min'] == values[0]
+              rv[sheet[y][x].value]['max'] == values[1]
+            end
+
             if options[:extended]
               a[sheet[y][x].value]['range'] = sheet[y][x+2].value
             end
@@ -438,6 +452,13 @@ workbook.each do |sheet|
                 end
               }
             else
+              # Set 'max' and 'min' if type is integer
+              if rv[sheet[y][x].value]['type'] == 'integer'
+                values = sheet[y][x+3].value.split("-")
+                rv[sheet[y][x].value]['min'] == values[0]
+                rv[sheet[y][x].value]['max'] == values[1]
+              end
+
               if options[:extended]
                 a[sheet[y][x].value]['range'] = sheet[y][x+3].value
               end
