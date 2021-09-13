@@ -240,9 +240,9 @@ workbook.each do |sheet|
           else
             # Set 'max' and 'min' if type is integer
             if rv[sheet[y][x].value]['type'] == 'integer'
-              values = sheet[y][x+2].value.split("-")
-              rv[sheet[y][x].value]['min'] == values[0]
-              rv[sheet[y][x].value]['max'] == values[1]
+              values = sheet[y][x+2].value.tr('[]','').split("-")
+              rv[sheet[y][x].value]['min'] = values[0].to_i
+              rv[sheet[y][x].value]['max'] = values[1].to_i
             end
 
             if options[:extended]
@@ -369,10 +369,10 @@ workbook.each do |sheet|
             }
           else
             # Set 'max' and 'min' if type is integer
-            if rv[sheet[y][x].value]['type'] == 'integer'
-              values = sheet[y][x+2].value.split("-")
-              rv[sheet[y][x].value]['min'] == values[0]
-              rv[sheet[y][x].value]['max'] == values[1]
+            if a[sheet[y][x].value]['type'] == 'integer'
+              values = sheet[y][x+2].value.tr('[]','').split("-")
+              a[sheet[y][x].value]['min'] = values[0].to_i
+              a[sheet[y][x].value]['max'] = values[1].to_i
             end
 
             if options[:extended]
@@ -453,10 +453,10 @@ workbook.each do |sheet|
               }
             else
               # Set 'max' and 'min' if type is integer
-              if rv[sheet[y][x].value]['type'] == 'integer'
-                values = sheet[y][x+3].value.split("-")
-                rv[sheet[y][x].value]['min'] == values[0]
-                rv[sheet[y][x].value]['max'] == values[1]
+              if a[sheet[y][x].value]['type'] == 'integer'
+                values = sheet[y][x+3].value.tr('[]','').split("-")
+                a[sheet[y][x].value]['min'] = values[0].to_i
+                a[sheet[y][x].value]['max'] = values[1].to_i
               end
 
               if options[:extended]
