@@ -197,8 +197,18 @@ def print_alarms():
                                 if "range" in argument:
                                     value = argument['range']
                                 else:
-                                    if(type == "boolean"):
+                                    if type == "boolean":
                                         value = "-True |br| -False"
+                                    elif type == "integer":
+                                      if "min" in argument:
+                                        min = argument['min']
+                                      else:
+                                        min = ""
+                                      if "max" in argument:
+                                        max = argument['max']
+                                      else:
+                                        max = ""
+                                      value = "[" + str(min) + "-" + str(max) + "]"
                                     else:
                                         value = ""
                             if "description" in argument:
@@ -294,8 +304,18 @@ def print_status():
                                 if "range" in argument:
                                     value = argument['range']
                                 else:
-                                    if(type == "boolean"):
+                                    if type == "boolean":
                                         value = "-False |br| -True"
+                                    elif type == "integer":
+                                      if "min" in argument:
+                                        min = argument['min']
+                                      else:
+                                        min = ""
+                                      if "max" in argument:
+                                        max = argument['max']
+                                      else:
+                                        max = ""
+                                      value = "[" + str(min) + "-" + str(max) + "]"
                                     else:
                                         value = ""
                             if "description" in argument:
@@ -382,6 +402,16 @@ def print_commands():
                                 else:
                                     if(type == "boolean"):
                                         value = "-False |br| -True"
+                                    elif type == "integer":
+                                      if "min" in argument:
+                                        min = argument['min']
+                                      else:
+                                        min = ""
+                                      if "max" in argument:
+                                        max = argument['max']
+                                      else:
+                                        max = ""
+                                      value = "[" + str(min) + "-" + str(max) + "]"
                                     else:
                                         value = ""
                             if "description" in argument:
