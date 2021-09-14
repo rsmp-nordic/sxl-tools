@@ -32,7 +32,7 @@ Notes about xlsx2yaml
   then also the ntsObjectId field is added
 * Since the "values" fields in alarms, statuses and commands cannot easily
   be converted from the SXL in Excel format, the "range" field is added if type
-  is not boolean or integer and there is no predefined values to choose from.
+  is not boolean, integer, long or real and there is no predefined values to choose from.
   Enable using the -e flag
 * Typical usage:
   * Output to rsmp_schema: No extra options needed
@@ -146,8 +146,8 @@ Alarms
 | I7..  	| Name                   	| [Name]				|           	|
 | J7..  	| Type                   	| type					|           	|
 | K7..  	| Value                  	| values (list)          		|           	|
-| K7..  	| Value                  	| max,min (integer)          		|           	|
-| K7..  	| Value                  	| range (if not boolean or integer)	| yes       	|
+| K7..  	| Value                  	| max,min (integer, long, real)		|           	|
+| K7..  	| Value                  	| range (unless using values,min,max)	| yes       	|
 | L7..  	| Comment                	| description            		|           	|
 
 Status
@@ -161,8 +161,8 @@ Status
 | E7..  	| Name              	| [Name]                 		|           	|
 | F7..  	| Type              	| type                   		|           	|
 | G7..  	| Value             	| values (list)          		|           	|
-| G7..  	| Value             	| max,min (integer)          		|           	|
-| G7..  	| Value             	| range (if not boolean or integer) 	| yes       	|
+| G7..  	| Value             	| max,min (integer, long, real)		|           	|
+| G7..  	| Value             	| range (unless using values,min,max) 	| yes       	|
 | H7..  	| Comment           	| description            		|           	|
 
 Commands
@@ -177,8 +177,8 @@ Commands
 | F7..  	| Command           	| command                		|           	|
 | G7..  	| Type              	| type                   		|           	|
 | H7..  	| Value             	| values (list)          		|           	|
-| h7..  	| Value             	| max,min (integer)          		|           	|
-| H7..  	| Value             	| range (if not boolean or integer) 	| yes       	|
+| h7..  	| Value             	| max,min (integer, long, real) 	|           	|
+| H7..  	| Value             	| range (unless using values,min,max)	| yes       	|
 | I7..  	| Comment           	| description            		|           	|
 
 Example usages
