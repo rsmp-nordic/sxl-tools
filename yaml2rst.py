@@ -186,6 +186,8 @@ def print_alarms():
                         for argument_name, argument in alarm['arguments'].items():
                             name = argument_name
                             type = argument['type']
+
+                            # If the 'values' exists, use it to construct a list
                             if "values" in argument:
                                 val_list = []
                                 for v in argument['values']:
@@ -193,22 +195,22 @@ def print_alarms():
                                 value = " |br| ".join(val_list)
 
                             else:
-                                # Extended
-                                if "range" in argument:
-                                    value = argument['range']
-                                else:
-                                    if type == "boolean":
-                                        value = "-True |br| -False"
-                                    elif type == "integer":
-                                      if "min" in argument:
+                                if type == "boolean":
+                                    value = "-True |br| -False"
+                                elif type == "integer" or type == "long" or type == "float":
+                                    if "min" in argument:
                                         min = argument['min']
-                                      else:
+                                    else:
                                         min = ""
-                                      if "max" in argument:
+                                    if "max" in argument:
                                         max = argument['max']
-                                      else:
+                                    else:
                                         max = ""
-                                      value = "[" + str(min) + "-" + str(max) + "]"
+                                    value = "[" + str(min) + "-" + str(max) + "]"
+                                else:
+                                    # Extended
+                                    if "range" in argument:
+                                        value = argument['range']
                                     else:
                                         value = ""
                             if "description" in argument:
@@ -300,22 +302,22 @@ def print_status():
                                     val_list.append("-" + str(v))
                                 value = " |br| ".join(val_list)
                             else:
-                                # Extended
-                                if "range" in argument:
-                                    value = argument['range']
-                                else:
-                                    if type == "boolean":
-                                        value = "-False |br| -True"
-                                    elif type == "integer":
-                                      if "min" in argument:
+                                if type == "boolean":
+                                    value = "-False |br| -True"
+                                elif type == "integer" or type == "long" or type == "float":
+                                    if "min" in argument:
                                         min = argument['min']
-                                      else:
+                                    else:
                                         min = ""
-                                      if "max" in argument:
+                                    if "max" in argument:
                                         max = argument['max']
-                                      else:
+                                    else:
                                         max = ""
-                                      value = "[" + str(min) + "-" + str(max) + "]"
+                                    value = "[" + str(min) + "-" + str(max) + "]"
+                                else:
+                                    # Extended
+                                    if "range" in argument:
+                                        value = argument['range']
                                     else:
                                         value = ""
                             if "description" in argument:
@@ -396,22 +398,22 @@ def print_commands():
                                     val_list.append("-" + v)
                                 value = " |br| ".join(val_list)
                             else:
-                                # Extended
-                                if "range" in argument:
-                                    value = argument['range']
-                                else:
-                                    if(type == "boolean"):
-                                        value = "-False |br| -True"
-                                    elif type == "integer":
-                                      if "min" in argument:
+                                if(type == "boolean"):
+                                    value = "-False |br| -True"
+                                elif type == "integer":
+                                    if "min" in argument:
                                         min = argument['min']
-                                      else:
+                                    else:
                                         min = ""
-                                      if "max" in argument:
+                                    if "max" in argument:
                                         max = argument['max']
-                                      else:
+                                    else:
                                         max = ""
-                                      value = "[" + str(min) + "-" + str(max) + "]"
+                                    value = "[" + str(min) + "-" + str(max) + "]"
+                                else:
+                                    # Extended
+                                    if "range" in argument:
+                                        value = argument['range']
                                     else:
                                         value = ""
                             if "description" in argument:
