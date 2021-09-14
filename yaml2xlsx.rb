@@ -195,6 +195,7 @@ sxl["objects"].each { |object|
             values = "-False\n-True"
             set_cell(sheet, col+2, row, values)
         else
+          # If 'range' exists, just use it
           unless value["range"].nil?
             set_cell(sheet, col+2, row, value["range"])
           else
@@ -254,6 +255,7 @@ sxl["objects"].each { |object|
           values = "-False\n-True"
           set_cell(sheet, col+2, row, values)
       else
+        # If 'range' exists, just use it
         unless value["range"].nil?
           set_cell(sheet, col+2, row, value["range"])
         else
@@ -309,6 +311,7 @@ sxl["objects"].each { |object|
           values = "-False\n-True"
           set_cell(sheet, col+3, row, values)
       else
+        # If 'range' exists, just use it
         unless value["range"].nil?
           set_cell(sheet, col+3, row, value["range"])
         else
