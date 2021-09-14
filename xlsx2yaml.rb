@@ -238,8 +238,16 @@ workbook.each do |sheet|
               end
             }
           else
-            if options[:extended]
-              rv[sheet[y][x].value]['range'] = sheet[y][x+2].value
+            # Set 'max' and 'min' if type is integer, long or real
+            if rv[sheet[y][x].value]['type'] == 'integer' or rv[sheet[y][x].value]['type'] == 'long' or rv[sheet[y][x].value]['type'] == 'real'
+              values = sheet[y][x+2].value.tr('[]','').split("-")
+              rv[sheet[y][x].value]['min'] = values[0].to_i
+              rv[sheet[y][x].value]['max'] = values[1].to_i
+              rv[sheet[y][x].value]['type'] << "_list"	# Add _list to type if min/max is used
+            else
+              if options[:extended]
+                rv[sheet[y][x].value]['range'] = sheet[y][x+2].value
+              end
             end
           end
         end
@@ -331,7 +339,7 @@ workbook.each do |sheet|
       while(sheet[y][x] != nil and sheet[y][x].value != nil and !sheet[y][x].value.empty?) do
         a[sheet[y][x].value] = {
             'type' => sheet[y][x+1].value,
-             'description' => sheet[y][x+3].value
+             'description' => sheet[y][x+3].value.chomp
         }
 
         # No need to output values if type is boolean
@@ -361,8 +369,16 @@ workbook.each do |sheet|
               end
             }
           else
-            if options[:extended]
-              a[sheet[y][x].value]['range'] = sheet[y][x+2].value
+            # Set 'max' and 'min' if type is integer, long or real
+            if a[sheet[y][x].value]['type'] == 'integer' or a[sheet[y][x].value]['type'] == 'long' or a[sheet[y][x].value]['type'] == 'real'
+              values = sheet[y][x+2].value.tr('[]','').split("-")
+              a[sheet[y][x].value]['min'] = values[0].to_i
+              a[sheet[y][x].value]['max'] = values[1].to_i
+              a[sheet[y][x].value]['type'] << "_list"	# Add _list to type if min/max is used
+            else
+              if options[:extended]
+                a[sheet[y][x].value]['range'] = sheet[y][x+2].value
+              end
             end
           end
         end
@@ -438,8 +454,16 @@ workbook.each do |sheet|
                 end
               }
             else
-              if options[:extended]
-                a[sheet[y][x].value]['range'] = sheet[y][x+3].value
+              # Set 'max' and 'min' if type is integer, long or real
+              if a[sheet[y][x].value]['type'] == 'integer' or a[sheet[y][x].value]['type'] == 'long' or a[sheet[y][x].value]['type'] == 'real'
+                values = sheet[y][x+3].value.tr('[]','').split("-")
+                a[sheet[y][x].value]['min'] = values[0].to_i
+                a[sheet[y][x].value]['max'] = values[1].to_i
+                a[sheet[y][x].value]['type'] << "_list"	# Add _list to type if min/max is used
+              else
+                if options[:extended]
+                  a[sheet[y][x].value]['range'] = sheet[y][x+3].value
+                end
               end
             end
           end

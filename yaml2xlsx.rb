@@ -189,24 +189,34 @@ sxl["objects"].each { |object|
     col = 9
     unless item[1]["arguments"].nil?
       item[1]["arguments"].each { |argument, value|
+        # Remove _list from the type (integer_list)
+        value["type"].gsub!("_list", "")
+
         set_cell(sheet, col, row, argument)
         set_cell(sheet, col+1, row, value["type"])
         if value["type"] == "boolean"
             values = "-False\n-True"
             set_cell(sheet, col+2, row, values)
         else
+          # If 'range' exists, just use it
           unless value["range"].nil?
             set_cell(sheet, col+2, row, value["range"])
           else
-            # Make a list of values and append to description
-            values = ""
             description = ""
-            value["values"].each { |v, desc |
-              values += "-" + v + "\n"
-              unless desc.empty?
-                description += + v + ": " + desc + "\n"
-              end
-            }
+            if not value["values"].nil?
+              # Make a list of values and append to description
+              values = ""
+              value["values"].each { |v, desc |
+                values += "-" + v.to_s + "\n"
+                unless desc.empty?
+                  description += + v.to_s + ": " + desc + "\n"
+                end
+              }
+            elsif not value["min"].nil?
+              min = value["min"]
+              max = value["max"]
+              values = "[" + min.to_s + "-" + max.to_s + "]"
+            end
             values.chomp!
             description.chomp!
             if value["description"].nil?
@@ -240,7 +250,7 @@ sxl["objects"].each { |object|
     set_cell(sheet, 2, row, item[1]["object"]) # object
     set_cell(sheet, 3, row, item[0])
     if options[:short].nil?
-      set_cell(sheet, 4, row, item[1]["description"])
+      set_cell(sheet, 4, row, item[1]["description"].chomp)
     else
       set_cell(sheet, 4, row, item[1]["description"].lines.first.chomp)
     end
@@ -248,24 +258,34 @@ sxl["objects"].each { |object|
     # Return values
     col = 5
     item[1]["arguments"].each { |argument, value|  # in statuses, it's called return value
+      # Remove _list from the type (integer_list)
+      value["type"].gsub!("_list", "")
+
       set_cell(sheet, col, row, argument)
       set_cell(sheet, col+1, row, value["type"])
       if value["type"] == "boolean"
           values = "-False\n-True"
           set_cell(sheet, col+2, row, values)
       else
+        # If 'range' exists, just use it
         unless value["range"].nil?
           set_cell(sheet, col+2, row, value["range"])
         else
-          # Make a list of values and append to description
-          values = ""
           description = ""
-          value["values"].each { |v, desc |
-            values += "-" + v.to_s + "\n"
-            unless desc.empty?
-              description += + v.to_s + ": " + desc + "\n"
-            end
-          }
+          if not value["values"].nil?
+            # Make a list of values and append to description
+            values = ""
+            value["values"].each { |v, desc |
+              values += "-" + v.to_s + "\n"
+              unless desc.empty?
+                description += + v.to_s + ": " + desc + "\n"
+              end
+            }
+          elsif not value["min"].nil?
+            min = value["min"]
+            max = value["max"]
+            values = "[" + min.to_s + "-" + max.to_s + "]"
+          end
           values.chomp!
           description.chomp!
           if value["description"].nil?
@@ -302,6 +322,9 @@ sxl["objects"].each { |object|
     # Arguments
     col = 5
     item[1]["arguments"].each { |argument, value|
+      # Remove _list from the type (integer_list)
+      value["type"].gsub!("_list", "")
+
       set_cell(sheet, col, row, argument)
       set_cell(sheet, col+1, row, item[1]["command"])
       set_cell(sheet, col+2, row, value["type"])
@@ -309,18 +332,25 @@ sxl["objects"].each { |object|
           values = "-False\n-True"
           set_cell(sheet, col+3, row, values)
       else
+        # If 'range' exists, just use it
         unless value["range"].nil?
           set_cell(sheet, col+3, row, value["range"])
         else
-          # Make a list of values and append to description
-          values = ""
           description = ""
-          value["values"].each { |v, desc |
-            values += "-" + v + "\n"
-            unless desc.empty?
-              description += + v + ": " + desc + "\n"
-            end
-          }
+          if not value["values"].nil?
+            # Make a list of values and append to description
+            values = ""
+            value["values"].each { |v, desc |
+              values += "-" + v.to_s + "\n"
+              unless desc.empty?
+                description += + v.to_s + ": " + desc + "\n"
+              end
+            }
+          elsif not value["min"].nil?
+            min = value["min"]
+            max = value["max"]
+            values = "[" + min.to_s + "-" + max.to_s + "]"
+          end
           values.chomp!
           description.chomp!
           if value["description"].nil?

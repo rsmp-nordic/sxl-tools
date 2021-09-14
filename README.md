@@ -32,7 +32,7 @@ Notes about xlsx2yaml
   then also the ntsObjectId field is added
 * Since the "values" fields in alarms, statuses and commands cannot easily
   be converted from the SXL in Excel format, the "range" field is added if type
-  is not boolean and there is no predefined values to choose from.
+  is not boolean, integer, long or real and there is no predefined values to choose from.
   Enable using the -e flag
 * Typical usage:
   * Output to rsmp_schema: No extra options needed
@@ -133,50 +133,53 @@ Aggregated status
 
 Alarms
 
-| Cell  	| Name in Excel          	| YAML                   	| extended? 	|
-|-------	|------------------------	|------------------------	|-----------	|
-| A7..  	| ObjectType             	| [ObjectType]           	|           	|
-| B7..  	| Object (optional)      	| [Object]               	| yes       	|
-| C7..  	| alarmCodeId            	| [alarmCodeId]          	|           	|
-| D7..  	| Description            	| description            	|           	|
-| E7..  	| externalAlarmCodeId    	| externalAlarmCodeId    	| yes       	|
-| F7..  	| externalNtsAlarmCodeId 	| externalNtsAlarmCodeId 	| yes       	|
-| G7..  	| Priority               	| priority               	|           	|
-| H7..  	| Category               	| category               	|           	|
-| I7..  	| Name                   	| [Name]                 	|           	|
-| J7..  	| Type                   	| type                   	|           	|
-| K7..  	| Value                  	| values (list)          	|           	|
-| K7..  	| Value                  	| range (if not boolean) 	| yes       	|
-| L7..  	| Comment                	| description            	|           	|
+| Cell  	| Name in Excel          	| YAML                   		| extended? 	|
+|-------	|------------------------	|------------------------		|-----------	|
+| A7..  	| ObjectType             	| [ObjectType]           		|           	|
+| B7..  	| Object (optional)      	| [Object]               		| yes       	|
+| C7..  	| alarmCodeId            	| [alarmCodeId]          		|           	|
+| D7..  	| Description            	| description            		|           	|
+| E7..  	| externalAlarmCodeId    	| externalAlarmCodeId    		| yes       	|
+| F7..  	| externalNtsAlarmCodeId 	| externalNtsAlarmCodeId 		| yes       	|
+| G7..  	| Priority               	| priority               		|           	|
+| H7..  	| Category               	| category               		|           	|
+| I7..  	| Name                   	| [Name]				|           	|
+| J7..  	| Type                   	| type					|           	|
+| K7..  	| Value                  	| values (list)          		|           	|
+| K7..  	| Value                  	| max,min (integer, long, real)		|           	|
+| K7..  	| Value                  	| range (unless using values,min,max)	| yes       	|
+| L7..  	| Comment                	| description            		|           	|
 
 Status
 
-| Cell  	| Name in Excel     	| YAML                   	| extended? 	|
-|-------	|-------------------	|------------------------	|-----------	|
-| A7..  	| ObjectType        	| [ObjectType]           	|           	|
-| B7..  	| Object (optional) 	| [Object]               	| yes       	|
-| C7..  	| statusCodeId      	| [statusCodeId]         	|           	|
-| D7..  	| Description       	| description            	|           	|
-| E7..  	| Name              	| [Name]                 	|           	|
-| F7..  	| Type              	| type                   	|           	|
-| G7..  	| Value             	| values (list)          	|           	|
-| G7..  	| Value             	| range (if not boolean) 	| yes       	|
-| H7..  	| Comment           	| description            	|           	|
+| Cell  	| Name in Excel     	| YAML                   		| extended? 	|
+|-------	|-------------------	|------------------------		|-----------	|
+| A7..  	| ObjectType        	| [ObjectType]           		|           	|
+| B7..  	| Object (optional) 	| [Object]               		| yes       	|
+| C7..  	| statusCodeId      	| [statusCodeId]         		|           	|
+| D7..  	| Description       	| description            		|           	|
+| E7..  	| Name              	| [Name]                 		|           	|
+| F7..  	| Type              	| type                   		|           	|
+| G7..  	| Value             	| values (list)          		|           	|
+| G7..  	| Value             	| max,min (integer, long, real)		|           	|
+| G7..  	| Value             	| range (unless using values,min,max) 	| yes       	|
+| H7..  	| Comment           	| description            		|           	|
 
 Commands
 
-| Cell  	| Name in Excel     	| YAML                   	| extended? 	|
-|-------	|-------------------	|------------------------	|-----------	|
-| A7..  	| ObjectType        	| [ObjectType]           	|           	|
-| B7..  	| Object (optional) 	| [Object]               	| yes       	|
-| C7..  	| commandCodeId     	| [commandCodeId]        	|           	|
-| D7..  	| Description       	| description            	|           	|
-| E7..  	| Name              	| [Name]                 	|           	|
-| F7..  	| Command           	| command                	|           	|
-| G7..  	| Type              	| type                   	|           	|
-| H7..  	| Value             	| values (list)          	|           	|
-| H7..  	| Value             	| range (if not boolean) 	| yes       	|
-| I7..  	| Comment           	| description            	|           	|
+| Cell  	| Name in Excel     	| YAML                   		| extended? 	|
+|-------	|-------------------	|------------------------		|-----------	|
+| A7..  	| ObjectType        	| [ObjectType]           		|           	|
+| B7..  	| Object (optional) 	| [Object]               		| yes       	|
+| C7..  	| commandCodeId     	| [commandCodeId]        		|           	|
+| D7..  	| Description       	| description            		|           	|
+| E7..  	| Name              	| [Name]                 		|           	|
+| F7..  	| Command           	| command                		|           	|
+| G7..  	| Type              	| type                   		|           	|
+| H7..  	| Value             	| values (list)          		|           	|
+| h7..  	| Value             	| max,min (integer, long, real) 	|           	|
+| H7..  	| Value             	| range (unless using values,min,max)	| yes       	|
+| I7..  	| Comment           	| description            		|           	|
 
 Example usages
 --------------
