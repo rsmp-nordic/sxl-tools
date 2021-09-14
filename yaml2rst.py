@@ -185,7 +185,7 @@ def print_alarms():
                     if "arguments" in alarm:
                         for argument_name, argument in alarm['arguments'].items():
                             name = argument_name
-                            type = argument['type']
+                            type = argument['type'].replace("_list", "")
 
                             # If the 'values' exists, use it to construct a list
                             if "values" in argument:
@@ -295,7 +295,8 @@ def print_status():
                     if "arguments" in status:
                         for argument_name,argument in status['arguments'].items():
                             name = argument_name
-                            type = argument['type']
+                            type = argument['type'].replace("_list", "")
+
                             if "values" in argument:
                                 val_list = []
                                 for v in argument['values']:
@@ -391,7 +392,9 @@ def print_commands():
                     if "arguments" in command:
                         for argument_name,argument in command['arguments'].items():
                             name = argument_name
-                            type = argument['type']
+                            type = argument['type'].replace("_list", "")
+
+                            # If the 'values' exists, use it to construct a list
                             if "values" in argument:
                                 val_list = []
                                 for v in argument['values']:

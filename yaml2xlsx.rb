@@ -189,6 +189,9 @@ sxl["objects"].each { |object|
     col = 9
     unless item[1]["arguments"].nil?
       item[1]["arguments"].each { |argument, value|
+        # Remove _list from the type (integer_list)
+        value["type"].gsub!("_list", "")
+
         set_cell(sheet, col, row, argument)
         set_cell(sheet, col+1, row, value["type"])
         if value["type"] == "boolean"
@@ -255,6 +258,9 @@ sxl["objects"].each { |object|
     # Return values
     col = 5
     item[1]["arguments"].each { |argument, value|  # in statuses, it's called return value
+      # Remove _list from the type (integer_list)
+      value["type"].gsub!("_list", "")
+
       set_cell(sheet, col, row, argument)
       set_cell(sheet, col+1, row, value["type"])
       if value["type"] == "boolean"
@@ -316,6 +322,9 @@ sxl["objects"].each { |object|
     # Arguments
     col = 5
     item[1]["arguments"].each { |argument, value|
+      # Remove _list from the type (integer_list)
+      value["type"].gsub!("_list", "")
+
       set_cell(sheet, col, row, argument)
       set_cell(sheet, col+1, row, item[1]["command"])
       set_cell(sheet, col+2, row, value["type"])
