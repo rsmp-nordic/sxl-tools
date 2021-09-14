@@ -199,15 +199,21 @@ sxl["objects"].each { |object|
           unless value["range"].nil?
             set_cell(sheet, col+2, row, value["range"])
           else
-            # Make a list of values and append to description
-            values = ""
             description = ""
-            value["values"].each { |v, desc |
-              values += "-" + v + "\n"
-              unless desc.empty?
-                description += + v + ": " + desc + "\n"
-              end
-            }
+            if not value["values"].nil?
+              # Make a list of values and append to description
+              values = ""
+              value["values"].each { |v, desc |
+                values += "-" + v.to_s + "\n"
+                unless desc.empty?
+                  description += + v.to_s + ": " + desc + "\n"
+                end
+              }
+            elsif not value["min"].nil?
+              min = value["min"]
+              max = value["max"]
+              values = "[" + min.to_s + "-" + max.to_s + "]"
+            end
             values.chomp!
             description.chomp!
             if value["description"].nil?
@@ -241,7 +247,7 @@ sxl["objects"].each { |object|
     set_cell(sheet, 2, row, item[1]["object"]) # object
     set_cell(sheet, 3, row, item[0])
     if options[:short].nil?
-      set_cell(sheet, 4, row, item[1]["description"])
+      set_cell(sheet, 4, row, item[1]["description"].chomp)
     else
       set_cell(sheet, 4, row, item[1]["description"].lines.first.chomp)
     end
@@ -259,15 +265,21 @@ sxl["objects"].each { |object|
         unless value["range"].nil?
           set_cell(sheet, col+2, row, value["range"])
         else
-          # Make a list of values and append to description
-          values = ""
           description = ""
-          value["values"].each { |v, desc |
-            values += "-" + v.to_s + "\n"
-            unless desc.empty?
-              description += + v.to_s + ": " + desc + "\n"
-            end
-          }
+          if not value["values"].nil?
+            # Make a list of values and append to description
+            values = ""
+            value["values"].each { |v, desc |
+              values += "-" + v.to_s + "\n"
+              unless desc.empty?
+                description += + v.to_s + ": " + desc + "\n"
+              end
+            }
+          elsif not value["min"].nil?
+            min = value["min"]
+            max = value["max"]
+            values = "[" + min.to_s + "-" + max.to_s + "]"
+          end
           values.chomp!
           description.chomp!
           if value["description"].nil?
@@ -315,15 +327,21 @@ sxl["objects"].each { |object|
         unless value["range"].nil?
           set_cell(sheet, col+3, row, value["range"])
         else
-          # Make a list of values and append to description
-          values = ""
           description = ""
-          value["values"].each { |v, desc |
-            values += "-" + v + "\n"
-            unless desc.empty?
-              description += + v + ": " + desc + "\n"
-            end
-          }
+          if not value["values"].nil?
+            # Make a list of values and append to description
+            values = ""
+            value["values"].each { |v, desc |
+              values += "-" + v.to_s + "\n"
+              unless desc.empty?
+                description += + v.to_s + ": " + desc + "\n"
+              end
+            }
+          elsif not value["min"].nil?
+            min = value["min"]
+            max = value["max"]
+            values = "[" + min.to_s + "-" + max.to_s + "]"
+          end
           values.chomp!
           description.chomp!
           if value["description"].nil?
