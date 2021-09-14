@@ -238,8 +238,8 @@ workbook.each do |sheet|
               end
             }
           else
-            # Set 'max' and 'min' if type is integer
-            if rv[sheet[y][x].value]['type'] == 'integer'
+            # Set 'max' and 'min' if type is integer, long or real
+            if rv[sheet[y][x].value]['type'] == 'integer' or rv[sheet[y][x].value]['type'] == 'long' or rv[sheet[y][x].value]['type'] == 'real'
               values = sheet[y][x+2].value.tr('[]','').split("-")
               rv[sheet[y][x].value]['min'] = values[0].to_i
               rv[sheet[y][x].value]['max'] = values[1].to_i
@@ -368,8 +368,8 @@ workbook.each do |sheet|
               end
             }
           else
-            # Set 'max' and 'min' if type is integer
-            if a[sheet[y][x].value]['type'] == 'integer'
+            # Set 'max' and 'min' if type is integer, long or real
+            if a[sheet[y][x].value]['type'] == 'integer' or a[sheet[y][x].value]['type'] == 'long' or a[sheet[y][x].value]['type'] == 'real'
               values = sheet[y][x+2].value.tr('[]','').split("-")
               a[sheet[y][x].value]['min'] = values[0].to_i
               a[sheet[y][x].value]['max'] = values[1].to_i
@@ -452,8 +452,8 @@ workbook.each do |sheet|
                 end
               }
             else
-              # Set 'max' and 'min' if type is integer
-              if a[sheet[y][x].value]['type'] == 'integer'
+              # Set 'max' and 'min' if type is integer, long or real
+              if a[sheet[y][x].value]['type'] == 'integer' or a[sheet[y][x].value]['type'] == 'long' or a[sheet[y][x].value]['type'] == 'real'
                 values = sheet[y][x+3].value.tr('[]','').split("-")
                 a[sheet[y][x].value]['min'] = values[0].to_i
                 a[sheet[y][x].value]['max'] = values[1].to_i
