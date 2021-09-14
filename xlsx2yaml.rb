@@ -338,7 +338,7 @@ workbook.each do |sheet|
       while(sheet[y][x] != nil and sheet[y][x].value != nil and !sheet[y][x].value.empty?) do
         a[sheet[y][x].value] = {
             'type' => sheet[y][x+1].value,
-             'description' => sheet[y][x+3].value
+             'description' => sheet[y][x+3].value.chomp
         }
 
         # No need to output values if type is boolean
