@@ -37,6 +37,10 @@ foreach my $sheet (@{$workbook->{Worksheet}}) {
 
 			if ($cell) {
 				$value = $cell->{Val};
+				if ($value =~ /"/) {
+					# Excel adds an extra quotation mark if it finds one
+					$value =~ s/\"/\"\"/g;
+				}
 				if ($value =~ /\r/) {
 					# Remove any carriage returns that might exist in cells
 					$value =~ tr/\r//d;
