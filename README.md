@@ -16,8 +16,8 @@ Excel macro:
 Notes about sxl2csv
 -------------------
 
-* Requires Spreadsheet::XLSX
-* Ubuntu: `sudo apt install libspreadsheet-xlsx-perl`
+* Requires Spreadsheet::XLSX, zip and unzip
+* Ubuntu: `sudo apt install libspreadsheet-xlsx-perl zip unzip`
 * Arch Linux: `pacman -S zip` and from AUR: `perl-spreadsheet-xlsx` and
   dependencies
 
