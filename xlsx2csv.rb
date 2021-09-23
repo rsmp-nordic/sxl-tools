@@ -7,6 +7,7 @@ require 'rubyXL/convenience_methods'
 XLSX = ARGV[0]
 workbook = RubyXL::Parser.parse(XLSX)
 
+system("mkdir Objects")
 workbook.each do |sheet|
   row = 0
   while sheet[row] != nil do
@@ -20,3 +21,11 @@ workbook.each do |sheet|
     row = row + 1
   end
 end
+
+system("zip -q -j Objects.zip Objects/*")
+system("rm -rf Objects")
+
+# Rename after source file
+XLSX.gsub!(/ /, '_')
+XLSX.gsub!(/.xlsx/, '')
+system("mv Objects.zip " + XLSX + ".zip")
