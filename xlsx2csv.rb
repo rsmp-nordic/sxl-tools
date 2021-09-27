@@ -32,10 +32,22 @@ workbook.each do |sheet|
       # Output the same number of columns
       while col < max_column do
         if sheet[row] != nil and sheet[row][col] != nil and sheet[row][col].value != nil
-          line = line + sheet[row][col].value.to_s + ";"
-        else
-          line = line + ";"
+          value = sheet[row][col].value.to_s
+          # Excel adds an extra quotation mark if it finds one
+          if value.match(/"/)
+            value.gsub!(/"/, '""')
+          end
+          # Remove any carrage return that might exist in cells
+          if value.match(/\n/)
+            value = '"' + value + '"'
+          end
+          # Excel quotes the value if it contain semicolon
+          if value.match(/;/)
+            value = '"' + value + '"'
+          end
+          line = line + value
         end
+        line = line + ";"
         col = col + 1
       end
 
