@@ -18,7 +18,7 @@ workbook.each do |sheet|
         line = line + sheet[row][col].value.to_s + ";" if sheet[row][col].value != nil
         col = col + 1
       end
-      f.write line
+      f.puts line 
       row = row + 1
     end
   end
