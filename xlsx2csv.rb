@@ -10,14 +10,35 @@ workbook = RubyXL::Parser.parse(xlsx)
 system("mkdir Objects")
 workbook.each do |sheet|
   File.open("Objects/" + sheet.sheet_name + ".csv", "w") do |f|
+
+    # Get max rows and columns for each sheet
+    max_column = 0
     row = 0
-    while sheet[row] != nil do
+    rows = sheet.map {|row| row && row.cells.each { |cell| cell && cell.value != nil}}
+    while row < rows.size
+      last_column = rows.compact.max_by{|row| row.size}.size
+      if last_column > max_column
+        max_column = last_column
+      end
+      row = row + 1
+    end
+    max_column = max_column - 1
+
+    row = 0
+    while row < rows.size
       line = ""
       col = 0
-      while sheet[row][col] != nil do
-        line = line + sheet[row][col].value.to_s + ";" if sheet[row][col].value != nil
+
+      # Output the same number of columns
+      while col < max_column do
+        if sheet[row] != nil and sheet[row][col] != nil and sheet[row][col].value != nil
+          line = line + sheet[row][col].value.to_s + ";"
+        else
+          line = line + ";"
+        end
         col = col + 1
       end
+
       f.puts line 
       row = row + 1
     end
