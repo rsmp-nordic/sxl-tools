@@ -24,15 +24,14 @@ workbook.each do |sheet|
       end
       row = row + 1
     end
-    max_column = max_column - 1
 
     row = 0
     while row < rows.size
-      line = ""
       col = 0
 
       # Output the same number of columns
       while col < max_column do
+        f.print ';' unless col == 0
         if sheet[row] != nil and sheet[row][col] != nil and sheet[row][col].value != nil
           value = sheet[row][col].value.to_s
           # Excel adds an extra quotation mark if it finds one
@@ -47,13 +46,12 @@ workbook.each do |sheet|
           if value.match(/;/)
             value = '"' + value + '"'
           end
-          line = line + value
+          f.print value
         end
-        line = line + ";"
         col = col + 1
       end
 
-      f.print line + "\r\n"
+      f.print "\r\n"
       row = row + 1
     end
   end
