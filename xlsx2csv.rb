@@ -51,7 +51,7 @@ workbook.each do |sheet|
         col = col + 1
       end
 
-      f.puts line 
+      f.print line + "\r\n"
       row = row + 1
     end
   end
