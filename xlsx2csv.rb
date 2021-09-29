@@ -42,6 +42,10 @@ workbook.each do |sheet|
           if value.match(/\n/) or value.match(/;/) or value.match(/"/)
             value = '"' + value + '"'
           end
+
+          # Older versions of Excel exports to CP-1252 instead of UTF-8
+          value.encode!("CP1252")
+
           f.print value
         end
         col = col + 1
