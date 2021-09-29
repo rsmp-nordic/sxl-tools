@@ -4,8 +4,7 @@ sxl-tools
 Exports signal exchange lists (SXL) used by RSMP from Excel-format (xlsx) to
 various formats.
 
-* **sxl2csv.pl**   - Exports SXL from XLSX format to CSV files, zip compressed.
-                     Suitable for use with the RSMP simulators
+* **xlsx2csv.rb**  - Reads SXL in Excel format and outputs to CSV format
 * **xlsx2yaml.rb** - Reads SXL in Excel format and outputs to YAML format
 * **yaml2xlsx.rb** - Reads SXL in YAML format and outputs to Excel format
 * **yaml2rst.py**  - Reads SXL in YAML format and outputs to RST format
@@ -13,13 +12,13 @@ various formats.
 Excel macro:
 * **rsmp_clean.xlsm** - 1.0.7 SXL, adapt according to cId/siteid and num SG/DET
 
-Notes about sxl2csv
--------------------
+Notes about xlsx2csv
+--------------------
 
-* Requires Spreadsheet::XLSX, zip and unzip
-* Ubuntu: `sudo apt install libspreadsheet-xlsx-perl zip unzip`
-* Arch Linux: `pacman -S zip` and from AUR: `perl-spreadsheet-xlsx` and
-  dependencies
+* Requires: gem install rubyXL
+* Usage: xlsx2csv [XLSX]
+* Exports SXL from XLSX format to CSV files, zip compressed.
+  Suitable for use with the RSMP simulators
 
 Notes about xlsx2yaml
 ---------------------
