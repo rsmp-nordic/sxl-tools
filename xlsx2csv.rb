@@ -9,7 +9,9 @@ workbook = RubyXL::Parser.parse(xlsx)
 
 system("mkdir Objects")
 workbook.each do |sheet|
-  File.open("Objects/" + sheet.sheet_name + ".csv", "w") do |f|
+  oname = sheet.sheet_name.gsub(/ /, '_')
+
+  File.open("Objects/" + oname + ".csv", "w") do |f|
 
     # Get max rows and columns for each sheet
     max_column = 0
