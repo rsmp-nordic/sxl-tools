@@ -38,12 +38,8 @@ workbook.each do |sheet|
           if value.match(/"/)
             value.gsub!(/"/, '""')
           end
-          # Remove any carrage return that might exist in cells
-          if value.match(/\n/)
-            value = '"' + value + '"'
-          end
-          # Excel quotes the value if it contain semicolon
-          if value.match(/;/)
+          # Excel quotes the value if it contain newlines, semicolons or quotations marks
+          if value.match(/\n/) or value.match(/;/) or value.match(/"/)
             value = '"' + value + '"'
           end
           f.print value
