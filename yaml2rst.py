@@ -191,12 +191,12 @@ def print_alarms():
                             if "values" in argument:
                                 val_list = []
                                 for v in argument['values']:
-                                    val_list.append("-" + v)
-                                value = " |br| ".join(val_list)
+                                    val_list.append("* " + v)
+                                value = "\n".join(val_list)
 
                             else:
                                 if type == "boolean":
-                                    value = "-True |br| -False"
+                                    value = "* True\n* False"
                                 elif type == "integer" or type == "long" or type == "float":
                                     if "min" in argument:
                                         min = argument['min']
@@ -300,11 +300,11 @@ def print_status():
                             if "values" in argument:
                                 val_list = []
                                 for v in argument['values']:
-                                    val_list.append("-" + str(v))
-                                value = " |br| ".join(val_list)
+                                    val_list.append("* " + str(v))
+                                value = "\n".join(val_list)
                             else:
                                 if type == "boolean":
-                                    value = "-False |br| -True"
+                                    value = "* False\n* True"
                                 elif type == "integer" or type == "long" or type == "float":
                                     if "min" in argument:
                                         min = argument['min']
@@ -398,11 +398,11 @@ def print_commands():
                             if "values" in argument:
                                 val_list = []
                                 for v in argument['values']:
-                                    val_list.append("-" + v)
-                                value = " |br| ".join(val_list)
+                                    val_list.append("* " + v)
+                                value = "\n".join(val_list)
                             else:
                                 if(type == "boolean"):
-                                    value = "-False |br| -True"
+                                    value = "* False\n* True"
                                 elif type == "integer":
                                     if "min" in argument:
                                         min = argument['min']
