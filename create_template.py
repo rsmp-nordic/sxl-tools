@@ -4,7 +4,7 @@
 # Requires xlsxwriter
 import xlsxwriter
 
-workbook = xlsxwriter.Workbook('SXL-template.xlsx')
+workbook = xlsxwriter.Workbook('RSMP_Template_SignalExchangeList.xlsx')
 
 # Version
 worksheet = workbook.add_worksheet('Version')
