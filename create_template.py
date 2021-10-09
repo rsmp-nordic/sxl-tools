@@ -6,9 +6,12 @@ import xlsxwriter
 
 workbook = xlsxwriter.Workbook('RSMP_Template_SignalExchangeList.xlsx')
 
+# Formatting
+cell_format = workbook.add_format({ 'font_size': '18'})
+
 # Version
 worksheet = workbook.add_worksheet('Version')
-worksheet.write('B2', 'Signal Exchange List')
+worksheet.write('B2', 'Signal Exchange List', cell_format)
 worksheet.write('B4', 'Plant id')
 worksheet.write('B6', 'Plant name')
 worksheet.write('B8', 'Work documentation')
