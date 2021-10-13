@@ -294,6 +294,16 @@ for num in range(0,num_return_values):
             worksheet.write(row, col, "", t9_box)
         col += 1
 
+# Adjust widths
+worksheet.set_column(0, 0, 32.13)
+worksheet.set_column(1, 1, 32.13)
+worksheet.set_column(2, 2, 16.13)
+worksheet.set_column(3, 3, 32.13)
+col = 4
+for num in range(0,num_return_values):
+    worksheet.set_column(col+(4*num), col+(4*num)+2, 8)
+    worksheet.set_column(col+(4*num)+3, col+(4*num)+3, 16.13)
+
 # Commands
 worksheet = workbook.add_worksheet('Commands')
 worksheet.write('A1', 'Commands per object type', t18b)
@@ -330,7 +340,6 @@ for num in range(0,num_arguments):
     worksheet.merge_range(4, col, 4, col+4, 'argument', t9b_c_i_box)
     for item in (argument):
         worksheet.write(5, col, item, t9b_l_i_box)
-        worksheet.set_column(col, col, 10.13)
         for row in range(6,9):
             worksheet.write(row, col, "", t9_box)
         col += 1
@@ -348,7 +357,6 @@ for num in range(0,num_arguments):
     worksheet.merge_range(10, col, 10, col+4, 'argument', t9b_c_i_box)
     for item in (argument):
         worksheet.write(11, col, item, t9b_l_i_box)
-        worksheet.set_column(col, col, 10.13)
         for row in range(12,15):
             worksheet.write(row, col, "", t9_box)
         col += 1
@@ -365,7 +373,6 @@ for num in range(0,num_arguments):
     worksheet.merge_range(16, col, 16, col+4, 'argument', t9b_c_i_box)
     for item in (argument):
         worksheet.write(17, col, item, t9b_l_i_box)
-        worksheet.set_column(col, col, 10.13)
         for row in range(18,21):
             worksheet.write(row, col, "", t9_box)
         col += 1
@@ -382,9 +389,18 @@ for num in range(0,num_arguments):
     worksheet.merge_range(22, col, 22, col+4, 'argument', t9b_c_i_box)
     for item in (argument):
         worksheet.write(23, col, item, t9b_l_i_box)
-        worksheet.set_column(col, col, 10.13)
         for row in range(24,27):
             worksheet.write(row, col, "", t9_box)
         col += 1
+
+# Adjust widths
+worksheet.set_column(0, 0, 32.13)
+worksheet.set_column(1, 1, 32.13)
+worksheet.set_column(2, 2, 16.13)
+worksheet.set_column(3, 3, 32.13)
+col = 4
+for num in range(0,num_arguments):
+    worksheet.set_column(col+(5*num), col+(5*num)+3, 8)
+    worksheet.set_column(col+(5*num)+4, col+(5*num)+4, 16.13)
 
 workbook.close()
