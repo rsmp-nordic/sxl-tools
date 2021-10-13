@@ -144,6 +144,15 @@ for col in range(0,6):
     for row in range(24,53):
         worksheet.write(row, col, "", t9_box)
 
+# Write comments
+worksheet.write_comment('A1',
+  "This tab contains info about all grouped objects and their single objects."+
+  "This tab should be exported to RSMP Simulators(s) as a CSV file, \n"+
+  "preferred name ''SiteId.CSV'', ex ''AB_26507_881.CSV''."+
+  "If there are multiple SiteId's for one plant (ex congestion tax) \n"+
+  "just add more Objects tabs and export them as multiple CSV files.")
+
+
 # Adjust widths
 worksheet.set_column(0, 0, 32.13)
 worksheet.set_column(1, 1, 34.5)
@@ -199,6 +208,12 @@ for bit, description in (bits):
     worksheet.write(row, 2, "", t9_box)
     row += 1
 
+# Write comments
+worksheet.write_comment('A1',
+  "This tab should not be exported to the RSMP Simulator(s), " +
+  "they do not use the information anyway. " +
+  "Aggregated Status is automatically created for each Grouped Object.")
+
 # Adjust widths
 worksheet.set_column(0, 0, 31.13)
 worksheet.set_column(1, 1, 40.5)
@@ -248,6 +263,19 @@ for num in range(0,num_return_values):
             worksheet.write(row, col, "", t9_box)
         col += 1
 
+# Write comments
+worksheet.write_comment('A1',
+  "This tab contains info about all alarms.\n"+
+  "This tab should be exported to RSMP Simulators(s) as a CSV file,\n"+
+  "preferred name ''Alarms.CSV''\n\n"+
+  "Simulator(s) will create alarms using ObjectType."+
+  "If alarm exist at a specific object only,"+
+  "specify it using the optional Object column."+
+  "Multiple return values for each AlarmCodeId could be specified,"+
+  "just add more return value column groups.")
+
+
+
 # Adjust widths
 worksheet.set_column(0, 0, 32.13)
 worksheet.set_column(1, 1, 32.13)
@@ -293,6 +321,18 @@ for num in range(0,num_return_values):
         for row in range(6,52):
             worksheet.write(row, col, "", t9_box)
         col += 1
+
+# Write comments
+worksheet.write_comment('A1',
+  "This tab contains info about status values, ex Speed, Time, NOx etc."+
+  "Type could be string, boolean, integer, float, base64 etc."+
+  "This tab should be exported to RSMP Simulators(s) as a CSV file,"+
+  "preferred name ''Status.CSV''"+
+  "Simulator(s) will create status values using ObjectType."+
+  "If status exist at a specific object only,"+
+  "specify it using the optional Object column."+
+  "Multiple return values for each StatusCodeId could be specified,"+
+  "just add more return value column groups.")
 
 # Adjust widths
 worksheet.set_column(0, 0, 32.13)
@@ -392,6 +432,19 @@ for num in range(0,num_arguments):
         for row in range(24,27):
             worksheet.write(row, col, "", t9_box)
         col += 1
+
+# Write comments
+worksheet.write_comment('A1',
+  "This tab contains info about commands,"+
+  "ex Barriers, Fans, Information sign etc."+
+  "Type could be string, boolean, integer, float, base64 etc."+
+  "This tab should be exported to RSMP Simulators(s) as a CSV file,"+
+  "preferred name ''Commands.CSV''"+
+  "Simulator(s) will create commands using ObjectType."+
+  "If command exist at a specific object only,"+
+  "specify it using the optional Object column."+
+  "Multiple command arguments for each CommandCodeId could be specified,"+
+  "just add more argument column groups.")
 
 # Adjust widths
 worksheet.set_column(0, 0, 32.13)
