@@ -23,6 +23,8 @@ t9b_l = workbook.add_format({'font_name':'Arial', 'font_size':'9',
     'bold':True, 'align':'left'})
 t9b_l_i_box = workbook.add_format({'font_name':'Arial', 'font_size':'9',
     'bold':True, 'align':'left', 'italic':True,'border':1, 'bottom':2})
+t9b_c_i_box = workbook.add_format({'font_name':'Arial', 'font_size':'9',
+    'bold':True, 'align':'center', 'italic':True,'border':1})
 t9b_c_box = workbook.add_format({'font_name':'Arial', 'font_size':'9',
     'bold':True, 'align':'center', 'border':1})
 t9 = workbook.add_format({'font_name':'Arial', 'font_size':'9'})
@@ -156,7 +158,14 @@ worksheet.write('A3', 'Revision date:', t9b_r)
 worksheet.write('B3', 'yyyy-mm-dd', t9_c)
 worksheet.write('C5', 'Obs! Leading ''-'' should not exist in protocol level', t9)
 
-title = ['ObjectType', 'State', 'functionalPosition', 'functionalState', 'Description']
+title = [
+    'ObjectType',
+    'State',
+    'functionalPosition',
+    'functionalState',
+    'Description'
+]
+
 col = 0
 for item in (title):
     worksheet.write(5, col, item, t9b_l_i_box)
@@ -199,29 +208,55 @@ worksheet.set_column(4, 4, 32.13)
 
 # Alarms
 worksheet = workbook.add_worksheet('Alarms')
-worksheet.write('A1', 'Alarms per object type')
-worksheet.write('A3', 'Revision date:')
-worksheet.write('B3', 'yyyy-mm-dd')
-worksheet.write('A6', 'ObjectType')
-worksheet.write('B6', 'Object (optional)')
-worksheet.write('C6', 'alarmCodeId')
-worksheet.write('D6', 'Description')
-worksheet.write('E6', 'externalAlarmCodeId')
-worksheet.write('F6', 'externalNtSAlarmCodeId')
-worksheet.write('G6', 'Priority')
-worksheet.write('H6', 'Category')
+worksheet.write('A1', 'Alarms per object type', t18b)
+worksheet.write('A3', 'Revision date:', t9b_r)
+worksheet.write('B3', 'yyyy-mm-dd', t9_c)
+worksheet.write('I4', 'Obs! Leading ''-'' should not exist in protocol level', t9)
 
-worksheet.write('I4', 'Obs! Leading ''-'' should not exist in protocol level')
-worksheet.write('I5', 'return value')
-worksheet.write('I6', 'Name')
-worksheet.write('J6', 'Type')
-worksheet.write('K6', 'Value')
-worksheet.write('L6', 'Comment')
-worksheet.write('M5', 'return value')
-worksheet.write('M6', 'Name')
-worksheet.write('N6', 'Type')
-worksheet.write('O6', 'Value')
-worksheet.write('P6', 'Comment')
+title = [
+    'ObjectType',
+    'Object (optional)',
+    'alarmCodeId',
+    'Description',
+    'externalAlarmCodeId',
+    'externalNtSAlarmCodeId',
+    'Priority',
+    'Category'
+]
+
+col = 0
+for item in (title):
+    worksheet.write(5, col, item, t9b_l_i_box)
+    col += 1
+
+for col in range(0,8):
+    for row in range(6,26):
+        worksheet.write(row, col, "", t9_box)
+
+col = 8
+num_return_values=2
+return_value = [
+    'Name',
+    'Type',
+    'Value',
+    'Comment'
+]
+for num in range(0,num_return_values):
+    worksheet.merge_range(4, col, 4, col+3, 'return value', t9b_c_i_box)
+    for item in (return_value):
+        worksheet.write(5, col, item, t9b_l_i_box)
+        worksheet.set_column(col, col, 10.13)
+        for row in range(6,26):
+            worksheet.write(row, col, "", t9_box)
+        col += 1
+
+# Adjust widths
+worksheet.set_column(0, 0, 32.13)
+worksheet.set_column(1, 1, 32.13)
+worksheet.set_column(2, 2, 16.63)
+worksheet.set_column(3, 3, 32.13)
+worksheet.set_column(4, 4, 32.13)
+worksheet.set_column(5, 5, 32.13)
 
 # Status
 worksheet = workbook.add_worksheet('Status')
