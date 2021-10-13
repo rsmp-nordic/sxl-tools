@@ -227,11 +227,9 @@ title = [
 col = 0
 for item in (title):
     worksheet.write(5, col, item, t9b_l_i_box)
-    col += 1
-
-for col in range(0,8):
     for row in range(6,26):
         worksheet.write(row, col, "", t9_box)
+    col += 1
 
 col = 8
 num_return_values=2
@@ -260,25 +258,41 @@ worksheet.set_column(5, 5, 32.13)
 
 # Status
 worksheet = workbook.add_worksheet('Status')
-worksheet.write('A1', 'Status per object type')
-worksheet.write('A3', 'Revision date:')
-worksheet.write('B3', 'yyyy-mm-dd')
-worksheet.write('A6', 'ObjectType')
-worksheet.write('B6', 'Object (optional)')
-worksheet.write('C6', 'statusCodeId')
-worksheet.write('D6', 'Description')
-
+worksheet.write('A1', 'Status per object type', t18b)
+worksheet.write('A3', 'Revision date:', t9b_r)
+worksheet.write('B3', 'yyyy-mm-dd', t9_c)
 worksheet.write('E4', 'Obs! Leading ''-'' should not exist in protocol level')
-worksheet.write('E5', 'return value')
-worksheet.write('E6', 'Name')
-worksheet.write('F6', 'Type')
-worksheet.write('G6', 'Value')
-worksheet.write('H6', 'Comment')
-worksheet.write('I5', 'return value')
-worksheet.write('I6', 'Name')
-worksheet.write('J6', 'Type')
-worksheet.write('K6', 'Value')
-worksheet.write('L6', 'Comment')
+
+title = [
+    'ObjectType',
+    'Object (optional)',
+    'statusCodeId',
+    'Description',
+]
+
+col = 0
+for item in (title):
+    worksheet.write(5, col, item, t9b_l_i_box)
+    for row in range(6,52):
+        worksheet.write(row, col, "", t9_box)
+    col += 1
+
+col = 4
+num_return_values=2
+return_value = [
+    'Name',
+    'Type',
+    'Value',
+    'Comment'
+]
+for num in range(0,num_return_values):
+    worksheet.merge_range(4, col, 4, col+3, 'return value', t9b_c_i_box)
+    for item in (return_value):
+        worksheet.write(5, col, item, t9b_l_i_box)
+        worksheet.set_column(col, col, 10.13)
+        for row in range(6,52):
+            worksheet.write(row, col, "", t9_box)
+        col += 1
 
 # Commands
 worksheet = workbook.add_worksheet('Commands')
