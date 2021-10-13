@@ -261,7 +261,7 @@ worksheet = workbook.add_worksheet('Status')
 worksheet.write('A1', 'Status per object type', t18b)
 worksheet.write('A3', 'Revision date:', t9b_r)
 worksheet.write('B3', 'yyyy-mm-dd', t9_c)
-worksheet.write('E4', 'Obs! Leading ''-'' should not exist in protocol level')
+worksheet.write('E4', 'Obs! Leading ''-'' should not exist in protocol level', t9)
 
 title = [
     'ObjectType',
@@ -296,81 +296,95 @@ for num in range(0,num_return_values):
 
 # Commands
 worksheet = workbook.add_worksheet('Commands')
-worksheet.write('A1', 'Commands per object type')
-worksheet.write('A3', 'Revision date:')
-worksheet.write('B3', 'yyyy-mm-dd')
+worksheet.write('A1', 'Commands per object type', t18b)
+worksheet.write('A3', 'Revision date:', t9b_r)
+worksheet.write('B3', 'yyyy-mm-dd', t9_c)
+worksheet.write('E4', 'Obs! Leading ''-'' should not exist in protocol level', t9)
 
 worksheet.write('A5', 'Functional position')
-worksheet.write('A6', 'ObjectType')
-worksheet.write('B6', 'Object (optional)')
-worksheet.write('C6', 'commandCodeId')
-worksheet.write('D6', 'Description')
-worksheet.write('E4', 'Obs! Leading ''-'' should not exist in protocol level')
-worksheet.write('E5', 'argument')
-worksheet.write('E6', 'Name')
-worksheet.write('F6', 'Command')
-worksheet.write('G6', 'Type')
-worksheet.write('H6', 'Value')
-worksheet.write('I6', 'Comment')
-worksheet.write('J5', 'argument')
-worksheet.write('J6', 'Name')
-worksheet.write('K6', 'Command')
-worksheet.write('L6', 'Type')
-worksheet.write('M6', 'Value')
-worksheet.write('N6', 'Comment')
+
+title = [
+    'ObjectType',
+    'Object (optional)',
+    'commandCodeId',
+    'Description',
+]
+
+col = 0
+for item in (title):
+    worksheet.write(5, col, item, t9b_l_i_box)
+    for row in range(6,9):
+        worksheet.write(row, col, "", t9_box)
+    col += 1
+
+col = 4
+num_arguments=2
+argument = [
+    'Name',
+    'Command',
+    'Type',
+    'Value',
+    'Comment'
+]
+for num in range(0,num_arguments):
+    worksheet.merge_range(4, col, 4, col+4, 'argument', t9b_c_i_box)
+    for item in (argument):
+        worksheet.write(5, col, item, t9b_l_i_box)
+        worksheet.set_column(col, col, 10.13)
+        for row in range(6,9):
+            worksheet.write(row, col, "", t9_box)
+        col += 1
+
 
 worksheet.write('A11', 'Functional state')
-worksheet.write('A12', 'ObjectType')
-worksheet.write('B12', 'Object (optional)')
-worksheet.write('C12', 'commandCodeId')
-worksheet.write('D12', 'Description')
-worksheet.write('E11', 'argument')
-worksheet.write('E12', 'Name')
-worksheet.write('F12', 'Command')
-worksheet.write('G12', 'Type')
-worksheet.write('H12', 'Value')
-worksheet.write('I12', 'Comment')
-worksheet.write('J11', 'argument')
-worksheet.write('J12', 'Name')
-worksheet.write('K12', 'Command')
-worksheet.write('L12', 'Type')
-worksheet.write('M12', 'Value')
-worksheet.write('N12', 'Comment')
+col = 0
+for item in (title):
+    worksheet.write(11, col, item, t9b_l_i_box)
+    for row in range(12,15):
+        worksheet.write(row, col, "", t9_box)
+    col += 1
+col = 4
+for num in range(0,num_arguments):
+    worksheet.merge_range(10, col, 10, col+4, 'argument', t9b_c_i_box)
+    for item in (argument):
+        worksheet.write(11, col, item, t9b_l_i_box)
+        worksheet.set_column(col, col, 10.13)
+        for row in range(12,15):
+            worksheet.write(row, col, "", t9_box)
+        col += 1
 
 worksheet.write('A17', 'Manouver')
-worksheet.write('A18', 'ObjectType')
-worksheet.write('B18', 'Object (optional)')
-worksheet.write('C18', 'commandCodeId')
-worksheet.write('D18', 'Description')
-worksheet.write('E17', 'argument')
-worksheet.write('E18', 'Name')
-worksheet.write('F18', 'Command')
-worksheet.write('G18', 'Type')
-worksheet.write('H18', 'Value')
-worksheet.write('I18', 'Comment')
-worksheet.write('J17', 'argument')
-worksheet.write('J18', 'Name')
-worksheet.write('K18', 'Command')
-worksheet.write('L18', 'Type')
-worksheet.write('M18', 'Value')
-worksheet.write('N18', 'Comment')
+col = 0
+for item in (title):
+    worksheet.write(17, col, item, t9b_l_i_box)
+    for row in range(18,21):
+        worksheet.write(row, col, "", t9_box)
+    col += 1
+col = 4
+for num in range(0,num_arguments):
+    worksheet.merge_range(16, col, 16, col+4, 'argument', t9b_c_i_box)
+    for item in (argument):
+        worksheet.write(17, col, item, t9b_l_i_box)
+        worksheet.set_column(col, col, 10.13)
+        for row in range(18,21):
+            worksheet.write(row, col, "", t9_box)
+        col += 1
 
 worksheet.write('A23', 'Parameter')
-worksheet.write('A24', 'ObjectType')
-worksheet.write('B24', 'Object (optional)')
-worksheet.write('C24', 'commandCodeId')
-worksheet.write('D24', 'Description')
-worksheet.write('E23', 'argument')
-worksheet.write('E24', 'Name')
-worksheet.write('F24', 'Command')
-worksheet.write('G24', 'Type')
-worksheet.write('H24', 'Value')
-worksheet.write('I24', 'Comment')
-worksheet.write('J23', 'argument')
-worksheet.write('J24', 'Name')
-worksheet.write('K24', 'Command')
-worksheet.write('L24', 'Type')
-worksheet.write('M24', 'Value')
-worksheet.write('N24', 'Comment')
+col = 0
+for item in (title):
+    worksheet.write(23, col, item, t9b_l_i_box)
+    for row in range(24,27):
+        worksheet.write(row, col, "", t9_box)
+    col += 1
+col = 4
+for num in range(0,num_arguments):
+    worksheet.merge_range(22, col, 22, col+4, 'argument', t9b_c_i_box)
+    for item in (argument):
+        worksheet.write(23, col, item, t9b_l_i_box)
+        worksheet.set_column(col, col, 10.13)
+        for row in range(24,27):
+            worksheet.write(row, col, "", t9_box)
+        col += 1
 
 workbook.close()
