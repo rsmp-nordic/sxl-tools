@@ -354,7 +354,7 @@ worksheet.write('A3', 'Revision date:', t9b_r)
 worksheet.write('B3', 'yyyy-mm-dd', t9_c)
 worksheet.write('E4', 'Obs! Leading ''-'' should not exist in protocol level', t9)
 
-worksheet.write('A5', 'Functional position')
+worksheet.write('A5', 'Functional position', t9b_l)
 
 title = [
     'ObjectType',
@@ -388,7 +388,7 @@ for num in range(0,num_arguments):
         col += 1
 
 
-worksheet.write('A11', 'Functional state')
+worksheet.write('A11', 'Functional state', t9b_l)
 col = 0
 for item in (title):
     worksheet.write(11, col, item, t9b_l_i_box)
@@ -404,7 +404,7 @@ for num in range(0,num_arguments):
             worksheet.write(row, col, "", t9_box)
         col += 1
 
-worksheet.write('A17', 'Manouver')
+worksheet.write('A17', 'Manouver', t9b_l)
 col = 0
 for item in (title):
     worksheet.write(17, col, item, t9b_l_i_box)
@@ -420,7 +420,7 @@ for num in range(0,num_arguments):
             worksheet.write(row, col, "", t9_box)
         col += 1
 
-worksheet.write('A23', 'Parameter')
+worksheet.write('A23', 'Parameter', t9b_l)
 col = 0
 for item in (title):
     worksheet.write(23, col, item, t9b_l_i_box)
