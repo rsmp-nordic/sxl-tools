@@ -193,6 +193,9 @@ for col in range(0,5):
     for row in range(6,13):
         worksheet.write(row, col, "", t9_box)
 
+worksheet.write('A7', 'Plant', t9_box)
+worksheet.write('B7', 'See state-bit definitions below', t9_box)
+
 row = 16
 bits = (
     ['1', 'Local mode'],
