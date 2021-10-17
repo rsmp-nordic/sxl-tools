@@ -151,7 +151,10 @@ worksheet.write_comment('A1',
   "preferred name ''SiteId.CSV'', ex ''AB_26507_881.CSV''."+
   "If there are multiple SiteId's for one plant (ex congestion tax) \n"+
   "just add more Objects tabs and export them as multiple CSV files.")
-
+worksheet.write_comment('B2',
+  "SiteId(s) are always sent in the first RSMP packet.\n"+
+  "The communication partners could/should use this information to validate\n"+
+  "they actually are communicating with the correct plant.")
 
 # Adjust widths
 worksheet.set_column(0, 0, 32.13)
