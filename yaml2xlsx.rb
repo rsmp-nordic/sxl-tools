@@ -21,40 +21,6 @@ def set_cell(sheet, col, row, string)
   end
 end
 
-def insert_return_value(sheet)
-  start_col = @return_value_start_col + (@return_value_no*4)
-  end_col=start_col+3
-  @return_value_no += 1
-
-  # border lines
-  for c in start_col..end_col
-    for r in 4..15
-      sheet.insert_cell(r, c, "", formula = nil, :right)
-      cell = sheet[r][c]
-      cell.change_border(:bottom, 'thin') if r < end_col
-      cell.change_border(:right, 'thin') if c < end_col
-      cell.change_border(:top, 'medium') if r == 4
-      cell.change_border(:right, 'medium') if c == end_col
-      cell.change_border(:bottom, 'medium') if r == end_col or r == 5
-    end
-  end
-  
-  # title: return value
-  cell = sheet[4][start_col]
-  cell.change_contents("return value", formula = nil)
-  cell.change_horizontal_alignment('center')
-  cell.change_font_italics(true)
-  cell.change_font_bold(true)
-  sheet.merge_cells(4, start_col, 4, end_col)
-  
-  # title
-  sheet[5][start_col].change_contents("Name", formula = nil)
-  sheet[5][start_col+1].change_contents("Type", formula = nil)
-  sheet[5][start_col+2].change_contents("Value", formula = nil)
-  sheet[5][start_col+3].change_contents("Comment", formula = nil)
-
-end
-
 options = {}
 usage = "Usage: yaml2xlsx.rb [--template <XLSX>]"
 OptionParser.new do |opts|
@@ -240,8 +206,6 @@ sxl["objects"].each { |object|
 # Status
 sheet = workbook['Status']
 row = 7
-insert_return_value(sheet)
-insert_return_value(sheet)
 
 # for each object type in yaml, look at all the statuses
 sxl["objects"].each { |object|
