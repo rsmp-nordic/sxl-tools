@@ -1,8 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Requires xlsxwriter
 import xlsxwriter
+import argparse
+
+parser = argparse.ArgumentParser(description='Create SXL template')
+parser.add_argument('--alarm-rvs', default=2, type=int,
+    help='Number of alarm return values')
+parser.add_argument('--status-rvs', default=2, type=int,
+    help='Number of status return values')
+parser.add_argument('--command-args', default=2, type=int,
+    help='Number of command arguments')
+args = parser.parse_args()
 
 workbook = xlsxwriter.Workbook('RSMP_Template_SignalExchangeList.xlsx')
 
@@ -253,14 +262,13 @@ for item in (title):
     col += 1
 
 col = 8
-num_return_values=2
 return_value = [
     'Name',
     'Type',
     'Value',
     'Comment'
 ]
-for num in range(0,num_return_values):
+for num in range(0,args.alarm_rvs):
     worksheet.merge_range(4, col, 4, col+3, 'return value', t9b_c_i_box)
     for item in (return_value):
         worksheet.write(5, col, item, t9b_l_i_box)
@@ -312,14 +320,13 @@ for item in (title):
     col += 1
 
 col = 4
-num_return_values=2
 return_value = [
     'Name',
     'Type',
     'Value',
     'Comment'
 ]
-for num in range(0,num_return_values):
+for num in range(0,args.status_rvs):
     worksheet.merge_range(4, col, 4, col+3, 'return value', t9b_c_i_box)
     for item in (return_value):
         worksheet.write(5, col, item, t9b_l_i_box)
@@ -346,7 +353,7 @@ worksheet.set_column(1, 1, 32.13)
 worksheet.set_column(2, 2, 16.13)
 worksheet.set_column(3, 3, 32.13)
 col = 4
-for num in range(0,num_return_values):
+for num in range(0,args.status_rvs):
     worksheet.set_column(col+(4*num), col+(4*num)+2, 8)
     worksheet.set_column(col+(4*num)+3, col+(4*num)+3, 16.13)
 
@@ -374,7 +381,6 @@ for item in (title):
     col += 1
 
 col = 4
-num_arguments=2
 argument = [
     'Name',
     'Command',
@@ -382,7 +388,7 @@ argument = [
     'Value',
     'Comment'
 ]
-for num in range(0,num_arguments):
+for num in range(0,args.command_args):
     worksheet.merge_range(4, col, 4, col+4, 'argument', t9b_c_i_box)
     for item in (argument):
         worksheet.write(5, col, item, t9b_l_i_box)
@@ -399,7 +405,7 @@ for item in (title):
         worksheet.write(row, col, "", t9_box)
     col += 1
 col = 4
-for num in range(0,num_arguments):
+for num in range(0,args.command_args):
     worksheet.merge_range(10, col, 10, col+4, 'argument', t9b_c_i_box)
     for item in (argument):
         worksheet.write(11, col, item, t9b_l_i_box)
@@ -415,7 +421,7 @@ for item in (title):
         worksheet.write(row, col, "", t9_box)
     col += 1
 col = 4
-for num in range(0,num_arguments):
+for num in range(0,args.command_args):
     worksheet.merge_range(16, col, 16, col+4, 'argument', t9b_c_i_box)
     for item in (argument):
         worksheet.write(17, col, item, t9b_l_i_box)
@@ -431,7 +437,7 @@ for item in (title):
         worksheet.write(row, col, "", t9_box)
     col += 1
 col = 4
-for num in range(0,num_arguments):
+for num in range(0,args.command_args):
     worksheet.merge_range(22, col, 22, col+4, 'argument', t9b_c_i_box)
     for item in (argument):
         worksheet.write(23, col, item, t9b_l_i_box)
@@ -458,7 +464,7 @@ worksheet.set_column(1, 1, 32.13)
 worksheet.set_column(2, 2, 16.13)
 worksheet.set_column(3, 3, 32.13)
 col = 4
-for num in range(0,num_arguments):
+for num in range(0,args.command_args):
     worksheet.set_column(col+(5*num), col+(5*num)+3, 8)
     worksheet.set_column(col+(5*num)+4, col+(5*num)+4, 16.13)
 
