@@ -11,9 +11,12 @@ parser.add_argument('--status-rvs', default=2, type=int,
     help='Number of status return values')
 parser.add_argument('--command-args', default=2, type=int,
     help='Number of command arguments')
+parser.add_argument('--output',
+    default='RSMP_Template_SignalExchangeList.xlsx',
+    help='Output filename')
 args = parser.parse_args()
 
-workbook = xlsxwriter.Workbook('RSMP_Template_SignalExchangeList.xlsx')
+workbook = xlsxwriter.Workbook(args.output)
 
 # Formatting
 t32b_c = workbook.add_format({'font_name':'Arial', 'font_size':'32',
