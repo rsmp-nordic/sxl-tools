@@ -5,6 +5,10 @@ import xlsxwriter
 import argparse
 
 parser = argparse.ArgumentParser(description='Create SXL template')
+parser.add_argument('--no-grouped-objects', default=15, type=int,
+    help='Number of grouped objects')
+parser.add_argument('--no-single-objects', default=29, type=int,
+    help='Number of single objects')
 parser.add_argument('--alarm-rvs', default=2, type=int,
     help='Number of alarm return values')
 parser.add_argument('--status-rvs', default=2, type=int,
@@ -141,19 +145,25 @@ worksheet.write('C6', 'componentId', t9b_l_i_box)
 worksheet.write('D6', 'NTSObjectId', t9b_l_i_box)
 worksheet.write('E6', 'externalNtsId', t9b_l_i_box)
 worksheet.write('F6', 'Description', t9b_l_i_box)
+
+go_row=6 # start row
 for col in range(0,6):
-    for row in range(6,21):
+    for row in range(go_row,go_row+args.no_grouped_objects):
         worksheet.write(row, col, "", t9_box)
 
-worksheet.write('A23', 'Single objects', t9b_l)
-worksheet.write('A24', 'ObjectType', t9b_l_i_box)
-worksheet.write('B24', 'Object', t9b_l_i_box)
-worksheet.write('C24', 'componentId', t9b_l_i_box)
-worksheet.write('D24', 'NTSObjectId', t9b_l_i_box)
-worksheet.write('E24', 'externalNtsId', t9b_l_i_box)
-worksheet.write('F24', 'Description', t9b_l_i_box)
+#so_row=22 # start row
+so_row=go_row+args.no_grouped_objects # start row
+
+worksheet.write(so_row, 0, 'Single objects', t9b_l)
+worksheet.write(so_row+1, 0, 'ObjectType', t9b_l_i_box)
+worksheet.write(so_row+1, 1, 'Object', t9b_l_i_box)
+worksheet.write(so_row+1, 2, 'componentId', t9b_l_i_box)
+worksheet.write(so_row+1, 3, 'NTSObjectId', t9b_l_i_box)
+worksheet.write(so_row+1, 4, 'externalNtsId', t9b_l_i_box)
+worksheet.write(so_row+1, 5, 'Description', t9b_l_i_box)
+
 for col in range(0,6):
-    for row in range(24,53):
+    for row in range(so_row+2,so_row+2+args.no_single_objects):
         worksheet.write(row, col, "", t9_box)
 
 # Write comments
