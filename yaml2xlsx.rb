@@ -21,6 +21,19 @@ def set_cell(sheet, col, row, string)
   end
 end
 
+# Find row where first column is equal to string
+def find_row(sheet, string)
+  col = 0
+  row = 0
+  until row == sheet.sheet_data.rows.size
+    unless sheet[row] == nil or sheet[row][col] == nil
+      return row if sheet[row][col].value == string
+    end
+    row += 1
+  end
+  p "Could not find row"
+end
+
 options = {}
 usage = "Usage: yaml2xlsx.rb [--template <XLSX>]"
 OptionParser.new do |opts|
@@ -62,8 +75,8 @@ set_cell(sheet, 2, 26, sxl["rsmp-version"]) # RSMP version
 
 # Object types
 sheet = workbook['Object types']
-gy = 7  # grouped object type, y pos
-sy = 19 # single object type, y pos
+gy = find_row(sheet, "Grouped object types")+3
+sy = find_row(sheet, "Single object types")+3
 sxl["objects"].each { |object|
   # Is it a grouped object or not
   unless object[1]["aggregated_status"].nil?
@@ -79,8 +92,8 @@ sxl["objects"].each { |object|
 
 # Objects
 sheet = workbook['Objects']
-gy = 7  # grouped object type, y pos
-sy = 25 # single object type, y pos
+gy = find_row(sheet, "Grouped objects")+3
+sy = find_row(sheet, "Single objects")+3
 sxl["sites"].each { |site|
   set_cell(sheet, 2, 2, site[0])
   set_cell(sheet, 3, 2, site[1]["description"])
@@ -269,7 +282,10 @@ sxl["objects"].each { |object|
 
 # Commands
 sheet = workbook['Commands']
-row = 25
+
+# When converting from yaml to excel, put all commands under "parameter"
+# since it is not possible to differentiate them further
+row = find_row(sheet, "Parameter")+3
 
 # for each object type in yaml, look at all the commands
 sxl["objects"].each { |object|
