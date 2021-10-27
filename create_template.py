@@ -186,11 +186,12 @@ worksheet.write_comment('B2',
   "they actually are communicating with the correct plant.")
 
 # Adjust widths
-worksheet.set_column(0, 0, 32.13)
-worksheet.set_column(1, 1, 34.5)
-worksheet.set_column(2, 2, 27.25)
-worksheet.set_column(3, 3, 27.25)
-worksheet.set_column(4, 4, 57.5)
+worksheet.set_column(0, 0, 32)    # Object types
+worksheet.set_column(1, 1, 34.4)  # Object
+worksheet.set_column(2, 2, 25)    # componentId
+worksheet.set_column(3, 3, 27.2)  # NTSObjectId
+worksheet.set_column(4, 4, 27.2)  # externalNtsId
+worksheet.set_column(5, 5, 57.4)  # Description
 
 # Aggregated status
 worksheet = workbook.add_worksheet('Aggregated status')
