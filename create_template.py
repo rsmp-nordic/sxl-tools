@@ -9,6 +9,14 @@ parser.add_argument('--no-grouped-objects', default=15, type=int,
     help='Number of grouped objects')
 parser.add_argument('--no-single-objects', default=29, type=int,
     help='Number of single objects')
+parser.add_argument('--no-command-functional-position', default=3, type=int,
+    help='Number of commands of type functional position')
+parser.add_argument('--no-command-functional-state', default=3, type=int,
+    help='Number of commands of type functional state')
+parser.add_argument('--no-command-maneuver', default=3, type=int,
+    help='Number of commands of type maneuver')
+parser.add_argument('--no-command-parameters', default=3, type=int,
+    help='Number of commands of type parameter')
 parser.add_argument('--alarm-rvs', default=2, type=int,
     help='Number of alarm return values')
 parser.add_argument('--status-rvs', default=2, type=int,
@@ -151,7 +159,6 @@ for col in range(0,6):
     for row in range(go_row,go_row+args.no_grouped_objects):
         worksheet.write(row, col, "", t9_box)
 
-#so_row=22 # start row
 so_row=go_row+args.no_grouped_objects # start row
 
 worksheet.write(so_row, 0, 'Single objects', t9b_l)
@@ -387,9 +394,10 @@ title = [
 ]
 
 col = 0
+fp_row = 6 # start row
 for item in (title):
     worksheet.write(5, col, item, t9b_l_i_box)
-    for row in range(6,9):
+    for row in range(fp_row,fp_row+args.no_command_functional_position):
         worksheet.write(row, col, "", t9_box)
     col += 1
 
@@ -402,59 +410,64 @@ argument = [
     'Comment'
 ]
 for num in range(0,args.command_args):
-    worksheet.merge_range(4, col, 4, col+4, 'argument', t9b_c_i_box)
+    worksheet.merge_range(fp_row-2, col, fp_row-2, col+4, 'argument', t9b_c_i_box)
     for item in (argument):
-        worksheet.write(5, col, item, t9b_l_i_box)
-        for row in range(6,9):
+        worksheet.write(fp_row-1, col, item, t9b_l_i_box)
+        for row in range(fp_row,fp_row+args.no_command_functional_position):
             worksheet.write(row, col, "", t9_box)
         col += 1
 
+fs_row = fp_row + args.no_command_functional_position + 3
 
-worksheet.write('A11', 'Functional state', t9b_l)
+worksheet.write(fs_row-2, 0, 'Functional state', t9b_l)
 col = 0
 for item in (title):
-    worksheet.write(11, col, item, t9b_l_i_box)
-    for row in range(12,15):
+    worksheet.write(fs_row-1, col, item, t9b_l_i_box)
+    for row in range(fs_row,fs_row+args.no_command_functional_state):
         worksheet.write(row, col, "", t9_box)
     col += 1
 col = 4
 for num in range(0,args.command_args):
-    worksheet.merge_range(10, col, 10, col+4, 'argument', t9b_c_i_box)
+    worksheet.merge_range(fs_row-2, col, fs_row-2, col+4, 'argument', t9b_c_i_box)
     for item in (argument):
-        worksheet.write(11, col, item, t9b_l_i_box)
-        for row in range(12,15):
+        worksheet.write(fs_row-1, col, item, t9b_l_i_box)
+        for row in range(fs_row,fs_row+args.no_command_functional_state):
             worksheet.write(row, col, "", t9_box)
         col += 1
 
-worksheet.write('A17', 'Manouver', t9b_l)
+m_row = fs_row + args.no_command_functional_state + 3
+
+worksheet.write(m_row-2, 0, 'Manouver', t9b_l)
 col = 0
 for item in (title):
-    worksheet.write(17, col, item, t9b_l_i_box)
-    for row in range(18,21):
+    worksheet.write(m_row-1, col, item, t9b_l_i_box)
+    for row in range(m_row,m_row+args.no_command_maneuver):
         worksheet.write(row, col, "", t9_box)
     col += 1
 col = 4
 for num in range(0,args.command_args):
-    worksheet.merge_range(16, col, 16, col+4, 'argument', t9b_c_i_box)
+    worksheet.merge_range(m_row-2, col, m_row-2, col+4, 'argument', t9b_c_i_box)
     for item in (argument):
-        worksheet.write(17, col, item, t9b_l_i_box)
-        for row in range(18,21):
+        worksheet.write(m_row-1, col, item, t9b_l_i_box)
+        for row in range(m_row,m_row+args.no_command_maneuver):
             worksheet.write(row, col, "", t9_box)
         col += 1
 
-worksheet.write('A23', 'Parameter', t9b_l)
+p_row = m_row + args.no_command_maneuver + 3
+
+worksheet.write(p_row-2, 0, 'Parameter', t9b_l)
 col = 0
 for item in (title):
-    worksheet.write(23, col, item, t9b_l_i_box)
-    for row in range(24,27):
+    worksheet.write(p_row-1, col, item, t9b_l_i_box)
+    for row in range(p_row,p_row+args.no_command_parameters):
         worksheet.write(row, col, "", t9_box)
     col += 1
 col = 4
 for num in range(0,args.command_args):
-    worksheet.merge_range(22, col, 22, col+4, 'argument', t9b_c_i_box)
+    worksheet.merge_range(p_row-2, col, p_row-2, col+4, 'argument', t9b_c_i_box)
     for item in (argument):
-        worksheet.write(23, col, item, t9b_l_i_box)
-        for row in range(24,27):
+        worksheet.write(p_row-1, col, item, t9b_l_i_box)
+        for row in range(p_row,p_row+args.no_command_parameters):
             worksheet.write(row, col, "", t9_box)
         col += 1
 
