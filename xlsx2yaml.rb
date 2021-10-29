@@ -41,7 +41,22 @@ def get_object(sheet, y)
 end
 
 # Get objects from a given section in the object sheet
-def get_object_section(sheet, y, options)
+def get_object_section(sheet, type, options)
+  # type = 1 Grouped objects
+  # type = 2 Single objects
+
+  y = 4 # Section won't start before row 4
+  while(y<200) do
+    if sheet[y] != nil and sheet[y][0] != nil
+      break if sheet[y][0].value.eql?("Grouped objects") and type == 1
+      break if sheet[y][0].value.eql?("Grouped object types") and type == 1
+      break if sheet[y][0].value.eql?("Single objects") and type == 2
+      break if sheet[y][0].value.eql?("Single object types") and type == 2
+    end
+    y = y + 1
+  end
+  y = y + 2 # Begins two lines after title
+
   objects = {}
   while(object = get_object(sheet, y)) do
     key = object[0]  # e.g. Traffic Controller, Signal Group
@@ -186,10 +201,10 @@ workbook.each do |sheet|
     end
   when "Object types"
     # grouped objects
-    sxl["objects"] = get_object_section(sheet, 6, options)
+    sxl["objects"] = get_object_section(sheet, 1, options)
 
     # single objects
-    sxl["objects"] = sxl["objects"].merge(get_object_section(sheet, 18, options))
+    sxl["objects"] = sxl["objects"].merge(get_object_section(sheet, 2, options))
   when "Alarms"
     y = 6
     while(sheet[y][0] != nil and sheet[y][0].value != nil) do
@@ -314,7 +329,7 @@ workbook.each do |sheet|
       if sxl["objects"][agg[0]]
         sxl["objects"][agg[0]]["aggregated_status"] = state
       else
-        STDERR.puts "Object #{a[0]} not found"
+        STDERR.puts "Object #{agg[0]} not found"
       end
 
       if options[:extended]
@@ -511,10 +526,10 @@ workbook.each do |sheet|
     siteid_desc = sheet[1][2].value
     
     # grouped objects
-    objects = get_object_section(sheet, 6, options)
+    objects = get_object_section(sheet, 1, options)
 
     # single objects
-    objects = objects.merge(get_object_section(sheet, 24, options))
+    objects = objects.merge(get_object_section(sheet, 2, options))
 
     site = {
       'description' => siteid_desc,
