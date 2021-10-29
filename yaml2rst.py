@@ -117,17 +117,19 @@ def print_aggregated_status():
 
             # Functional position
             fP = ""
-            fP_list = []
-            for agg_name,agg in object['functional_position'].items():
-                fP_list.append("-" + agg_name)
-            fP = " |br| ".join(fP_list)
+            if "functional_position" in object and object['functional_position']:
+                fP_list = []
+                for agg_name,agg in object['functional_position'].items():
+                    fP_list.append("-" + agg_name)
+                fP = " |br| ".join(fP_list)
 
             # Functional state
             fS = ""
-            fS_list = []
-            for agg_name,agg in object['functional_state'].items():
-                fS_list.append("-" + agg_name)
-            fS = " |br| ".join(fP_list)
+            if "functional_state" in object and object['functional_state']:
+                fS_list = []
+                for agg_name,agg in object['functional_state'].items():
+                    fS_list.append("-" + agg_name)
+                fS = " |br| ".join(fS_list)
 
             agg_status.append([object_name, "See state-bit definitions below", fP, fS, object['description']])
 
