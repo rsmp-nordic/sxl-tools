@@ -125,11 +125,11 @@ Objects ([site information](#site))
 
 Aggregated status
 
-| Cell  	| Name in Excel      	| YAML                	| extended? 	|
-|-------	|--------------------	|---------------------	|-----------	|
-| C7..  	| functionalPosition 	| functional_position 	| yes       	|
-| D7..  	| functionalState    	| functional_state     	| yes       	|
-| A17.. 	| Comment            	| description         	| yes       	|
+| Cell  	| Name in Excel      	| YAML                          | extended? |
+|-------	|--------------------	|-----------------------------  |-----------|
+| C7..  	| functionalPosition 	| functional_position           | yes       |
+| D7..  	| functionalState    	| functional_state              | yes       |
+| A17.. 	| Comment            	| aggregated_status_description | yes       |
 
 Alarms
 

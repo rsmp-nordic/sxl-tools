@@ -179,7 +179,7 @@ workbook.each do |sheet|
       if options[:extended]
         sxl["constructor"] = sheet[9][1].value if sheet[9]
         sxl["reviewed"] = sheet[11][1].value if sheet[11][1].value
-        sxl["approved"] = sheet[13][1].value if sheet[13][1].value
+        sxl["approved"] = sheet[13][1].value if sheet[13] and sheet[13][1]
         sxl["created-date"] = sheet[17][1].value if sheet[17]
         sxl["rsmp-version"] = sheet[25][1].value if sheet[25]
       end
@@ -320,6 +320,7 @@ workbook.each do |sheet|
       if options[:extended]
         sxl["objects"][agg[0]]["functional_position"] = agg[2]
         sxl["objects"][agg[0]]["functional_state"] = agg[3]
+        sxl["objects"][agg[0]]["aggregated_status_description"] = agg[4]
       end
       
       y = y + 1
@@ -413,7 +414,7 @@ workbook.each do |sheet|
     end
   when "Commands"
     get_command_section(sheet).each { |y|
-      while(sheet[y][0] != nil and sheet[y][0].value != nil) do
+      while(sheet[y] != nil and sheet[y][0] != nil and sheet[y][0].value != nil) do
         # Get the basic command info
         c = [ sheet[y][0].value, sheet[y][1].value, sheet[y][2].value,
             sheet[y][3].value ]

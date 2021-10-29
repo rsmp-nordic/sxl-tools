@@ -131,7 +131,12 @@ def print_aggregated_status():
                     fS_list.append("-" + agg_name)
                 fS = " |br| ".join(fS_list)
 
-            agg_status.append([object_name, "See state-bit definitions below", fP, fS, object['description']])
+            # Aggregated status description
+            as_desc = ""
+            if "aggregated_status_description" in object:
+                as_desc = object['aggregated_status_description']
+
+            agg_status.append([object_name, "See state-bit definitions below", fP, fS, as_desc])
 
     for line in tabulate(agg_status, headers="firstrow", tablefmt="rst").splitlines():
         print('   ' + line)
