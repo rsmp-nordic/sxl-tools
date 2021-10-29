@@ -4,6 +4,7 @@ sxl-tools
 Exports signal exchange lists (SXL) used by RSMP from Excel-format (xlsx) to
 various formats.
 
+* **create_template.py** - Creates SXL template in Excel format
 * **xlsx2csv.rb**  - Reads SXL in Excel format and outputs to CSV format
 * **xlsx2yaml.rb** - Reads SXL in Excel format and outputs to YAML format
 * **yaml2xlsx.rb** - Reads SXL in YAML format and outputs to Excel format
