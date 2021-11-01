@@ -106,8 +106,8 @@ def print_aggregated_status():
     print("Aggregated status")
     print("-----------------")
 
-    widths = ["0.15", "0.20", "0.18", "0.18", "0.15"]
-    table_headers = ["ObjectType","Status","functionalPosition","functionalState","Description"]
+    widths = ["0.15", "0.16", "0.16", "0.40"]
+    table_headers = ["ObjectType","functionalPosition","functionalState","Description"]
     start_figtable(widths, "Aggregated status")
     agg_status = []
     agg_status.append(table_headers)
@@ -136,15 +136,15 @@ def print_aggregated_status():
             if "aggregated_status_description" in object:
                 as_desc = object['aggregated_status_description']
 
-            agg_status.append([object_name, "See state-bit definitions below", fP, fS, as_desc])
+            agg_status.append([object_name, fP, fS, as_desc])
 
     for line in tabulate(agg_status, headers="firstrow", tablefmt="rst").splitlines():
         print('   ' + line)
     end_figtable()
 
 
-    widths = ["0.15", "0.30", "0.45"]
-    table_headers = ["State- Bit nr (12345678)", "Description", "Comment"]
+    widths = ["0.10", "0.30", "0.50"]
+    table_headers = ["State-Bit", "Description", "Comment"]
     start_figtable(widths, "State bits")
     state_bits = []
     state_bits.append(table_headers)
