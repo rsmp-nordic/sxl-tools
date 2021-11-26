@@ -197,7 +197,7 @@ def print_alarms():
         print("^^^^^")
         print("")
 
-        print(description.replace("\n", " |br| "))
+        print(description)
         print("")
 
         return_values = []
@@ -214,11 +214,11 @@ def print_alarms():
                                 val_list = []
                                 for v in argument['values']:
                                     val_list.append("-" + v)
-                                value = " |br| ".join(val_list)
+                                value = " |br|\n".join(val_list)
 
                             else:
                                 if type == "boolean":
-                                    value = "-True |br| -False"
+                                    value = "-True |br|\n-False"
                                 elif type == "integer" or type == "long" or type == "float":
                                     if "min" in argument:
                                         min = argument['min']
@@ -236,7 +236,10 @@ def print_alarms():
                                     else:
                                         value = ""
                             if "description" in argument:
-                                comment = argument['description'].replace("\n", " |br| ")
+                                comment = argument['description'].replace("\n", " |br|\n")
+
+                                # Lines should never start with whitespace
+                                comment = comment.replace("\n |br|", "\n|br|")
                             else:
                                 comment = ""
 
@@ -244,7 +247,7 @@ def print_alarms():
                             if "values" in argument:
                                 for n,desc in argument['values'].items():
                                     if desc:
-                                        comment += " |br| " + n + ": " + desc
+                                        comment += " |br|\n" + n + ": " + desc
 
                             return_values.append([name, type, value, comment])
 
@@ -302,7 +305,7 @@ def print_status():
         for object_name,object in yaml_sxl['objects'].items():
             for id,status in object['statuses'].items():
                 if(id == status_id):
-                    print(status['description'].replace("\n", " |br| "))
+                    print(status['description'])
                     print("")
 
         widths = ["0.15", "0.08", "0.13", "0.50"]
@@ -319,14 +322,15 @@ def print_status():
                             name = argument_name
                             type = argument['type'].replace("_list", "")
 
+                            # If the 'values' exists, use it to construct a list
                             if "values" in argument:
                                 val_list = []
                                 for v in argument['values']:
                                     val_list.append("-" + str(v))
-                                value = " |br| ".join(val_list)
+                                value = " |br|\n".join(val_list)
                             else:
                                 if type == "boolean":
-                                    value = "-False |br| -True"
+                                    value = "-False |br|\n-True"
                                 elif type == "integer" or type == "long" or type == "float":
                                     if "min" in argument:
                                         min = argument['min']
@@ -345,7 +349,10 @@ def print_status():
                                         value = ""
                             if "description" in argument:
                                 comment = argument['description'].rstrip("\n")
-                                comment = comment.replace("\n", " |br| ")
+                                comment = comment.replace("\n", " |br|\n")
+
+                                # Lines should never start with whitespace
+                                comment = comment.replace("\n |br|", "\n|br|")
                             else:
                                 comment = ""
 
@@ -354,7 +361,7 @@ def print_status():
                                 for n,desc in argument['values'].items():
                                     if desc:
                                         if comment != "":
-                                            comment += " |br| "
+                                            comment += " |br|\n"
                                         comment += str(n) + ": " + str(desc)
 
                             return_values.append([name, type, value, comment])
@@ -368,8 +375,8 @@ def print_commands():
     print("Commands")
     print("--------")
 
-    widths = ["0.24", "0.15", "0.40"]
-    table_headers = ["ObjectType","commandCodeId","Description"]
+    widths = ["0.24", "0.15", "0.21", "0.21"]
+    table_headers = ["ObjectType","commandCodeId","Command","Description"]
     start_figtable(widths, "Commands")
 
     command_table = []
@@ -377,7 +384,7 @@ def print_commands():
     # For each object
     for object_name,object, in yaml_sxl['objects'].items():
         for command_id,command in object['commands'].items():
-            command_table.append([object_name, '`' + command_id + '`_', command['description'].splitlines()[0]])
+            command_table.append([object_name, '`' + command_id + '`_', command['command'], command['description'].splitlines()[0]])
             commands.append([object_name, command_id, command['description'].replace("\n", " |br| ")])
 
     # Print command table
@@ -400,11 +407,12 @@ def print_commands():
         for object_name,object in yaml_sxl['objects'].items():
             for id,command in object['commands'].items():
                 if(id == command_id):
-                    print(command['description'].replace("\n", " |br| "))
+                    print(command['description'])
                     print("")
 
-        widths = ["0.14", "0.20", "0.07", "0.15", "0.30"]
-        table_headers = ["Name", "Command", "Type", "Value", "Comment"]
+        widths = ["0.14",  "0.07", "0.20", "0.45"]
+        table_headers = ["Name", "Type", "Value", "Comment"]
+
         start_figtable(widths, command_id)
 
         arguments = []
@@ -421,10 +429,10 @@ def print_commands():
                                 val_list = []
                                 for v in argument['values']:
                                     val_list.append("-" + v)
-                                value = " |br| ".join(val_list)
+                                value = " |br|\n".join(val_list)
                             else:
                                 if(type == "boolean"):
-                                    value = "-False |br| -True"
+                                    value = "-False |br|\n-True"
                                 elif type == "integer":
                                     if "min" in argument:
                                         min = argument['min']
@@ -443,7 +451,10 @@ def print_commands():
                                         value = ""
                             if "description" in argument:
                                 comment = argument['description'].rstrip("\n")
-                                comment = comment.replace("\n", " |br| ")
+                                comment = comment.replace("\n", " |br|\n")
+
+                                # Lines should never start with whitespace
+                                comment = comment.replace("\n |br|", "\n|br|")
                             else:
                                 comment = ""
 
@@ -452,10 +463,11 @@ def print_commands():
                                 for n,desc in argument['values'].items():
                                     if desc:
                                         if comment != "":
-                                            comment += " |br| "
+                                            comment += " |br|\n"
+
                                         comment += str(n) + ": " + str(desc)
 
-                            arguments.append([name, command['command'], type, value, comment])
+                            arguments.append([name, type, value, comment])
 
         arguments.insert(0, table_headers)
 
