@@ -4,8 +4,18 @@
 import sys
 import argparse
 import yaml
+from yaml.resolver import Resolver
 import re
 from tabulate import tabulate
+
+# Prevent PyYAML from converting On/Off/Yes/No into True/False
+# remove resolver entries for On/Off/Yes/No
+for ch in "OoYyNn":
+    if len(Resolver.yaml_implicit_resolvers[ch]) == 1:
+        del Resolver.yaml_implicit_resolvers[ch]
+    else:
+        Resolver.yaml_implicit_resolvers[ch] = [x for x in
+                Resolver.yaml_implicit_resolvers[ch] if x[0] != 'tag:yaml.org,2002:bool']
 
 def rst_line_break_substitution():
     print("");
