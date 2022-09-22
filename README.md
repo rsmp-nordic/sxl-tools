@@ -10,9 +10,6 @@ various formats.
 * **yaml2xlsx.rb** - Reads SXL in YAML format and outputs to Excel format
 * **yaml2rst.py**  - Reads SXL in YAML format and outputs to RST format
 
-Excel macro:
-* **rsmp_clean.xlsm** - 1.0.7 SXL, adapt according to cId/siteid and num SG/DET
-
 Notes about xlsx2csv
 --------------------
 
