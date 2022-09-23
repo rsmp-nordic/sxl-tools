@@ -345,8 +345,11 @@ workbook.each do |sheet|
     y = 6
     while(sheet[y] and sheet[y][0] and sheet[y][0].value) do
       # Get the basic status info
-      s = [ sheet[y][0].value, sheet[y][1].value, sheet[y][2].value,
-            sheet[y][3].value ]
+      sheet[y][0] ? object_type = sheet[y][0].value : object_type = ''
+      sheet[y][1] ? object = sheet[y][1].value : object = ''
+      sheet[y][2] ? sci = sheet[y][2].value : sid = ''
+      sheet[y][3] ? desc = sheet[y][3].value : desc = ''
+      s = [ object_type, object, sci, desc ]
 
       # Get each argument
       x = 4
@@ -431,8 +434,11 @@ workbook.each do |sheet|
     get_command_section(sheet).each { |y|
       while(sheet[y] != nil and sheet[y][0] != nil and sheet[y][0].value != nil) do
         # Get the basic command info
-        c = [ sheet[y][0].value, sheet[y][1].value, sheet[y][2].value,
-            sheet[y][3].value ]
+        sheet[y][0] ? object_type = sheet[y][0].value : object_type = ''
+        sheet[y][1] ? object = sheet[y][1].value : object = ''
+        sheet[y][2] ? cci = sheet[y][2].value : sid = ''
+        sheet[y][3] ? desc = sheet[y][3].value : desc = ''
+        c = [ object_type, object, cci, desc ]
 
         # Get each argument
         x = 4
