@@ -10,6 +10,12 @@ various formats.
 * **yaml2xlsx.rb** - Reads SXL in YAML format and outputs to Excel format
 * **yaml2rst.py**  - Reads SXL in YAML format and outputs to RST format
 
+Notes about create_template.py
+------------------------------
+* Requires: pip3 install xlsxwriter --user
+* Usage: create_template.py [OPTIONS]
+* See create_template.py -h for available options
+
 Notes about xlsx2csv
 --------------------
 
