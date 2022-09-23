@@ -343,13 +343,10 @@ workbook.each do |sheet|
     end
   when "Status"
     y = 6
-    s = []
     while(sheet[y] and sheet[y][0] and sheet[y][0].value) do
       # Get the basic status info
-      (0..3).each do |i|
-        sheet[y][i] ? b = sheet[y][i].value : b = ''
-        s << b
-      end
+      s = [ sheet[y][0].value, sheet[y][1].value, sheet[y][2].value,
+            sheet[y][3].value ]
 
       # Get each argument
       x = 4
@@ -432,13 +429,10 @@ workbook.each do |sheet|
     end
   when "Commands"
     get_command_section(sheet).each { |y|
-      c = []
       while(sheet[y] != nil and sheet[y][0] != nil and sheet[y][0].value != nil) do
         # Get the basic command info
-        (0..3).each do |i|
-          sheet[y][i] ? b = sheet[y][i].value : b = ''
-          c << b
-        end
+        c = [ sheet[y][0].value, sheet[y][1].value, sheet[y][2].value,
+            sheet[y][3].value ]
 
         # Get each argument
         x = 4
