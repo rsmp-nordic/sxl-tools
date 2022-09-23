@@ -87,7 +87,7 @@ worksheet.write('C23', '', t9_box)
 worksheet.write('B24', '', t9_box)
 worksheet.write('C24', '', t9_box)
 worksheet.write('A26', 'RSMP version:', t9b_r)
-worksheet.write('B26', '3.1.1', t9_c_box)
+worksheet.write('B26', '3.2', t9_c_box)
 
 # Write comments
 worksheet.write_comment('B2',
