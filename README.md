@@ -30,16 +30,13 @@ Notes about xlsx2yaml
 * Requires: gem install rubyXL
 * Usage: xlsx2yaml [options] [XLSX]
 * -s, --site. Prints [site information](#site). Includes also id, version and date
-* If using the -s flag in combination with the -e flag,
-  then also the ntsObjectId field is added
 * Since the "values" fields in alarms, statuses and commands cannot easily
   be converted from the SXL in Excel format, the "range" field is added if type
   is not boolean, integer, long or real and there is no predefined values to choose from.
-  Enable using the -e flag
 * Typical usage:
   * Output to rsmp_schema: No extra options needed
-  * Output to rst-format for the SXL TLC specification: Use the -e flag (for "value")
-  * Output to yaml-format and back to Excel-format: Use the -e and -s flag
+  * Output to rst-format for the SXL TLC specification: No extra options needed
+  * Output to yaml-format and back to Excel-format: Use -s flag
 
 Notes about yaml2xlsx
 ---------------------
@@ -56,7 +53,7 @@ Notes about yaml2rst
 --------------------
 
 * Requires: pip3 install pyyaml tabulate --user (or apt install python3-tabulate)
-* Prints extended fields if they "--extended" option is used.
+* Prints extended fields if the "--extended" option is used.
 * Since the "values" fields in alarms, statuses and commands cannot easily
   be converted from the SXL in Excel format, the "range" fields is also
   supported. The "range" field can be added using xlsx2yaml using the -e flag
