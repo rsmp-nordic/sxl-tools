@@ -30,7 +30,6 @@ Notes about xlsx2yaml
 * Requires: gem install rubyXL
 * Usage: xlsx2yaml [options] [XLSX]
 * -s, --site. Prints [site information](#site). Includes also id, version and date
-* -e, --extended. Prints [extended information](#extended)
 * If using the -s flag in combination with the -e flag,
   then also the ntsObjectId field is added
 * Since the "values" fields in alarms, statuses and commands cannot easily
@@ -47,7 +46,6 @@ Notes about yaml2xlsx
 
 * Requires: gem install rubyXL
 * Needs an excel template
-* Prints [extended information](#extended) if the fields are present
 * Since the "values" fields in alarms, statuses and commands cannot easily
   be converted from the SXL in Excel format, the "range" fields is also
   supported.
@@ -58,8 +56,7 @@ Notes about yaml2rst
 --------------------
 
 * Requires: pip3 install pyyaml tabulate --user (or apt install python3-tabulate)
-* Prints some of the [extended information](#extended) if they are present
-  They are generated with xlsx2yaml.rb using the -e and -s flags
+* Prints extended fields if they "--extended" option is used.
 * Since the "values" fields in alarms, statuses and commands cannot easily
   be converted from the SXL in Excel format, the "range" fields is also
   supported. The "range" field can be added using xlsx2yaml using the -e flag
@@ -71,118 +68,97 @@ Site fields contains all the individual components of a specific site. This
 is needed by the RSMP simulator to tie a specific component (object) to an
 alarm, status or command, but is not needed to construct a JSon schema.
 
-<a name="extended"></a>
-Extended information
---------------------
-Extended fields contains all fields of the SXL, not just those needed to
-construct a JSon schema.
-
-List of fields:
-* `constructor` (version)
-* `reviewed` (version)
-* `approved` (version)
-* `created-date` (version)
-* `rsmp-version` (version)
-* `ntsObjectId` (objects) only if site information is enabled
-* `externalNtsId` (objects) only if site information is enabled
-* `range` (alarms, status, commands)
-* `object` (alarms, status, commands) only if site information is enabled
-* `externalAlarmCodeId` (alarms)
-* `externalNtsAlarmCodeId` (alarms)
-* `functional_position` (aggregated status)
-* `functional_state` (aggregated status)
-
 Mapping between XLSX and YAML format of the SXL
 -----------------------------------------------
 Version sheet
 
-| Cell 	| Name in Excel   	| YAML         	| extended? 	|
-|------	|-----------------	|--------------	|-----------	|
-| B2   	| Plant id        	| id           	|           	|
-| B6   	| Plant name      	| description  	|           	|
-| B10  	| Constructor     	| constructor  	| yes       	|
-| B12  	| Reviewed        	| reviewed     	| yes       	|
-| B15  	| Approved        	| approved     	| yes       	|
-| B18  	| Created date    	| created-date 	| yes       	|
-| B21  	| Revision number 	| version      	|           	|
-| C21  	| Revision date   	| date         	|           	|
-| B26  	| RSMP version    	| rsmp-version 	| yes       	|
+| Cell 	| Name in Excel   	| YAML         	|
+|------	|-----------------	|--------------	|
+| B2   	| Plant id        	| id           	|
+| B6   	| Plant name      	| description  	|
+| B10  	| Constructor     	| constructor  	|
+| B12  	| Reviewed        	| reviewed     	|
+| B15  	| Approved        	| approved     	|
+| B18  	| Created date    	| created-date 	|
+| B21  	| Revision number 	| version      	|
+| C21  	| Revision date   	| date         	|
+| B26  	| RSMP version    	| rsmp-version 	|
 
 Object types
 
-| Cell 	| Name in Excel       	| YAML         	| extended? 	|
-|------	|---------------------	|--------------	|-----------	|
-| A7.. 	| ObjectType          	| [ObjectType] 	|           	|
-| B7.. 	| Description/comment 	| description  	| yes       	|
+| Cell 	| Name in Excel       	| YAML         	|
+|------	|---------------------	|--------------	|
+| A7.. 	| ObjectType          	| [ObjectType] 	|
+| B7.. 	| Description/comment 	| description  	|
 
 Objects ([site information](#site))
 
-| Cell 	| Name in Excel 	| YAML                    	| extended? 	|
-|------	|---------------	|-------------------------	|-----------	|
-| A7.. 	| ObjectType    	| [ObjectType]            	|           	|
-| B7.. 	| Object        	| [Object]                	|           	|
-| C7.. 	| componentId   	| [Object]: [componentId] 	|           	|
-| D7.. 	| NTSObjectId   	| ntsObjectid             	| yes       	|
-| E7.. 	| externalNtsId 	| externalNtsId           	| yes       	|
-| F7.. 	| Description   	| description             	| yes       	|
+| Cell 	| Name in Excel 	| YAML                    	|
+|------	|---------------	|-------------------------	|
+| A7.. 	| ObjectType    	| [ObjectType]            	|
+| B7.. 	| Object        	| [Object]                	|
+| C7.. 	| componentId   	| [Object]: [componentId] 	|
+| D7.. 	| NTSObjectId   	| ntsObjectid             	|
+| E7.. 	| externalNtsId 	| externalNtsId           	|
+| F7.. 	| Description   	| description             	|
 
 Aggregated status
 
-| Cell  	| Name in Excel      	| YAML                          | extended? |
-|-------	|--------------------	|-----------------------------  |-----------|
-| C7..  	| functionalPosition 	| functional_position           | yes       |
-| D7..  	| functionalState    	| functional_state              | yes       |
-| A17.. 	| Comment            	| aggregated_status_description | yes       |
+| Cell  	| Name in Excel      	| YAML                          |
+|-------	|--------------------	|-----------------------------  |
+| C7..  	| functionalPosition 	| functional_position           |
+| D7..  	| functionalState    	| functional_state              |
+| A17.. 	| Comment            	| aggregated_status_description |
 
 Alarms
 
-| Cell  	| Name in Excel          	| YAML                   		| extended? 	|
-|-------	|------------------------	|------------------------		|-----------	|
-| A7..  	| ObjectType             	| [ObjectType]           		|           	|
-| B7..  	| Object (optional)      	| [Object]               		| yes       	|
-| C7..  	| alarmCodeId            	| [alarmCodeId]          		|           	|
-| D7..  	| Description            	| description            		|           	|
-| E7..  	| externalAlarmCodeId    	| externalAlarmCodeId    		| yes       	|
-| F7..  	| externalNtsAlarmCodeId 	| externalNtsAlarmCodeId 		| yes       	|
-| G7..  	| Priority               	| priority               		|           	|
-| H7..  	| Category               	| category               		|           	|
-| I7..  	| Name                   	| [Name]				|           	|
-| J7..  	| Type                   	| type					|           	|
-| K7..  	| Value                  	| values (list)          		|           	|
-| K7..  	| Value                  	| max,min (integer, long, real)		|           	|
-| K7..  	| Value                  	| range (unless using values,min,max)	| yes       	|
-| L7..  	| Comment                	| description            		|           	|
+| Cell  	| Name in Excel          	| YAML                   		|
+|-------	|------------------------	|------------------------		|
+| A7..  	| ObjectType             	| [ObjectType]           		|
+| B7..  	| Object (optional)      	| [Object]               		|
+| C7..  	| alarmCodeId            	| [alarmCodeId]          		|
+| D7..  	| Description            	| description            		|
+| E7..  	| externalAlarmCodeId    	| externalAlarmCodeId    		|
+| F7..  	| externalNtsAlarmCodeId 	| externalNtsAlarmCodeId 		|
+| G7..  	| Priority               	| priority               		|
+| H7..  	| Category               	| category               		|
+| I7..  	| Name                   	| [Name]				|
+| J7..  	| Type                   	| type					|
+| K7..  	| Value                  	| values (list)          		|
+| K7..  	| Value                  	| max,min (integer, long, real)		|
+| K7..  	| Value                  	| range (unless using values,min,max)	|
+| L7..  	| Comment                	| description            		|
 
 Status
 
-| Cell  	| Name in Excel     	| YAML                   		| extended? 	|
-|-------	|-------------------	|------------------------		|-----------	|
-| A7..  	| ObjectType        	| [ObjectType]           		|           	|
-| B7..  	| Object (optional) 	| [Object]               		| yes       	|
-| C7..  	| statusCodeId      	| [statusCodeId]         		|           	|
-| D7..  	| Description       	| description            		|           	|
-| E7..  	| Name              	| [Name]                 		|           	|
-| F7..  	| Type              	| type                   		|           	|
-| G7..  	| Value             	| values (list)          		|           	|
-| G7..  	| Value             	| max,min (integer, long, real)		|           	|
-| G7..  	| Value             	| range (unless using values,min,max) 	| yes       	|
-| H7..  	| Comment           	| description            		|           	|
+| Cell  	| Name in Excel     	| YAML                   		|
+|-------	|-------------------	|------------------------		|
+| A7..  	| ObjectType        	| [ObjectType]           		|
+| B7..  	| Object (optional) 	| [Object]               		|
+| C7..  	| statusCodeId      	| [statusCodeId]         		|
+| D7..  	| Description       	| description            		|
+| E7..  	| Name              	| [Name]                 		|
+| F7..  	| Type              	| type                   		|
+| G7..  	| Value             	| values (list)          		|
+| G7..  	| Value             	| max,min (integer, long, real)		|
+| G7..  	| Value             	| range (unless using values,min,max) 	|
+| H7..  	| Comment           	| description            		|
 
 Commands
 
-| Cell  	| Name in Excel     	| YAML                   		| extended? 	|
-|-------	|-------------------	|------------------------		|-----------	|
-| A7..  	| ObjectType        	| [ObjectType]           		|           	|
-| B7..  	| Object (optional) 	| [Object]               		| yes       	|
-| C7..  	| commandCodeId     	| [commandCodeId]        		|           	|
-| D7..  	| Description       	| description            		|           	|
-| E7..  	| Name              	| [Name]                 		|           	|
-| F7..  	| Command           	| command                		|           	|
-| G7..  	| Type              	| type                   		|           	|
-| H7..  	| Value             	| values (list)          		|           	|
-| h7..  	| Value             	| max,min (integer, long, real) 	|           	|
-| H7..  	| Value             	| range (unless using values,min,max)	| yes       	|
-| I7..  	| Comment           	| description            		|           	|
+| Cell  	| Name in Excel     	| YAML                   		|
+|-------	|-------------------	|------------------------		|
+| A7..  	| ObjectType        	| [ObjectType]           		|
+| B7..  	| Object (optional) 	| [Object]               		|
+| C7..  	| commandCodeId     	| [commandCodeId]        		|
+| D7..  	| Description       	| description            		|
+| E7..  	| Name              	| [Name]                 		|
+| F7..  	| Command           	| command                		|
+| G7..  	| Type              	| type                   		|
+| H7..  	| Value             	| values (list)          		|
+| h7..  	| Value             	| max,min (integer, long, real) 	|
+| H7..  	| Value             	| range (unless using values,min,max)	|
+| I7..  	| Comment           	| description            		|
 
 Example usages
 --------------
@@ -193,16 +169,16 @@ Example 1: Convert the SXL from Excel to YAML.
 xlsx2yaml.rb SXL_Traffic_Controller.xlsx
 ```
 
-Example 2: Convert the SXL from Excel format to RST, including extended attributes.
+Example 2: Convert the SXL from Excel format to RST.
 
 ```
-xlsx2yaml.rb -e SXL_Traffic_Controller.xlsx | yaml2rst.py > sxl_traffic_light_controller.rst
+xlsx2yaml.rb SXL_Traffic_Controller.xlsx | yaml2rst.py > sxl_traffic_light_controller.rst
 ```
 
 Example 3: Convert the SXL from Excel format to YAML, and then back again to Excel using a template.
-Includes extended attributes and site information
+Includes site information
 
 ```
-xlsx2yaml.rb -s -e SXL_Traffic_Controller.xlsx | yaml2xlsx.rb --template "RSMP_Template_SignalExchangeList-20120117.xlsx"
+xlsx2yaml.rb -s SXL_Traffic_Controller.xlsx | yaml2xlsx.rb --template "RSMP_Template_SignalExchangeList-20120117.xlsx"
 ```
 

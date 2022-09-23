@@ -67,22 +67,14 @@ def get_object_section(sheet, type, options)
       if object[2] == nil
         objects[key] = { 'description' => object[1] }
       else
-        if options[:extended]
-          objects[key] = { object[1] => { 'componentId' => object[2], 'ntsObjectId' => object[3] } }
-          objects[key][object[1]].store("externalNtsId", to_integer(object[4])) if object[4] != nil
-          objects[key][object[1]].store("description", object[5]) if object[5] != nil
-        else
-          objects[key] = { object[1] => object[2] }
-        end
+        objects[key] = { object[1] => { 'componentId' => object[2], 'ntsObjectId' => object[3] } }
+        objects[key][object[1]].store("externalNtsId", to_integer(object[4])) if object[4] != nil
+        objects[key][object[1]].store("description", object[5]) if object[5] != nil
       end
     else
-        if options[:extended]
-          newobject = { object[1] => { 'componentId' => object[2], 'ntsObjectId' => object[3] } }
-          newobject[object[1]].store("externalNtsId", to_integer(object[4])) if object[4] != nil
-          newobject[object[1]].store("description", object[5]) if object[5] != nil
-        else
-          newobject = { object[1] => object[2] }
-        end
+        newobject = { object[1] => { 'componentId' => object[2], 'ntsObjectId' => object[3] } }
+        newobject[object[1]].store("externalNtsId", to_integer(object[4])) if object[4] != nil
+        newobject[object[1]].store("description", object[5]) if object[5] != nil
       objects[key] = objects[key].merge(newobject)
     end
     y = y + 1
@@ -167,9 +159,6 @@ OptionParser.new do |opts|
     options[:site] = s
   end
 
-  opts.on("-e", "--extended", "Extended fields") do |e|
-    options[:extended] = e
-  end
 end.parse!
 
 if ARGV.length < 1
@@ -191,13 +180,11 @@ workbook.each do |sheet|
       sxl["version"] = sheet[20][1].value
       sxl["date"] = sheet[20][2].value
       sxl["description"] = sheet[5][1].value
-      if options[:extended]
-        sxl["constructor"] = sheet[9][1].value if sheet[9]
-        sxl["reviewed"] = sheet[11][1].value if sheet[11][1].value
-        sxl["approved"] = sheet[13][1].value if sheet[13] and sheet[13][1]
-        sxl["created-date"] = sheet[17][1].value if sheet[17]
-        sxl["rsmp-version"] = sheet[25][1].value if sheet[25]
-      end
+      sxl["constructor"] = sheet[9][1].value if sheet[9]
+      sxl["reviewed"] = sheet[11][1].value if sheet[11][1].value
+      sxl["approved"] = sheet[13][1].value if sheet[13] and sheet[13][1]
+      sxl["created-date"] = sheet[17][1].value if sheet[17]
+      sxl["rsmp-version"] = sheet[25][1].value if sheet[25]
     end
   when "Object types"
     # grouped objects
@@ -259,9 +246,7 @@ workbook.each do |sheet|
               rv[sheet[y][x].value]['min'] = values[0].to_i
               rv[sheet[y][x].value]['max'] = values[1].to_i
             else
-              if options[:extended]
-                rv[sheet[y][x].value]['range'] = sheet[y][x+2].value
-              end
+              rv[sheet[y][x].value]['range'] = sheet[y][x+2].value
             end
           end
         end
@@ -279,11 +264,9 @@ workbook.each do |sheet|
         'priority' => a[6],
         'category' => a[7]
       }
-      if options[:extended]
-        alarm.store("object", a[1]) if a[1] != nil
-        alarm.store("externalAlarmCodeId", a[4]) if a[4] != nil
-        alarm.store("externalNtsAlarmCodeId", to_integer(a[5])) if a[5] != nil
-      end
+      alarm.store("object", a[1]) if a[1] != nil
+      alarm.store("externalAlarmCodeId", a[4]) if a[4] != nil
+      alarm.store("externalNtsAlarmCodeId", to_integer(a[5])) if a[5] != nil
 
       if !rv.empty?
         alarm['arguments'] = rv
@@ -332,11 +315,9 @@ workbook.each do |sheet|
         STDERR.puts "Object #{agg[0]} not found"
       end
 
-      if options[:extended]
-        sxl["objects"][agg[0]]["functional_position"] = agg[2]
-        sxl["objects"][agg[0]]["functional_state"] = agg[3]
-        sxl["objects"][agg[0]]["aggregated_status_description"] = agg[4]
-      end
+      sxl["objects"][agg[0]]["functional_position"] = agg[2]
+      sxl["objects"][agg[0]]["functional_state"] = agg[3]
+      sxl["objects"][agg[0]]["aggregated_status_description"] = agg[4]
       
       y = y + 1
 
@@ -394,9 +375,7 @@ workbook.each do |sheet|
               a[sheet[y][x].value]['max'] = values[1].to_i
               a[sheet[y][x].value]['type'] << "_list"	# Add _list to type if min/max is used
             else
-              if options[:extended]
-                a[sheet[y][x].value]['range'] = sheet[y][x+2].value
-              end
+              a[sheet[y][x].value]['range'] = sheet[y][x+2].value
             end
           end
         end
@@ -412,9 +391,7 @@ workbook.each do |sheet|
         'description' => s[3],
         'arguments' => a
       }
-      if options[:extended]
-        status.store("object", s[1]) if s[1] != nil
-      end
+      status.store("object", s[1]) if s[1] != nil
 
       # Add to yaml
       if sxl["objects"][s[0]]
@@ -482,9 +459,7 @@ workbook.each do |sheet|
                 a[sheet[y][x].value]['max'] = values[1].to_i
                 a[sheet[y][x].value]['type'] << "_list"	# Add _list to type if min/max is used
               else
-                if options[:extended]
-                  a[sheet[y][x].value]['range'] = sheet[y][x+3].value
-                end
+                a[sheet[y][x].value]['range'] = sheet[y][x+3].value
               end
             end
           end
@@ -504,9 +479,7 @@ workbook.each do |sheet|
           'arguments' => a,
           'command' => co
         }
-        if options[:extended]
-          command.store("object", c[1]) if c[1] != nil
-        end
+        command.store("object", c[1]) if c[1] != nil
 
         # Add to yaml
         if sxl["objects"][c[0]]
