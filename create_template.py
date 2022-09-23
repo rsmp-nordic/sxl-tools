@@ -156,10 +156,10 @@ worksheet.write('F6', 'Description', t9b_l_i_box)
 
 go_row=6 # start row
 for col in range(0,6):
-    for row in range(go_row,go_row+args.no_grouped_objects):
+    for row in range(go_row,go_row+args.num_grouped_objects):
         worksheet.write(row, col, "", t9_box)
 
-so_row=go_row+args.no_grouped_objects # start row
+so_row=go_row+args.num_grouped_objects # start row
 
 worksheet.write(so_row, 0, 'Single objects', t9b_l)
 worksheet.write(so_row+1, 0, 'ObjectType', t9b_l_i_box)
@@ -170,7 +170,7 @@ worksheet.write(so_row+1, 4, 'externalNtsId', t9b_l_i_box)
 worksheet.write(so_row+1, 5, 'Description', t9b_l_i_box)
 
 for col in range(0,6):
-    for row in range(so_row+2,so_row+2+args.no_single_objects):
+    for row in range(so_row+2,so_row+2+args.num_single_objects):
         worksheet.write(row, col, "", t9_box)
 
 # Write comments
@@ -398,7 +398,7 @@ col = 0
 fp_row = 6 # start row
 for item in (title):
     worksheet.write(5, col, item, t9b_l_i_box)
-    for row in range(fp_row,fp_row+args.no_command_functional_position):
+    for row in range(fp_row,fp_row+args.num_command_functional_position):
         worksheet.write(row, col, "", t9_box)
     col += 1
 
@@ -414,17 +414,17 @@ for num in range(0,args.command_args):
     worksheet.merge_range(fp_row-2, col, fp_row-2, col+4, 'argument', t9b_c_i_box)
     for item in (argument):
         worksheet.write(fp_row-1, col, item, t9b_l_i_box)
-        for row in range(fp_row,fp_row+args.no_command_functional_position):
+        for row in range(fp_row,fp_row+args.num_command_functional_position):
             worksheet.write(row, col, "", t9_box)
         col += 1
 
-fs_row = fp_row + args.no_command_functional_position + 3
+fs_row = fp_row + args.num_command_functional_position + 3
 
 worksheet.write(fs_row-2, 0, 'Functional state', t9b_l)
 col = 0
 for item in (title):
     worksheet.write(fs_row-1, col, item, t9b_l_i_box)
-    for row in range(fs_row,fs_row+args.no_command_functional_state):
+    for row in range(fs_row,fs_row+args.num_command_functional_state):
         worksheet.write(row, col, "", t9_box)
     col += 1
 col = 4
@@ -432,17 +432,17 @@ for num in range(0,args.command_args):
     worksheet.merge_range(fs_row-2, col, fs_row-2, col+4, 'argument', t9b_c_i_box)
     for item in (argument):
         worksheet.write(fs_row-1, col, item, t9b_l_i_box)
-        for row in range(fs_row,fs_row+args.no_command_functional_state):
+        for row in range(fs_row,fs_row+args.num_command_functional_state):
             worksheet.write(row, col, "", t9_box)
         col += 1
 
-m_row = fs_row + args.no_command_functional_state + 3
+m_row = fs_row + args.num_command_functional_state + 3
 
 worksheet.write(m_row-2, 0, 'Manouver', t9b_l)
 col = 0
 for item in (title):
     worksheet.write(m_row-1, col, item, t9b_l_i_box)
-    for row in range(m_row,m_row+args.no_command_maneuver):
+    for row in range(m_row,m_row+args.num_command_maneuver):
         worksheet.write(row, col, "", t9_box)
     col += 1
 col = 4
@@ -450,17 +450,17 @@ for num in range(0,args.command_args):
     worksheet.merge_range(m_row-2, col, m_row-2, col+4, 'argument', t9b_c_i_box)
     for item in (argument):
         worksheet.write(m_row-1, col, item, t9b_l_i_box)
-        for row in range(m_row,m_row+args.no_command_maneuver):
+        for row in range(m_row,m_row+args.num_command_maneuver):
             worksheet.write(row, col, "", t9_box)
         col += 1
 
-p_row = m_row + args.no_command_maneuver + 3
+p_row = m_row + args.num_command_maneuver + 3
 
 worksheet.write(p_row-2, 0, 'Parameter', t9b_l)
 col = 0
 for item in (title):
     worksheet.write(p_row-1, col, item, t9b_l_i_box)
-    for row in range(p_row,p_row+args.no_command_parameters):
+    for row in range(p_row,p_row+args.num_command_parameters):
         worksheet.write(row, col, "", t9_box)
     col += 1
 col = 4
@@ -468,7 +468,7 @@ for num in range(0,args.command_args):
     worksheet.merge_range(p_row-2, col, p_row-2, col+4, 'argument', t9b_c_i_box)
     for item in (argument):
         worksheet.write(p_row-1, col, item, t9b_l_i_box)
-        for row in range(p_row,p_row+args.no_command_parameters):
+        for row in range(p_row,p_row+args.num_command_parameters):
             worksheet.write(row, col, "", t9_box)
         col += 1
 
