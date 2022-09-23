@@ -5,17 +5,17 @@ import xlsxwriter
 import argparse
 
 parser = argparse.ArgumentParser(description='Create SXL template')
-parser.add_argument('--no-grouped-objects', default=15, type=int,
+parser.add_argument('--num-grouped-objects', default=15, type=int,
     help='Number of grouped objects')
-parser.add_argument('--no-single-objects', default=29, type=int,
+parser.add_argument('--num-single-objects', default=29, type=int,
     help='Number of single objects')
-parser.add_argument('--no-command-functional-position', default=3, type=int,
+parser.add_argument('--num-command-functional-position', default=3, type=int,
     help='Number of commands of type functional position')
-parser.add_argument('--no-command-functional-state', default=3, type=int,
+parser.add_argument('--num-command-functional-state', default=3, type=int,
     help='Number of commands of type functional state')
-parser.add_argument('--no-command-maneuver', default=3, type=int,
+parser.add_argument('--num-command-maneuver', default=3, type=int,
     help='Number of commands of type maneuver')
-parser.add_argument('--no-command-parameters', default=3, type=int,
+parser.add_argument('--num-command-parameters', default=3, type=int,
     help='Number of commands of type parameter')
 parser.add_argument('--alarm-rvs', default=2, type=int,
     help='Number of alarm return values')
