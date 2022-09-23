@@ -155,7 +155,11 @@ usage = "Usage: xlsx2yaml.rb [options] [XLSX]"
 OptionParser.new do |opts|
   opts.banner = usage
 
-  opts.on("-s", "--site", "Include site") do |s|
+  opts.on("-o", "--object", "Output object information") do |o|
+    options[:object] = o
+  end
+
+  opts.on("-s", "--site", "Output site information") do |s|
     options[:site] = s
   end
 
@@ -521,5 +525,9 @@ workbook.each do |sheet|
 end
 
 sxl["sites"] = sites if options[:site]
+
+# Clear "objects" if site should be used
+sxl.delete("objects") if options[:site]
+
 reindent(sxl.to_yaml)
 
