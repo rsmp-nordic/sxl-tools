@@ -35,12 +35,20 @@ def find_row(sheet, string)
 end
 
 options = {}
-usage = "Usage: yaml2xlsx.rb [--template <XLSX>]"
+usage = "Usage: yaml2xlsx.rb [OPTIONS]--template <XLSX>] [sxl.yaml] [site.yaml]"
 OptionParser.new do |opts|
   opts.banner = usage
 
   opts.on("--template [XLSX]", "SXL Template") do |p|
     options[:template] = p
+  end
+
+  opts.on("--sxl [YAML]", "Signal Exchange List (objects)") do |x|
+    options[:sxl] = x
+  end
+
+  opts.on("--site [YAML]", "Signal Exchange List (site)") do |t|
+    options[:site] = t
   end
 
   opts.on("--short-desc", "Short description") do |s|
@@ -53,25 +61,26 @@ OptionParser.new do |opts|
 end.parse!
 
 abort("--template needs to be set") if options[:template].nil?
-
+abort("--sxl needs to be set") if options[:sxl].nil?
+abort("--site needs to be set") if options[:site].nil?
 
 workbook = RubyXL::Parser.parse(options[:template])
 
-# Read yaml from stdin
-input = ARGF.read()
-sxl = YAML.load(input)
+# Read yaml
+sxl = YAML.load_file(options[:sxl])
+site = YAML.load_file(options[:site])
 
 # Version
 sheet = workbook['Version']
-set_cell(sheet, 2, 4, sxl["id"])            # Plant id
-set_cell(sheet, 2, 6, sxl["description"])   # Plant name
-set_cell(sheet, 2, 10, sxl["constructor"])  # Constructor
-set_cell(sheet, 2, 12, sxl["reviewed"])     # Reviewed
-set_cell(sheet, 2, 15, sxl["approved"])     # Approved
-set_cell(sheet, 2, 18, sxl["created-date"]) # Created date
-set_cell(sheet, 2, 21, sxl["version"])      # SXL revision number
-set_cell(sheet, 3, 21, sxl["date"])         # SXL revision date
-set_cell(sheet, 2, 26, sxl["rsmp-version"]) # RSMP version
+set_cell(sheet, 2, 4, site["id"])            # Plant id
+set_cell(sheet, 2, 6, site["description"])   # Plant name
+set_cell(sheet, 2, 10, site["constructor"])  # Constructor
+set_cell(sheet, 2, 12, site["reviewed"])     # Reviewed
+set_cell(sheet, 2, 15, site["approved"])     # Approved
+set_cell(sheet, 2, 18, site["created-date"]) # Created date
+set_cell(sheet, 2, 21, site["version"])      # SXL revision number
+set_cell(sheet, 3, 21, site["date"])         # SXL revision date
+set_cell(sheet, 2, 26, site["rsmp-version"]) # RSMP version
 
 # Object types
 sheet = workbook['Object types']
@@ -94,7 +103,7 @@ sxl["objects"].each { |object|
 sheet = workbook['Objects']
 gy = find_row(sheet, "Grouped objects")+3
 sy = find_row(sheet, "Single objects")+3
-sxl["sites"].each { |site|
+site["sites"].each { |site|
   set_cell(sheet, 2, 2, site[0])
   set_cell(sheet, 3, 2, site[1]["description"])
 
