@@ -187,35 +187,30 @@ sxl["objects"].each { |object|
             values = "-False\n-True"
             set_cell(sheet, col+2, row, values)
         else
-          # If 'range' exists, just use it
-          unless value["range"].nil?
-            set_cell(sheet, col+2, row, value["range"])
-          else
-            description = ""
-            if not value["values"].nil?
-              # Make a list of values and append to description
-              values = ""
-              value["values"].each { |v, desc |
-                values += "-" + v.to_s + "\n"
-                unless desc.empty?
-                  description += + v.to_s + ": " + desc + "\n"
-                end
-              }
-            elsif not value["min"].nil?
-              min = value["min"]
-              max = value["max"]
-              values = "[" + min.to_s + "-" + max.to_s + "]"
-            end
-            values.chomp!
-            description.chomp!
-            if value["description"].nil?
-              value["description"] = description
-            else
-              value["description"].concat("\n" + description)
-              value["description"].chomp!
-            end
-            set_cell(sheet, col+2, row, values)
+          description = ""
+          if not value["values"].nil?
+            # Make a list of values and append to description
+            values = ""
+            value["values"].each { |v, desc |
+              values += "-" + v.to_s + "\n"
+              unless desc.empty?
+                description += + v.to_s + ": " + desc + "\n"
+              end
+            }
+          elsif not value["min"].nil?
+            min = value["min"]
+            max = value["max"]
+            values = "[" + min.to_s + "-" + max.to_s + "]"
           end
+          values.chomp!
+          description.chomp!
+          if value["description"].nil?
+            value["description"] = description
+          else
+            value["description"].concat("\n" + description)
+            value["description"].chomp!
+          end
+          set_cell(sheet, col+2, row, values)
         end
         set_cell(sheet, col+3, row, value["description"])
         col += 4
@@ -254,34 +249,29 @@ sxl["objects"].each { |object|
           values = "-False\n-True"
           set_cell(sheet, col+2, row, values)
       else
-        # If 'range' exists, just use it
-        unless value["range"].nil?
-          set_cell(sheet, col+2, row, value["range"])
-        else
-          description = ""
-          if not value["values"].nil?
-            # Make a list of values and append to description
-            values = ""
-            value["values"].each { |v, desc |
-              values += "-" + v.to_s + "\n"
-              unless desc.empty?
-                description += + v.to_s + ": " + desc + "\n"
-              end
-            }
-          elsif not value["min"].nil?
-            min = value["min"]
-            max = value["max"]
-            values = "[" + min.to_s + "-" + max.to_s + "]"
-          end
-          values.chomp!
-          description.chomp!
-          if value["description"].nil?
-            value["description"] = description
-          else
-            value["description"].concat("\n" + description)
-          end
-          set_cell(sheet, col+2, row, values)
+        description = ""
+        if not value["values"].nil?
+          # Make a list of values and append to description
+          values = ""
+          value["values"].each { |v, desc |
+            values += "-" + v.to_s + "\n"
+            unless desc.empty?
+              description += + v.to_s + ": " + desc + "\n"
+            end
+          }
+        elsif not value["min"].nil?
+          min = value["min"]
+          max = value["max"]
+          values = "[" + min.to_s + "-" + max.to_s + "]"
         end
+        values.chomp!
+        description.chomp!
+        if value["description"].nil?
+          value["description"] = description
+        else
+          value["description"].concat("\n" + description)
+        end
+        set_cell(sheet, col+2, row, values)
       end
       set_cell(sheet, col+3, row, value["description"])
       col += 4
@@ -322,34 +312,29 @@ sxl["objects"].each { |object|
           values = "-False\n-True"
           set_cell(sheet, col+3, row, values)
       else
-        # If 'range' exists, just use it
-        unless value["range"].nil?
-          set_cell(sheet, col+3, row, value["range"])
-        else
-          description = ""
-          if not value["values"].nil?
-            # Make a list of values and append to description
-            values = ""
-            value["values"].each { |v, desc |
-              values += "-" + v.to_s + "\n"
-              unless desc.empty?
-                description += + v.to_s + ": " + desc + "\n"
-              end
-            }
-          elsif not value["min"].nil?
-            min = value["min"]
-            max = value["max"]
-            values = "[" + min.to_s + "-" + max.to_s + "]"
-          end
-          values.chomp!
-          description.chomp!
-          if value["description"].nil?
-            value["description"] = description
-          else
-            value["description"].concat("\n" + description)
-          end
-          set_cell(sheet, col+3, row, values)
+        description = ""
+        if not value["values"].nil?
+          # Make a list of values and append to description
+          values = ""
+          value["values"].each { |v, desc |
+            values += "-" + v.to_s + "\n"
+            unless desc.empty?
+              description += + v.to_s + ": " + desc + "\n"
+            end
+          }
+        elsif not value["min"].nil?
+          min = value["min"]
+          max = value["max"]
+          values = "[" + min.to_s + "-" + max.to_s + "]"
         end
+        values.chomp!
+        description.chomp!
+        if value["description"].nil?
+          value["description"] = description
+        else
+          value["description"].concat("\n" + description)
+        end
+        set_cell(sheet, col+3, row, values)
       end
       set_cell(sheet, col+4, row, value["description"])
       col += 5

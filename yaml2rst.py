@@ -240,11 +240,7 @@ def print_alarms():
                                         max = ""
                                     value = "[" + str(min) + "-" + str(max) + "]"
                                 else:
-                                    # Extended
-                                    if "range" in argument:
-                                        value = argument['range']
-                                    else:
-                                        value = ""
+                                    value = ""
                             if "description" in argument:
                                 comment = argument['description'].replace("\n", " |br|\n")
 
@@ -352,11 +348,7 @@ def print_status():
                                         max = ""
                                     value = "[" + str(min) + "-" + str(max) + "]"
                                 else:
-                                    # Extended
-                                    if "range" in argument:
-                                        value = argument['range']
-                                    else:
-                                        value = ""
+                                    value = ""
                             if "description" in argument:
                                 comment = argument['description'].rstrip("\n")
                                 comment = comment.replace("\n", " |br|\n")
@@ -454,11 +446,7 @@ def print_commands():
                                         max = ""
                                     value = "[" + str(min) + "-" + str(max) + "]"
                                 else:
-                                    # Extended
-                                    if "range" in argument:
-                                        value = argument['range']
-                                    else:
-                                        value = ""
+                                    value = ""
                             if "description" in argument:
                                 comment = argument['description'].rstrip("\n")
                                 comment = comment.replace("\n", " |br|\n")

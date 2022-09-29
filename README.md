@@ -30,9 +30,6 @@ Notes about xlsx2yaml
 * Requires: gem install rubyXL
 * Usage: xlsx2yaml [options] [XLSX]
 * -s, --site. Prints [site information](#site). Includes also id, version and date
-* Since the "values" fields in alarms, statuses and commands cannot easily
-  be converted from the SXL in Excel format, the "range" field is added if type
-  is not boolean, integer, long or real and there is no predefined values to choose from.
 * Typical usage:
   * Output to rsmp_schema: No extra options needed
   * Output to rst-format for the SXL TLC specification: No extra options needed
@@ -43,9 +40,6 @@ Notes about yaml2xlsx
 
 * Requires: gem install rubyXL
 * Needs an excel template
-* Since the "values" fields in alarms, statuses and commands cannot easily
-  be converted from the SXL in Excel format, the "range" fields is also
-  supported.
 * The Excel file is written to "output.xlsx"
 
 
@@ -54,9 +48,6 @@ Notes about yaml2rst
 
 * Requires: pip3 install pyyaml tabulate --user (or apt install python3-tabulate)
 * Prints extended fields if the "--extended" option is used.
-* Since the "values" fields in alarms, statuses and commands cannot easily
-  be converted from the SXL in Excel format, the "range" fields is also
-  supported. The "range" field can be added using xlsx2yaml using the -e flag
 
 <a name="site"></a>
 Site information
@@ -123,7 +114,6 @@ Alarms
 | J7..  	| Type                   	| type					|
 | K7..  	| Value                  	| values (list)          		|
 | K7..  	| Value                  	| max,min (integer, long, real)		|
-| K7..  	| Value                  	| range (unless using values,min,max)	|
 | L7..  	| Comment                	| description            		|
 
 Status
@@ -138,7 +128,6 @@ Status
 | F7..  	| Type              	| type                   		|
 | G7..  	| Value             	| values (list)          		|
 | G7..  	| Value             	| max,min (integer, long, real)		|
-| G7..  	| Value             	| range (unless using values,min,max) 	|
 | H7..  	| Comment           	| description            		|
 
 Commands
@@ -154,7 +143,6 @@ Commands
 | G7..  	| Type              	| type                   		|
 | H7..  	| Value             	| values (list)          		|
 | h7..  	| Value             	| max,min (integer, long, real) 	|
-| H7..  	| Value             	| range (unless using values,min,max)	|
 | I7..  	| Comment           	| description            		|
 
 Example usages
