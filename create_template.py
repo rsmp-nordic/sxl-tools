@@ -9,6 +9,14 @@ parser.add_argument('--num-grouped-objects', default=15, type=int,
     help='Number of grouped objects')
 parser.add_argument('--num-single-objects', default=29, type=int,
     help='Number of single objects')
+parser.add_argument('--num-alarms', default=26, type=int,
+    help='Number of alarms')
+parser.add_argument('--alarm-rvs', default=26, type=int,
+    help='Number of alarm return values')
+parser.add_argument('--num-statuses', default=52, type=int,
+    help='Number of statuses')
+parser.add_argument('--status-rvs', default=2, type=int,
+    help='Number of status return values')
 parser.add_argument('--num-command-functional-position', default=3, type=int,
     help='Number of commands of type functional position')
 parser.add_argument('--num-command-functional-state', default=3, type=int,
@@ -17,10 +25,6 @@ parser.add_argument('--num-command-maneuver', default=3, type=int,
     help='Number of commands of type maneuver')
 parser.add_argument('--num-command-parameters', default=3, type=int,
     help='Number of commands of type parameter')
-parser.add_argument('--alarm-rvs', default=2, type=int,
-    help='Number of alarm return values')
-parser.add_argument('--status-rvs', default=2, type=int,
-    help='Number of status return values')
 parser.add_argument('--command-args', default=2, type=int,
     help='Number of command arguments')
 parser.add_argument('--output',
@@ -278,7 +282,7 @@ title = [
 col = 0
 for item in (title):
     worksheet.write(5, col, item, t9b_l_i_box)
-    for row in range(6,26):
+    for row in range(6,args.num_alarms):
         worksheet.write(row, col, "", t9_box)
     col += 1
 
@@ -294,7 +298,7 @@ for num in range(0,args.alarm_rvs):
     for item in (return_value):
         worksheet.write(5, col, item, t9b_l_i_box)
         worksheet.set_column(col, col, 10.13)
-        for row in range(6,26):
+        for row in range(6,args.num_alarms):
             worksheet.write(row, col, "", t9_box)
         col += 1
 
@@ -336,7 +340,7 @@ title = [
 col = 0
 for item in (title):
     worksheet.write(5, col, item, t9b_l_i_box)
-    for row in range(6,52):
+    for row in range(6,args.num_statuses):
         worksheet.write(row, col, "", t9_box)
     col += 1
 
@@ -352,7 +356,7 @@ for num in range(0,args.status_rvs):
     for item in (return_value):
         worksheet.write(5, col, item, t9b_l_i_box)
         worksheet.set_column(col, col, 10.13)
-        for row in range(6,52):
+        for row in range(6,args.num_statuses):
             worksheet.write(row, col, "", t9_box)
         col += 1
 
