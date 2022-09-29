@@ -201,6 +201,8 @@ sxl["objects"].each { |object|
             min = value["min"]
             max = value["max"]
             values = "[" + min.to_s + "-" + max.to_s + "]"
+          else
+            values = ""
           end
           values.chomp!
           description.chomp!
@@ -263,6 +265,8 @@ sxl["objects"].each { |object|
           min = value["min"]
           max = value["max"]
           values = "[" + min.to_s + "-" + max.to_s + "]"
+        else
+          values = ""
         end
         values.chomp!
         description.chomp!
@@ -326,6 +330,8 @@ sxl["objects"].each { |object|
           min = value["min"]
           max = value["max"]
           values = "[" + min.to_s + "-" + max.to_s + "]"
+        else
+          values = ""
         end
         values.chomp!
         description.chomp!
