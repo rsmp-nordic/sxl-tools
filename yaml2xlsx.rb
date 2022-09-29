@@ -186,6 +186,12 @@ sxl["objects"].each { |object|
         if value["type"] == "boolean"
             values = "-False\n-True"
             set_cell(sheet, col+2, row, values)
+        elsif value["type"] == "string"
+            values = "[string]"
+            set_cell(sheet, col+2, row, values)
+        elsif value["type"] == "base64"
+            values = "[base64]"
+            set_cell(sheet, col+2, row, values)
         else
           description = ""
           if not value["values"].nil?
@@ -249,6 +255,12 @@ sxl["objects"].each { |object|
       set_cell(sheet, col+1, row, value["type"])
       if value["type"] == "boolean"
           values = "-False\n-True"
+          set_cell(sheet, col+2, row, values)
+      elsif value["type"] == "string"
+          values = "[string]"
+          set_cell(sheet, col+2, row, values)
+      elsif value["type"] == "base64"
+          values = "[base64]"
           set_cell(sheet, col+2, row, values)
       else
         description = ""
@@ -314,6 +326,12 @@ sxl["objects"].each { |object|
       set_cell(sheet, col+2, row, value["type"])
       if value["type"] == "boolean"
           values = "-False\n-True"
+          set_cell(sheet, col+3, row, values)
+      elsif value["type"] == "string"
+          values = "[string]"
+          set_cell(sheet, col+3, row, values)
+      elsif value["type"] == "base64"
+          values = "[base64]"
           set_cell(sheet, col+3, row, values)
       else
         description = ""
