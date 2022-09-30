@@ -113,11 +113,21 @@ def add_signal(dest, object_type, signal_type, signal_code, body)
     if dest[object_type][signal_type]
       dest[object_type][signal_type][signal_code] = body
     else
-      alarms = { signal_code => body }
-      dest[object_type][signal_type] = body
+      signals = { signal_code => body }
+      dest[object_type][signal_type] = signals
     end
   else
     STDERR.puts "Object #{signal_code} not found"
+  end
+end
+
+# add individual value to a return value
+def add_rv_value(dest, value, description)
+  v = to_integer(value)
+  if dest['values']
+    dest['values'][v.to_s] = description
+  else
+    dest['values'] = {v.to_s => description}
   end
 end
 
@@ -254,13 +264,8 @@ workbook.each do |sheet|
                 desc = ''
               end
 
-              # Add to yaml
-              v = to_integer(v)
-              if rv[sheet[y][x].value]['values']
-                rv[sheet[y][x].value]['values'][v] = desc
-              else
-                rv[sheet[y][x].value]['values'] = {v => desc}
-              end
+              # Add value to return value
+              add_rv_value(rv[sheet[y][x].value], v, desc)
             }
           else
             # Set 'max' and 'min' if type is integer, long or real
@@ -376,13 +381,8 @@ workbook.each do |sheet|
                 desc = ''
               end
 
-              # Add to yaml
-              v = to_integer(v)
-              if a[sheet[y][x].value]['values']
-                a[sheet[y][x].value]['values'][v] = desc
-              else
-                a[sheet[y][x].value]['values'] = {v => desc}
-              end
+              # Add value to return value
+              add_rv_value(a[sheet[y][x].value], v, desc)
             }
           else
             # Set 'max' and 'min' if type is integer, long or real
@@ -409,7 +409,7 @@ workbook.each do |sheet|
       status.store("object", s[1]) if s[1] != nil
 
       # Add status to the yaml structure
-      add_signal(sxl["objects"], s[0], "statuses", a[2], status)
+      add_signal(sxl["objects"], s[0], "statuses", s[2], status)
 
       y = y + 1
     end
@@ -449,13 +449,8 @@ workbook.each do |sheet|
                   desc = ''
                 end
 
-                # Add to yaml
-                v = to_integer(v)
-                if a[sheet[y][x].value]['values']
-                  a[sheet[y][x].value]['values'][v.to_s] = desc
-                else
-                  a[sheet[y][x].value]['values'] = {v.to_s => desc}
-                end
+                # Add value to return value
+                add_rv_value(a[sheet[y][x].value], v, desc)
               }
             else
               # Set 'max' and 'min' if type is integer, long or real
