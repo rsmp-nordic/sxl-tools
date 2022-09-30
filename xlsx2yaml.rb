@@ -124,6 +124,8 @@ end
 # add individual value to a return value
 def add_rv_value(dest, value, description)
   v = to_integer(value)
+  description = '' if description.nil?
+
   if dest['values']
     dest['values'][v.to_s] = description
   else
@@ -260,9 +262,6 @@ workbook.each do |sheet|
               # the description field using "key: value" format
               # Removes the key in description on match
               desc = get_value(rv[sheet[y][x].value]['description'], v)
-              if desc.nil? then
-                desc = ''
-              end
 
               # Add value to return value
               add_rv_value(rv[sheet[y][x].value], v, desc)
@@ -377,9 +376,6 @@ workbook.each do |sheet|
               # Try to find the corresponding description in
               # the description field using "key: value" format
               desc = get_value(a[sheet[y][x].value]['description'], v)
-              if desc.nil? then
-                desc = ''
-              end
 
               # Add value to return value
               add_rv_value(a[sheet[y][x].value], v, desc)
@@ -445,9 +441,6 @@ workbook.each do |sheet|
                 # the description field using "key: value" format
                 # Removes the key in description on match
                 desc = get_value(a[sheet[y][x].value]['description'], v)
-                if desc.nil? then
-                  desc = ''
-                end
 
                 # Add value to return value
                 add_rv_value(a[sheet[y][x].value], v, desc)
