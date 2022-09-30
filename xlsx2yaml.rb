@@ -102,6 +102,25 @@ def get_command_section(sheet)
   sections
 end
 
+# add signal (alarm, status or command) to the yaml structure
+# dest: destination
+# object_type: which object type it belongs to, e.g. "Traffic Light Controller"
+# signal_type: "alarms", "statuses" or "commands"
+# signal_code: alarmCodeId, statusCodeId or commandCodeId
+# body: the signal containing description, priority, category, arguments...
+def add_signal(dest, object_type, signal_type, signal_code, body)
+  if dest[object_type]
+    if dest[object_type][signal_type]
+      dest[object_type][signal_type][signal_code] = body
+    else
+      alarms = { signal_code => body }
+      dest[object_type][signal_type] = body
+    end
+  else
+    STDERR.puts "Object #{signal_code} not found"
+  end
+end
+
 # Get value from a description field
 # E.g. 1: value1
 #      2: value2
@@ -274,17 +293,8 @@ workbook.each do |sheet|
         alarm['arguments'] = rv
       end
 
-      # Add to yaml
-      if sxl["objects"][a[0]]
-        if sxl["objects"][a[0]]["alarms"]
-          sxl["objects"][a[0]]["alarms"][a[2]] = alarm
-        else
-          alarms = { a[2] => alarm }
-          sxl["objects"][a[0]]["alarms"] = alarms
-        end
-      else
-        STDERR.puts "Object #{a[0]} not found"
-      end
+      # Add alarm to the yaml structure
+      add_signal(sxl["objects"], a[0], "alarms", a[2], alarm)
 
       y = y + 1
     end
@@ -338,9 +348,14 @@ workbook.each do |sheet|
       x = 4
       a = {}
       while(sheet[y][x] != nil and sheet[y][x].value != nil and !sheet[y][x].value.empty?) do
+
+        if sheet[y][x+3].value.empty?
+          STDERR.puts "Error: comment field for " + sheet[y][x].value + " in " + s[0] + " " + s[2] + " is empty"
+        end
+
         a[sheet[y][x].value] = {
-            'type' => sheet[y][x+1].value,
-             'description' => sheet[y][x+3].value.chomp
+          'type' => sheet[y][x+1].value,
+          'description' => sheet[y][x+3].value.chomp
         }
 
         # No need to output values if type is boolean
@@ -393,17 +408,8 @@ workbook.each do |sheet|
       }
       status.store("object", s[1]) if s[1] != nil
 
-      # Add to yaml
-      if sxl["objects"][s[0]]
-        if sxl["objects"][s[0]]["statuses"]
-          sxl["objects"][s[0]]["statuses"][s[2]] = status
-        else
-          statuses = { s[2] => status }
-          sxl["objects"][s[0]]["statuses"] = statuses
-        end
-      else
-        STDERR.puts "Object #{s[0]} not found"
-      end
+      # Add status to the yaml structure
+      add_signal(sxl["objects"], s[0], "statuses", a[2], status)
 
       y = y + 1
     end
@@ -479,17 +485,8 @@ workbook.each do |sheet|
         }
         command.store("object", c[1]) if c[1] != nil
 
-        # Add to yaml
-        if sxl["objects"][c[0]]
-          if sxl["objects"][c[0]]["commands"]
-            sxl["objects"][c[0]]["commands"][c[2]] = command
-          else
-            commands = { c[2] => command }
-            sxl["objects"][c[0]]["commands"] = commands
-          end
-        else
-          STDERR.puts "Object #{c[0]} not found"
-        end
+        # Add command to yaml structure
+        add_signal(sxl["objects"], c[0], "commands", c[2], command)
 
         y = y + 1
       end
