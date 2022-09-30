@@ -186,9 +186,6 @@ sxl["objects"].each { |object|
         if value["type"] == "boolean"
             values = "-False\n-True"
             set_cell(sheet, col+2, row, values)
-        elsif value["type"] == "string"
-            values = "[string]"
-            set_cell(sheet, col+2, row, values)
         elsif value["type"] == "base64"
             values = "[base64]"
             set_cell(sheet, col+2, row, values)
@@ -208,7 +205,11 @@ sxl["objects"].each { |object|
             max = value["max"]
             values = "[" + min.to_s + "-" + max.to_s + "]"
           else
-            values = ""
+            if value["type"] == "string"
+              values = "[string]"
+            else # unknown type
+              values = ""
+            end
           end
           values.chomp!
           description.chomp!
