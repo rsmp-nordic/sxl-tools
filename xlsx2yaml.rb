@@ -102,7 +102,7 @@ def get_command_section(sheet)
   sections
 end
 
-# add signal (alarm, status or command) to the yaml structure
+# add signal (alarm, status or command) to the sxl structure
 # dest: destination
 # object_type: which object type it belongs to, e.g. "Traffic Light Controller"
 # signal_type: "alarms", "statuses" or "commands"
@@ -130,6 +130,17 @@ def add_rv_value(dest, value, description)
     dest['values'][v.to_s] = description
   else
     dest['values'] = {v.to_s => description}
+  end
+end
+
+# add the optional field 'object' to site structure
+# object_type: which object type it belongs to, e.g. "Traffic Light Controller"
+# signal_type: "alarms", "statuses" or "commands"
+# signal_code: alarmCodeId, statusCodeId or commandCodeId
+def add_object(dest, object_type, signal_type, signal_code, value)
+  if value != nil
+    object = { 'object' => value }
+    add_signal(dest, object_type, signal_type, signal_code, object)
   end
 end
 
@@ -205,6 +216,7 @@ else
   workbook = RubyXL::Parser.parse(XLSX)
 end
 sxl = Hash.new
+site = Hash.new
 
 sites = {}
 workbook.each do |sheet|
@@ -297,8 +309,10 @@ workbook.each do |sheet|
         alarm['arguments'] = rv
       end
 
-      # Add alarm to the yaml structure
+      # Add alarm to the sxl structure
       add_signal(sxl["objects"], a[0], "alarms", a[2], alarm)
+
+      # Add the optional field 'object'?
 
       y = y + 1
     end
@@ -402,10 +416,12 @@ workbook.each do |sheet|
         'description' => s[3],
         'arguments' => a
       }
-      status.store("object", s[1]) if s[1] != nil
 
-      # Add status to the yaml structure
+      # Add status to the sxl structure
       add_signal(sxl["objects"], s[0], "statuses", s[2], status)
+
+      # Add the optional field 'object' to the site structure
+      add_object(site["objects"], s[0], "statuses",  s[2], s[1])
 
       y = y + 1
     end
@@ -471,10 +487,12 @@ workbook.each do |sheet|
           'arguments' => a,
           'command' => co
         }
-        command.store("object", c[1]) if c[1] != nil
 
         # Add command to yaml structure
         add_signal(sxl["objects"], c[0], "commands", c[2], command)
+
+        # Add the optional field 'object' to the site structure
+        add_object(site["objects"], c[0], "commands",  c[2], c[1])
 
         y = y + 1
       end
@@ -503,10 +521,8 @@ workbook.each do |sheet|
   end
 end
 
-sxl["sites"] = sites if options[:site]
+site["sites"] = sites if options[:site]
 
-# Clear "objects" if site should be used
-sxl.delete("objects") if options[:site]
-
-reindent(sxl.to_yaml)
+reindent(sxl.to_yaml) if options[:object]
+reindent(site.to_yaml) if options[:site]
 
