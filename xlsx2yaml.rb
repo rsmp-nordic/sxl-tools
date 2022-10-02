@@ -137,10 +137,23 @@ end
 # object_type: which object type it belongs to, e.g. "Traffic Light Controller"
 # signal_type: "alarms", "statuses" or "commands"
 # signal_code: alarmCodeId, statusCodeId or commandCodeId
-def add_object(dest, object_type, signal_type, signal_code, value)
+def add_object(object_type, signal_type, signal_code, value)
   if value != nil
     object = { 'object' => value }
-    add_signal(dest, object_type, signal_type, signal_code, object)
+    signal = { signal_code => object }
+    if @site_yaml['objects']
+      if @site_yaml['objects'][object_type]
+        if @site_yaml['objects'][object_type][signal_type]
+          @site_yaml['objects'][object_type][signal_type][signal_code] = object
+        else
+          @site_yaml['objects'][object_type][signal_type] = { signal_code =>  object }
+        end
+      else
+        @site_yaml['objects'][object_type] = { signal_type => { signal_code => object } }
+      end
+    else
+      @site_yaml['objects'] = { object_type => { signal_type => { signal_code => object } } }
+    end
   end
 end
 
@@ -216,7 +229,7 @@ else
   workbook = RubyXL::Parser.parse(XLSX)
 end
 sxl = Hash.new
-site = Hash.new
+@site_yaml = Hash.new
 
 sites = {}
 workbook.each do |sheet|
@@ -421,7 +434,9 @@ workbook.each do |sheet|
       add_signal(sxl["objects"], s[0], "statuses", s[2], status)
 
       # Add the optional field 'object' to the site structure
-      add_object(site["objects"], s[0], "statuses",  s[2], s[1])
+      if s[1]
+        add_object(s[0], "statuses",  s[2], s[1])
+      end
 
       y = y + 1
     end
@@ -492,7 +507,7 @@ workbook.each do |sheet|
         add_signal(sxl["objects"], c[0], "commands", c[2], command)
 
         # Add the optional field 'object' to the site structure
-        add_object(site["objects"], c[0], "commands",  c[2], c[1])
+        add_object(c[0], "commands",  c[2], c[1])
 
         y = y + 1
       end
@@ -521,8 +536,7 @@ workbook.each do |sheet|
   end
 end
 
-site["sites"] = sites if options[:site]
+@site_yaml['sites'] = sites
 
 reindent(sxl.to_yaml) if options[:object]
-reindent(site.to_yaml) if options[:site]
-
+reindent(@site_yaml.to_yaml) if options[:site]
