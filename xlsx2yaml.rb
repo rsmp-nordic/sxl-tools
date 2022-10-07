@@ -138,22 +138,20 @@ end
 # signal_type: "alarms", "statuses" or "commands"
 # signal_code: alarmCodeId, statusCodeId or commandCodeId
 def add_object(object_type, signal_type, signal_code, value)
-  if value != nil
-    object = { 'object' => value }
-    signal = { signal_code => object }
-    if @site_yaml['objects']
-      if @site_yaml['objects'][object_type]
-        if @site_yaml['objects'][object_type][signal_type]
-          @site_yaml['objects'][object_type][signal_type][signal_code] = object
-        else
-          @site_yaml['objects'][object_type][signal_type] = { signal_code =>  object }
-        end
+  object = { 'object' => value }
+  signal = { signal_code => object }
+  if @site_yaml['objects']
+    if @site_yaml['objects'][object_type]
+      if @site_yaml['objects'][object_type][signal_type]
+        @site_yaml['objects'][object_type][signal_type][signal_code] = object
       else
-        @site_yaml['objects'][object_type] = { signal_type => { signal_code => object } }
+        @site_yaml['objects'][object_type][signal_type] = { signal_code =>  object }
       end
     else
-      @site_yaml['objects'] = { object_type => { signal_type => { signal_code => object } } }
+      @site_yaml['objects'][object_type] = { signal_type => { signal_code => object } }
     end
+  else
+    @site_yaml['objects'] = { object_type => { signal_type => { signal_code => object } } }
   end
 end
 
@@ -325,7 +323,10 @@ workbook.each do |sheet|
       # Add alarm to the sxl structure
       add_signal(sxl["objects"], a[0], "alarms", a[2], alarm)
 
-      # Add the optional field 'object'?
+      # Add the optional field 'object' to the site structure
+      if a[1] and !a[1].empty?
+        add_object(a[0], "statuses",  a[2], a[1])
+      end
 
       y = y + 1
     end
@@ -434,7 +435,7 @@ workbook.each do |sheet|
       add_signal(sxl["objects"], s[0], "statuses", s[2], status)
 
       # Add the optional field 'object' to the site structure
-      if s[1]
+      if s[1] and !s[1].empty?
         add_object(s[0], "statuses",  s[2], s[1])
       end
 
@@ -507,7 +508,9 @@ workbook.each do |sheet|
         add_signal(sxl["objects"], c[0], "commands", c[2], command)
 
         # Add the optional field 'object' to the site structure
-        add_object(c[0], "commands",  c[2], c[1])
+        if c[1] and !c[1].empty?
+          add_object(c[0], "commands",  c[2], c[1])
+        end
 
         y = y + 1
       end
