@@ -41,6 +41,7 @@ def start_table(widths,label):
     print("|")
     print("")
     print(".. table:: " + label)
+    print("   :class: longtable")
     print("")
     print("")
 
@@ -312,7 +313,7 @@ def print_status():
                     print(status['description'])
                     print("")
 
-        widths = ["0.15", "0.15", "0.13", "0.50"]
+        widths = ["0.15", "0.15", "0.20", "0.50"]
         table_headers = ["Name", "Type", "Value", "Comment"]
         start_table(widths, status_id)
 
