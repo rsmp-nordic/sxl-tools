@@ -33,25 +33,20 @@ def rst_line_break_substitution():
 def sort_cid(alarm):
     return alarm[1].translate({ord(i): None for i in 'ASM\`_'})
 
-def start_figtable(widths,label):
+def start_table(widths,label):
     print("")
-    print(".. figtable::")
-    print("   :nofig:")
-    print("   :label:", label)
-    print("   :caption:", label)
-    print("   :loc: H")
-    print("   :spec: >{\\raggedright\\arraybackslash}", end='')
-    sep = False
+    print(".. tabularcolumns:: ", end='')
     for width in widths:
-        if sep == True:
-            print(" ", end='')
-        sep = True
-        print("p{", width, "\\linewidth}", sep='', end='')
+        print("|\Yl{", width, "}", sep='', end='')
+    print("|")
+    print("")
+    print(".. table:: " + label)
+    print("   :class: longtable")
     print("")
     print("")
 
-def end_figtable():
-    print("..")
+def end_table():
+    print("")
 
 def print_version():
     print("Signal Exchange List")
@@ -85,7 +80,7 @@ def print_object_types():
     print("^^^^^^^^^^^^^^^")
     widths = ["0.30", "0.50"]
     table_headers = ["ObjectType", "Description"]
-    start_figtable(widths, "Grouped objects")
+    start_table(widths, "Grouped objects")
     grouped = []
     grouped.append(table_headers)
     # For each object
@@ -94,14 +89,14 @@ def print_object_types():
             grouped.append([object_name, object['description']])
     for line in tabulate(grouped, headers="firstrow", tablefmt="rst").splitlines():
         print('   ' + line)
-    end_figtable()
+    end_table()
 
     print("")
     print("Single objects")
     print("^^^^^^^^^^^^^^")
     widths = ["0.30", "0.50"]
     table_headers = ["ObjectType", "Description"]
-    start_figtable(widths, "Single objects")
+    start_table(widths, "Single objects")
     single = []
     single.append(table_headers)
     for object_name,object in yaml_sxl['objects'].items():
@@ -109,7 +104,7 @@ def print_object_types():
             single.append([object_name, object['description']])
     for line in tabulate(single, headers="firstrow", tablefmt="rst").splitlines():
         print('   ' + line)
-    end_figtable()
+    end_table()
 
 def print_aggregated_status():
     print("")
@@ -118,7 +113,7 @@ def print_aggregated_status():
 
     widths = ["0.15", "0.16", "0.16", "0.40"]
     table_headers = ["ObjectType","functionalPosition","functionalState","Description"]
-    start_figtable(widths, "Aggregated status")
+    start_table(widths, "Aggregated status")
     agg_status = []
     agg_status.append(table_headers)
     # For each object
@@ -150,12 +145,12 @@ def print_aggregated_status():
 
     for line in tabulate(agg_status, headers="firstrow", tablefmt="rst").splitlines():
         print('   ' + line)
-    end_figtable()
+    end_table()
 
 
     widths = ["0.10", "0.30", "0.50"]
     table_headers = ["State-Bit", "Description", "Comment"]
-    start_figtable(widths, "State bits")
+    start_table(widths, "State bits")
     state_bits = []
     state_bits.append(table_headers)
     # For each object
@@ -169,7 +164,7 @@ def print_aggregated_status():
 
     for line in tabulate(state_bits, headers="firstrow", tablefmt="rst").splitlines():
         print('   ' + line)
-    end_figtable()
+    end_table()
 
 
 def print_alarms():
@@ -179,7 +174,7 @@ def print_alarms():
 
     widths = ["0.15", "0.10", "0.45", "0.07", "0.07"]
     table_headers = ["ObjectType","alarmCodeId","Description","Priority","Category"]
-    start_figtable(widths, "Alarms")
+    start_table(widths, "Alarms")
 
     alarm_table = []
     alarms = []
@@ -195,7 +190,7 @@ def print_alarms():
     alarm_table.insert(0, table_headers)
     for line in tabulate(alarm_table, headers="firstrow", tablefmt="rst").splitlines():
         print('   ' + line)
-    end_figtable()
+    end_table()
 
     # Print detailed alarm info
     # incl. return values
@@ -262,14 +257,14 @@ def print_alarms():
                             return_values.append([name, type, value, comment])
 
         if return_values:
-            widths = ["0.15", "0.08", "0.13", "0.35"]
+            widths = ["0.15", "0.15", "0.20", "0.35"]
             table_headers = ["Name","Type","Value","Comment"]
-            start_figtable(widths, alarm_id)
+            start_table(widths, alarm_id)
 
             return_values.insert(0, table_headers)
             for line in tabulate(return_values, headers="firstrow", tablefmt="rst").splitlines():
                 print('   ' + line)
-            end_figtable()
+            end_table()
 
 def print_status():
     print("")
@@ -284,7 +279,7 @@ def print_status():
 
     widths = ["0.24", "0.10", "0.55"]
     table_headers = ["ObjectType","statusCodeId","Description"]
-    start_figtable(widths, "Status")
+    start_table(widths, "Status")
 
     status_table = []
     statuses = []
@@ -300,7 +295,7 @@ def print_status():
     status_table.insert(0, table_headers)
     for line in tabulate(status_table, headers="firstrow", tablefmt="rst").splitlines():
         print('   ' + line)
-    end_figtable()
+    end_table()
 
     # Print detailed status info
     # incl. return values
@@ -318,9 +313,9 @@ def print_status():
                     print(status['description'])
                     print("")
 
-        widths = ["0.15", "0.08", "0.13", "0.50"]
+        widths = ["0.15", "0.15", "0.20", "0.50"]
         table_headers = ["Name", "Type", "Value", "Comment"]
-        start_figtable(widths, status_id)
+        start_table(widths, status_id)
 
         return_values = []
         return_values.append(table_headers)
@@ -378,7 +373,7 @@ def print_status():
 
         for line in tabulate(return_values, headers="firstrow", tablefmt="rst").splitlines():
             print('   ' + line)
-        end_figtable()
+        end_table()
 
 def print_commands():
     print("")
@@ -387,7 +382,7 @@ def print_commands():
 
     widths = ["0.24", "0.15", "0.21", "0.21"]
     table_headers = ["ObjectType","commandCodeId","Command","Description"]
-    start_figtable(widths, "Commands")
+    start_table(widths, "Commands")
 
     command_table = []
     commands = []
@@ -403,7 +398,7 @@ def print_commands():
     command_table.insert(0, table_headers)
     for line in tabulate(command_table, headers="firstrow", tablefmt="rst").splitlines():
         print('   ' + line)
-    end_figtable()
+    end_table()
 
     # Arguments
     commands.sort(key=sort_cid)
@@ -420,10 +415,10 @@ def print_commands():
                     print(command['description'])
                     print("")
 
-        widths = ["0.14",  "0.07", "0.20", "0.45"]
+        widths = ["0.14",  "0.14", "0.20", "0.45"]
         table_headers = ["Name", "Type", "Value", "Comment"]
 
-        start_figtable(widths, command_id)
+        start_table(widths, command_id)
 
         arguments = []
         for object_name,object in yaml_sxl['objects'].items():
@@ -483,7 +478,7 @@ def print_commands():
 
         for line in tabulate(arguments, headers="firstrow", tablefmt="rst").splitlines():
             print('   ' + line)
-        end_figtable()
+        end_table()
 
 parser = argparse.ArgumentParser(description='Convert SXL in yaml to rst format')
 parser.add_argument('--extended', action=argparse.BooleanOptionalAction)
