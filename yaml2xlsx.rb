@@ -200,16 +200,14 @@ sxl["objects"].each { |object|
                 description += + v.to_s + ": " + desc + "\n"
               end
             }
+          elsif value["type"] == "string"
+            values = "[string]"
           elsif not value["min"].nil?
             min = value["min"]
             max = value["max"]
             values = "[" + min.to_s + "-" + max.to_s + "]"
           else
-            if value["type"] == "string"
-              values = "[string]"
-            else # unknown type
-              values = ""
-            end
+            values = ""
           end
           values.chomp!
           description.chomp!
@@ -257,9 +255,6 @@ sxl["objects"].each { |object|
       if value["type"] == "boolean"
           values = "-False\n-True"
           set_cell(sheet, col+2, row, values)
-      elsif value["type"] == "string"
-          values = "[string]"
-          set_cell(sheet, col+2, row, values)
       elsif value["type"] == "base64"
           values = "[base64]"
           set_cell(sheet, col+2, row, values)
@@ -274,6 +269,8 @@ sxl["objects"].each { |object|
               description += + v.to_s + ": " + desc + "\n"
             end
           }
+        elsif value["type"] == "string"
+          values = "[string]"
         elsif not value["min"].nil?
           min = value["min"]
           max = value["max"]
@@ -328,9 +325,6 @@ sxl["objects"].each { |object|
       if value["type"] == "boolean"
           values = "-False\n-True"
           set_cell(sheet, col+3, row, values)
-      elsif value["type"] == "string"
-          values = "[string]"
-          set_cell(sheet, col+3, row, values)
       elsif value["type"] == "base64"
           values = "[base64]"
           set_cell(sheet, col+3, row, values)
@@ -345,6 +339,8 @@ sxl["objects"].each { |object|
               description += + v.to_s + ": " + desc + "\n"
             end
           }
+        elsif value["type"] == "string"
+          values = "[string]"
         elsif not value["min"].nil?
           min = value["min"]
           max = value["max"]
