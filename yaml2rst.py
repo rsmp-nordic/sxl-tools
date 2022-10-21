@@ -224,6 +224,10 @@ def print_alarms():
                             else:
                                 if type == "boolean":
                                     value = "-True |br|\n-False"
+                                elif type == "string":
+                                    value = "[string]"
+                                elif type == "base64":
+                                    value = "[base64]"
                                 elif type == "integer" or type == "long" or type == "float":
                                     if "min" in argument:
                                         min = argument['min']
@@ -235,11 +239,7 @@ def print_alarms():
                                         max = ""
                                     value = "[" + str(min) + "-" + str(max) + "]"
                                 else:
-                                    # Extended
-                                    if "range" in argument:
-                                        value = argument['range']
-                                    else:
-                                        value = ""
+                                    value = ""
                             if "description" in argument:
                                 comment = argument['description'].replace("\n", " |br|\n")
 
@@ -336,6 +336,10 @@ def print_status():
                             else:
                                 if type == "boolean":
                                     value = "-False |br|\n-True"
+                                elif type == "string":
+                                    value = "[string]"
+                                elif type == "base64":
+                                    value = "[base64]"
                                 elif type == "integer" or type == "long" or type == "float":
                                     if "min" in argument:
                                         min = argument['min']
@@ -347,11 +351,7 @@ def print_status():
                                         max = ""
                                     value = "[" + str(min) + "-" + str(max) + "]"
                                 else:
-                                    # Extended
-                                    if "range" in argument:
-                                        value = argument['range']
-                                    else:
-                                        value = ""
+                                    value = ""
                             if "description" in argument:
                                 comment = argument['description'].rstrip("\n")
                                 comment = comment.replace("\n", " |br|\n")
@@ -436,8 +436,12 @@ def print_commands():
                                     val_list.append("-" + v)
                                 value = " |br|\n".join(val_list)
                             else:
-                                if(type == "boolean"):
+                                if type == "boolean":
                                     value = "-False |br|\n-True"
+                                elif type == "string":
+                                    value = "[string]"
+                                elif type == "base64":
+                                    value = "[base64]"
                                 elif type == "integer":
                                     if "min" in argument:
                                         min = argument['min']
@@ -449,11 +453,7 @@ def print_commands():
                                         max = ""
                                     value = "[" + str(min) + "-" + str(max) + "]"
                                 else:
-                                    # Extended
-                                    if "range" in argument:
-                                        value = argument['range']
-                                    else:
-                                        value = ""
+                                    value = ""
                             if "description" in argument:
                                 comment = argument['description'].rstrip("\n")
                                 comment = comment.replace("\n", " |br|\n")

@@ -67,22 +67,14 @@ def get_object_section(sheet, type, options)
       if object[2] == nil
         objects[key] = { 'description' => object[1] }
       else
-        if options[:extended]
-          objects[key] = { object[1] => { 'componentId' => object[2], 'ntsObjectId' => object[3] } }
-          objects[key][object[1]].store("externalNtsId", to_integer(object[4])) if object[4] != nil
-          objects[key][object[1]].store("description", object[5]) if object[5] != nil
-        else
-          objects[key] = { object[1] => object[2] }
-        end
+        objects[key] = { object[1] => { 'componentId' => object[2], 'ntsObjectId' => object[3] } }
+        objects[key][object[1]].store("externalNtsId", to_integer(object[4])) if object[4] != nil
+        objects[key][object[1]].store("description", object[5]) if object[5] != nil
       end
     else
-        if options[:extended]
-          newobject = { object[1] => { 'componentId' => object[2], 'ntsObjectId' => object[3] } }
-          newobject[object[1]].store("externalNtsId", to_integer(object[4])) if object[4] != nil
-          newobject[object[1]].store("description", object[5]) if object[5] != nil
-        else
-          newobject = { object[1] => object[2] }
-        end
+        newobject = { object[1] => { 'componentId' => object[2], 'ntsObjectId' => object[3] } }
+        newobject[object[1]].store("externalNtsId", to_integer(object[4])) if object[4] != nil
+        newobject[object[1]].store("description", object[5]) if object[5] != nil
       objects[key] = objects[key].merge(newobject)
     end
     y = y + 1
@@ -108,6 +100,59 @@ def get_command_section(sheet)
     y = y + 1
   end
   sections
+end
+
+# add signal (alarm, status or command) to the sxl structure
+# dest: destination
+# object_type: which object type it belongs to, e.g. "Traffic Light Controller"
+# signal_type: "alarms", "statuses" or "commands"
+# signal_code: alarmCodeId, statusCodeId or commandCodeId
+# body: the signal containing description, priority, category, arguments...
+def add_signal(dest, object_type, signal_type, signal_code, body)
+  if dest[object_type]
+    if dest[object_type][signal_type]
+      dest[object_type][signal_type][signal_code] = body
+    else
+      signals = { signal_code => body }
+      dest[object_type][signal_type] = signals
+    end
+  else
+    STDERR.puts "Object #{signal_code} not found"
+  end
+end
+
+# add individual value to a return value
+def add_rv_value(dest, value, description)
+  v = to_integer(value)
+  description = '' if description.nil?
+
+  if dest['values']
+    dest['values'][v.to_s] = description
+  else
+    dest['values'] = {v.to_s => description}
+  end
+end
+
+# add the optional field 'object' to site structure
+# object_type: which object type it belongs to, e.g. "Traffic Light Controller"
+# signal_type: "alarms", "statuses" or "commands"
+# signal_code: alarmCodeId, statusCodeId or commandCodeId
+def add_object(object_type, signal_type, signal_code, value)
+  object = { 'object' => value }
+  signal = { signal_code => object }
+  if @site_yaml['objects']
+    if @site_yaml['objects'][object_type]
+      if @site_yaml['objects'][object_type][signal_type]
+        @site_yaml['objects'][object_type][signal_type][signal_code] = object
+      else
+        @site_yaml['objects'][object_type][signal_type] = { signal_code =>  object }
+      end
+    else
+      @site_yaml['objects'][object_type] = { signal_type => { signal_code => object } }
+    end
+  else
+    @site_yaml['objects'] = { object_type => { signal_type => { signal_code => object } } }
+  end
 end
 
 # Get value from a description field
@@ -163,13 +208,14 @@ usage = "Usage: xlsx2yaml.rb [options] [XLSX]"
 OptionParser.new do |opts|
   opts.banner = usage
 
-  opts.on("-s", "--site", "Include site") do |s|
+  opts.on("-o", "--object", "Output object information") do |o|
+    options[:object] = o
+  end
+
+  opts.on("-s", "--site", "Output site information") do |s|
     options[:site] = s
   end
 
-  opts.on("-e", "--extended", "Extended fields") do |e|
-    options[:extended] = e
-  end
 end.parse!
 
 if ARGV.length < 1
@@ -181,6 +227,7 @@ else
   workbook = RubyXL::Parser.parse(XLSX)
 end
 sxl = Hash.new
+@site_yaml = Hash.new
 
 sites = {}
 workbook.each do |sheet|
@@ -191,13 +238,11 @@ workbook.each do |sheet|
       sxl["version"] = sheet[20][1].value
       sxl["date"] = sheet[20][2].value
       sxl["description"] = sheet[5][1].value
-      if options[:extended]
-        sxl["constructor"] = sheet[9][1].value if sheet[9]
-        sxl["reviewed"] = sheet[11][1].value if sheet[11][1].value
-        sxl["approved"] = sheet[13][1].value if sheet[13] and sheet[13][1]
-        sxl["created-date"] = sheet[17][1].value if sheet[17]
-        sxl["rsmp-version"] = sheet[25][1].value if sheet[25]
-      end
+      sxl["constructor"] = sheet[9][1].value if sheet[9]
+      sxl["reviewed"] = sheet[11][1].value if sheet[11][1].value
+      sxl["approved"] = sheet[13][1].value if sheet[13] and sheet[13][1]
+      sxl["created-date"] = sheet[17][1].value if sheet[17]
+      sxl["rsmp-version"] = sheet[25][1].value if sheet[25]
     end
   when "Object types"
     # grouped objects
@@ -240,17 +285,9 @@ workbook.each do |sheet|
               # the description field using "key: value" format
               # Removes the key in description on match
               desc = get_value(rv[sheet[y][x].value]['description'], v)
-              if desc.nil? then
-                desc = ''
-              end
 
-              # Add to yaml
-              v = to_integer(v)
-              if rv[sheet[y][x].value]['values']
-                rv[sheet[y][x].value]['values'][v] = desc
-              else
-                rv[sheet[y][x].value]['values'] = {v => desc}
-              end
+              # Add value to return value
+              add_rv_value(rv[sheet[y][x].value], v, desc)
             }
           else
             # Set 'max' and 'min' if type is integer, long or real
@@ -258,10 +295,6 @@ workbook.each do |sheet|
               values = sheet[y][x+2].value.tr('[]','').split("-")
               rv[sheet[y][x].value]['min'] = values[0].to_i
               rv[sheet[y][x].value]['max'] = values[1].to_i
-            else
-              if options[:extended]
-                rv[sheet[y][x].value]['range'] = sheet[y][x+2].value
-              end
             end
           end
         end
@@ -279,26 +312,20 @@ workbook.each do |sheet|
         'priority' => a[6],
         'category' => a[7]
       }
-      if options[:extended]
-        alarm.store("object", a[1]) if a[1] != nil
-        alarm.store("externalAlarmCodeId", a[4]) if a[4] != nil
-        alarm.store("externalNtsAlarmCodeId", to_integer(a[5])) if a[5] != nil
-      end
+      alarm.store("object", a[1]) if a[1] != nil
+      alarm.store("externalAlarmCodeId", a[4]) if a[4] != nil
+      alarm.store("externalNtsAlarmCodeId", to_integer(a[5])) if a[5] != nil
 
       if !rv.empty?
         alarm['arguments'] = rv
       end
 
-      # Add to yaml
-      if sxl["objects"][a[0]]
-        if sxl["objects"][a[0]]["alarms"]
-          sxl["objects"][a[0]]["alarms"][a[2]] = alarm
-        else
-          alarms = { a[2] => alarm }
-          sxl["objects"][a[0]]["alarms"] = alarms
-        end
-      else
-        STDERR.puts "Object #{a[0]} not found"
+      # Add alarm to the sxl structure
+      add_signal(sxl["objects"], a[0], "alarms", a[2], alarm)
+
+      # Add the optional field 'object' to the site structure
+      if a[1] and !a[1].empty?
+        add_object(a[0], "statuses",  a[2], a[1])
       end
 
       y = y + 1
@@ -332,11 +359,9 @@ workbook.each do |sheet|
         STDERR.puts "Object #{agg[0]} not found"
       end
 
-      if options[:extended]
-        sxl["objects"][agg[0]]["functional_position"] = agg[2]
-        sxl["objects"][agg[0]]["functional_state"] = agg[3]
-        sxl["objects"][agg[0]]["aggregated_status_description"] = agg[4]
-      end
+      sxl["objects"][agg[0]]["functional_position"] = agg[2]
+      sxl["objects"][agg[0]]["functional_state"] = agg[3]
+      sxl["objects"][agg[0]]["aggregated_status_description"] = agg[4]
       
       y = y + 1
 
@@ -355,9 +380,15 @@ workbook.each do |sheet|
       x = 4
       a = {}
       while(sheet[y][x] != nil and sheet[y][x].value != nil and !sheet[y][x].value.empty?) do
+
+        if sheet[y][x+3] == nil or sheet[y][x+3].value == nil or sheet[y][x+3].value.empty?
+          STDERR.puts "Error: comment field for " + sheet[y][x].value + " in " + s[0] + " " + s[2] + " is empty"
+          exit 1
+        end
+
         a[sheet[y][x].value] = {
-            'type' => sheet[y][x+1].value,
-             'description' => sheet[y][x+3].value.chomp
+          'type' => sheet[y][x+1].value,
+          'description' => sheet[y][x+3].value.chomp
         }
 
         # No need to output values if type is boolean
@@ -374,17 +405,9 @@ workbook.each do |sheet|
               # Try to find the corresponding description in
               # the description field using "key: value" format
               desc = get_value(a[sheet[y][x].value]['description'], v)
-              if desc.nil? then
-                desc = ''
-              end
 
-              # Add to yaml
-              v = to_integer(v)
-              if a[sheet[y][x].value]['values']
-                a[sheet[y][x].value]['values'][v] = desc
-              else
-                a[sheet[y][x].value]['values'] = {v => desc}
-              end
+              # Add value to return value
+              add_rv_value(a[sheet[y][x].value], v, desc)
             }
           else
             # Set 'max' and 'min' if type is integer, long or real
@@ -393,10 +416,6 @@ workbook.each do |sheet|
               a[sheet[y][x].value]['min'] = values[0].to_i
               a[sheet[y][x].value]['max'] = values[1].to_i
               a[sheet[y][x].value]['type'] << "_list"	# Add _list to type if min/max is used
-            else
-              if options[:extended]
-                a[sheet[y][x].value]['range'] = sheet[y][x+2].value
-              end
             end
           end
         end
@@ -412,20 +431,13 @@ workbook.each do |sheet|
         'description' => s[3],
         'arguments' => a
       }
-      if options[:extended]
-        status.store("object", s[1]) if s[1] != nil
-      end
 
-      # Add to yaml
-      if sxl["objects"][s[0]]
-        if sxl["objects"][s[0]]["statuses"]
-          sxl["objects"][s[0]]["statuses"][s[2]] = status
-        else
-          statuses = { s[2] => status }
-          sxl["objects"][s[0]]["statuses"] = statuses
-        end
-      else
-        STDERR.puts "Object #{s[0]} not found"
+      # Add status to the sxl structure
+      add_signal(sxl["objects"], s[0], "statuses", s[2], status)
+
+      # Add the optional field 'object' to the site structure
+      if s[1] and !s[1].empty?
+        add_object(s[0], "statuses",  s[2], s[1])
       end
 
       y = y + 1
@@ -462,17 +474,9 @@ workbook.each do |sheet|
                 # the description field using "key: value" format
                 # Removes the key in description on match
                 desc = get_value(a[sheet[y][x].value]['description'], v)
-                if desc.nil? then
-                  desc = ''
-                end
 
-                # Add to yaml
-                v = to_integer(v)
-                if a[sheet[y][x].value]['values']
-                  a[sheet[y][x].value]['values'][v.to_s] = desc
-                else
-                  a[sheet[y][x].value]['values'] = {v.to_s => desc}
-                end
+                # Add value to return value
+                add_rv_value(a[sheet[y][x].value], v, desc)
               }
             else
               # Set 'max' and 'min' if type is integer, long or real
@@ -481,10 +485,6 @@ workbook.each do |sheet|
                 a[sheet[y][x].value]['min'] = values[0].to_i
                 a[sheet[y][x].value]['max'] = values[1].to_i
                 a[sheet[y][x].value]['type'] << "_list"	# Add _list to type if min/max is used
-              else
-                if options[:extended]
-                  a[sheet[y][x].value]['range'] = sheet[y][x+3].value
-                end
               end
             end
           end
@@ -504,20 +504,13 @@ workbook.each do |sheet|
           'arguments' => a,
           'command' => co
         }
-        if options[:extended]
-          command.store("object", c[1]) if c[1] != nil
-        end
 
-        # Add to yaml
-        if sxl["objects"][c[0]]
-          if sxl["objects"][c[0]]["commands"]
-            sxl["objects"][c[0]]["commands"][c[2]] = command
-          else
-            commands = { c[2] => command }
-            sxl["objects"][c[0]]["commands"] = commands
-          end
-        else
-          STDERR.puts "Object #{c[0]} not found"
+        # Add command to yaml structure
+        add_signal(sxl["objects"], c[0], "commands", c[2], command)
+
+        # Add the optional field 'object' to the site structure
+        if c[1] and !c[1].empty?
+          add_object(c[0], "commands",  c[2], c[1])
         end
 
         y = y + 1
@@ -547,6 +540,7 @@ workbook.each do |sheet|
   end
 end
 
-sxl["sites"] = sites if options[:site]
-reindent(sxl.to_yaml)
+@site_yaml['sites'] = sites
 
+reindent(sxl.to_yaml) if options[:object]
+reindent(@site_yaml.to_yaml) if options[:site]
