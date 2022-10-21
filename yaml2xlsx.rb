@@ -39,12 +39,12 @@ usage = "Usage: yaml2xlsx.rb [OPTIONS]--template <XLSX>] [sxl.yaml] [site.yaml]"
 OptionParser.new do |opts|
   opts.banner = usage
 
-  opts.on("--template [XLSX]", "SXL Template") do |p|
+  opts.on("--template [XLSX]", "Excel SXL Template") do |p|
     options[:template] = p
   end
 
-  opts.on("--sxl [YAML]", "Signal Exchange List (objects)") do |x|
-    options[:sxl] = x
+  opts.on("--objects [YAML]", "Signal Exchange List (objects)") do |x|
+    options[:objects] = x
   end
 
   opts.on("--site [YAML]", "Signal Exchange List (site)") do |t|
@@ -61,13 +61,13 @@ OptionParser.new do |opts|
 end.parse!
 
 abort("--template needs to be set") if options[:template].nil?
-abort("--sxl needs to be set") if options[:sxl].nil?
+abort("--objects needs to be set") if options[:objects].nil?
 abort("--site needs to be set") if options[:site].nil?
 
 workbook = RubyXL::Parser.parse(options[:template])
 
 # Read yaml
-sxl = YAML.load_file(options[:sxl])
+sxl = YAML.load_file(options[:objects])
 site = YAML.load_file(options[:site])
 
 # Version
