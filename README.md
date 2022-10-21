@@ -12,7 +12,7 @@ various formats.
 
 Notes about create_template.py
 ------------------------------
-* Requires: pip3 install xlsxwriter --user
+* Requires: pip3 install xlsxwriter --user (or apt install python3-xlsxwriter)
 * Usage: create_template.py [OPTIONS]
 * See create_template.py -h for available options
 
