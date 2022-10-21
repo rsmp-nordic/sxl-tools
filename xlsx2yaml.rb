@@ -381,8 +381,9 @@ workbook.each do |sheet|
       a = {}
       while(sheet[y][x] != nil and sheet[y][x].value != nil and !sheet[y][x].value.empty?) do
 
-        if sheet[y][x+3].value.empty?
+        if sheet[y][x+3] == nil or sheet[y][x+3].value == nil or sheet[y][x+3].value.empty?
           STDERR.puts "Error: comment field for " + sheet[y][x].value + " in " + s[0] + " " + s[2] + " is empty"
+          exit 1
         end
 
         a[sheet[y][x].value] = {
