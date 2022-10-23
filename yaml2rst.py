@@ -33,6 +33,56 @@ def rst_line_break_substitution():
 def sort_cid(alarm):
     return alarm[1].translate({ord(i): None for i in 'ASM\`_'})
 
+def read_return_value(argument_name, argument):
+    name = argument_name
+    type = argument['type'].replace("_list", "")
+
+    # If the 'values' exists, use it to construct a list
+    if "values" in argument:
+        val_list = []
+        for v in argument['values']:
+            val_list.append("-" + str(v))
+        value = " |br|\n".join(val_list)
+
+    else:
+        if type == "boolean":
+            value = "-False |br|\n-True"
+        elif type == "string":
+            value = "[string]"
+        elif type == "base64":
+            value = "[base64]"
+        elif type == "integer" or type == "long" or type == "float":
+            if "min" in argument:
+                min = argument['min']
+            else:
+                min = ""
+            if "max" in argument:
+                max = argument['max']
+            else:
+                max = ""
+            value = "[" + str(min) + "-" + str(max) + "]"
+        else:
+            value = ""
+    if "description" in argument:
+        comment = argument['description'].rstrip("\n")
+        comment = comment.replace("\n", " |br|\n")
+
+        # Lines should never start with whitespace
+        comment = comment.replace("\n |br|", "\n|br|")
+    else:
+        comment = ""
+
+    # Add the full description in the comment
+    if "values" in argument:
+        for n,desc in argument['values'].items():
+            if desc:
+                if comment != "":
+                    comment += " |br|\n"
+                comment += str(n) + ": " + str(desc)
+
+    return name, type, value, comment
+
+
 def start_table(widths,label):
     print("")
     print(".. tabularcolumns:: ", end='')
@@ -211,49 +261,7 @@ def print_alarms():
                 if(alarm_id == id):
                     if "arguments" in alarm:
                         for argument_name, argument in alarm['arguments'].items():
-                            name = argument_name
-                            type = argument['type'].replace("_list", "")
-
-                            # If the 'values' exists, use it to construct a list
-                            if "values" in argument:
-                                val_list = []
-                                for v in argument['values']:
-                                    val_list.append("-" + v)
-                                value = " |br|\n".join(val_list)
-
-                            else:
-                                if type == "boolean":
-                                    value = "-True |br|\n-False"
-                                elif type == "string":
-                                    value = "[string]"
-                                elif type == "base64":
-                                    value = "[base64]"
-                                elif type == "integer" or type == "long" or type == "float":
-                                    if "min" in argument:
-                                        min = argument['min']
-                                    else:
-                                        min = ""
-                                    if "max" in argument:
-                                        max = argument['max']
-                                    else:
-                                        max = ""
-                                    value = "[" + str(min) + "-" + str(max) + "]"
-                                else:
-                                    value = ""
-                            if "description" in argument:
-                                comment = argument['description'].replace("\n", " |br|\n")
-
-                                # Lines should never start with whitespace
-                                comment = comment.replace("\n |br|", "\n|br|")
-                            else:
-                                comment = ""
-
-                            # Add the full description in the comment
-                            if "values" in argument:
-                                for n,desc in argument['values'].items():
-                                    if desc:
-                                        comment += " |br|\n" + n + ": " + desc
-
+                            name, type, value, comment = read_return_value(argument_name, argument)
                             return_values.append([name, type, value, comment])
 
         if return_values:
@@ -324,51 +332,7 @@ def print_status():
                 if(status_id == id):
                     if "arguments" in status:
                         for argument_name,argument in status['arguments'].items():
-                            name = argument_name
-                            type = argument['type'].replace("_list", "")
-
-                            # If the 'values' exists, use it to construct a list
-                            if "values" in argument:
-                                val_list = []
-                                for v in argument['values']:
-                                    val_list.append("-" + str(v))
-                                value = " |br|\n".join(val_list)
-                            else:
-                                if type == "boolean":
-                                    value = "-False |br|\n-True"
-                                elif type == "string":
-                                    value = "[string]"
-                                elif type == "base64":
-                                    value = "[base64]"
-                                elif type == "integer" or type == "long" or type == "float":
-                                    if "min" in argument:
-                                        min = argument['min']
-                                    else:
-                                        min = ""
-                                    if "max" in argument:
-                                        max = argument['max']
-                                    else:
-                                        max = ""
-                                    value = "[" + str(min) + "-" + str(max) + "]"
-                                else:
-                                    value = ""
-                            if "description" in argument:
-                                comment = argument['description'].rstrip("\n")
-                                comment = comment.replace("\n", " |br|\n")
-
-                                # Lines should never start with whitespace
-                                comment = comment.replace("\n |br|", "\n|br|")
-                            else:
-                                comment = ""
-
-                            # Add the full description in the comment
-                            if "values" in argument:
-                                for n,desc in argument['values'].items():
-                                    if desc:
-                                        if comment != "":
-                                            comment += " |br|\n"
-                                        comment += str(n) + ": " + str(desc)
-
+                            name, type, value, comment = read_return_value(argument_name, argument)
                             return_values.append([name, type, value, comment])
 
         for line in tabulate(return_values, headers="firstrow", tablefmt="rst").splitlines():
@@ -426,52 +390,7 @@ def print_commands():
                 if(command_id == id):
                     if "arguments" in command:
                         for argument_name,argument in command['arguments'].items():
-                            name = argument_name
-                            type = argument['type'].replace("_list", "")
-
-                            # If the 'values' exists, use it to construct a list
-                            if "values" in argument:
-                                val_list = []
-                                for v in argument['values']:
-                                    val_list.append("-" + v)
-                                value = " |br|\n".join(val_list)
-                            else:
-                                if type == "boolean":
-                                    value = "-False |br|\n-True"
-                                elif type == "string":
-                                    value = "[string]"
-                                elif type == "base64":
-                                    value = "[base64]"
-                                elif type == "integer":
-                                    if "min" in argument:
-                                        min = argument['min']
-                                    else:
-                                        min = ""
-                                    if "max" in argument:
-                                        max = argument['max']
-                                    else:
-                                        max = ""
-                                    value = "[" + str(min) + "-" + str(max) + "]"
-                                else:
-                                    value = ""
-                            if "description" in argument:
-                                comment = argument['description'].rstrip("\n")
-                                comment = comment.replace("\n", " |br|\n")
-
-                                # Lines should never start with whitespace
-                                comment = comment.replace("\n |br|", "\n|br|")
-                            else:
-                                comment = ""
-
-                            # Add the full description in the comment
-                            if "values" in argument:
-                                for n,desc in argument['values'].items():
-                                    if desc:
-                                        if comment != "":
-                                            comment += " |br|\n"
-
-                                        comment += str(n) + ": " + str(desc)
-
+                            name, type, value, comment = read_return_value(argument_name, argument)
                             arguments.append([name, type, value, comment])
 
         arguments.insert(0, table_headers)
