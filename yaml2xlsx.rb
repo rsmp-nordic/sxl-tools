@@ -242,64 +242,66 @@ row = 7
 
 # for each object type in yaml, look at all the statuses
 sxl["objects"].each { |object|
-  object[1]["statuses"].each { |item|
-    set_cell(sheet, 1, row, object[0])         # object type
-    set_cell(sheet, 2, row, item[1]["object"]) # object
-    set_cell(sheet, 3, row, item[0])
-    if options[:short].nil?
-      set_cell(sheet, 4, row, item[1]["description"].chomp)
-    else
-      set_cell(sheet, 4, row, item[1]["description"].lines.first.chomp)
-    end
-
-    # Return values
-    col = 5
-    item[1]["arguments"].each { |argument, value|  # in statuses, it's called return value
-      # Remove _list from the type (integer_list)
-      value["type"].gsub!("_list", "")
-
-      set_cell(sheet, col, row, argument)
-      set_cell(sheet, col+1, row, value["type"])
-      if value["type"] == "boolean"
-          values = "-False\n-True"
-          set_cell(sheet, col+2, row, values)
-      elsif value["type"] == "base64"
-          values = "[base64]"
-          set_cell(sheet, col+2, row, values)
+  if object[1]["statuses"]
+    object[1]["statuses"].each { |item|
+      set_cell(sheet, 1, row, object[0])         # object type
+      set_cell(sheet, 2, row, item[1]["object"]) # object
+      set_cell(sheet, 3, row, item[0])
+      if options[:short].nil?
+        set_cell(sheet, 4, row, item[1]["description"].chomp)
       else
-        description = ""
-        if not value["values"].nil?
-          # Make a list of values and append to description
-          values = ""
-          value["values"].each { |v, desc |
-            values += "-" + v.to_s + "\n"
-            unless desc.empty?
-              description += + v.to_s + ": " + desc + "\n"
-            end
-          }
-        elsif value["type"] == "string"
-          values = "[string]"
-        elsif not value["min"].nil?
-          min = value["min"]
-          max = value["max"]
-          values = "[" + min.to_s + "-" + max.to_s + "]"
-        else
-          values = ""
-        end
-        values.chomp!
-        description.chomp!
-        if value["description"].nil?
-          value["description"] = description
-        else
-          value["description"].concat("\n" + description)
-        end
-        set_cell(sheet, col+2, row, values)
+        set_cell(sheet, 4, row, item[1]["description"].lines.first.chomp)
       end
-      set_cell(sheet, col+3, row, value["description"])
-      col += 4
+  
+      # Return values
+      col = 5
+      item[1]["arguments"].each { |argument, value|  # in statuses, it's called return value
+        # Remove _list from the type (integer_list)
+        value["type"].gsub!("_list", "")
+  
+        set_cell(sheet, col, row, argument)
+        set_cell(sheet, col+1, row, value["type"])
+        if value["type"] == "boolean"
+            values = "-False\n-True"
+            set_cell(sheet, col+2, row, values)
+        elsif value["type"] == "base64"
+            values = "[base64]"
+            set_cell(sheet, col+2, row, values)
+        else
+          description = ""
+          if not value["values"].nil?
+            # Make a list of values and append to description
+            values = ""
+            value["values"].each { |v, desc |
+              values += "-" + v.to_s + "\n"
+              unless desc.empty?
+                description += + v.to_s + ": " + desc + "\n"
+              end
+            }
+          elsif value["type"] == "string"
+            values = "[string]"
+          elsif not value["min"].nil?
+            min = value["min"]
+            max = value["max"]
+            values = "[" + min.to_s + "-" + max.to_s + "]"
+          else
+            values = ""
+          end
+          values.chomp!
+          description.chomp!
+          if value["description"].nil?
+            value["description"] = description
+          else
+            value["description"].concat("\n" + description)
+          end
+          set_cell(sheet, col+2, row, values)
+        end
+        set_cell(sheet, col+3, row, value["description"])
+        col += 4
+      }
+      row += 1
     }
-    row += 1
-  }
+  end
 }
 
 # Commands
@@ -311,65 +313,67 @@ row = find_row(sheet, "Parameter")+3
 
 # for each object type in yaml, look at all the commands
 sxl["objects"].each { |object|
-  object[1]["commands"].each { |item|
-    set_cell(sheet, 1, row, object[0])           # object type
-    set_cell(sheet, 2, row, item[1]["object"])   # object
-    set_cell(sheet, 3, row, item[0])
-    if options[:short].nil?
-      set_cell(sheet, 4, row, item[1]["description"])
-    else
-      set_cell(sheet, 4, row, item[1]["description"].lines.first.chomp)
-    end
- 
-    # Arguments
-    col = 5
-    item[1]["arguments"].each { |argument, value|
-      # Remove _list from the type (integer_list)
-      value["type"].gsub!("_list", "")
-
-      set_cell(sheet, col, row, argument)
-      set_cell(sheet, col+1, row, item[1]["command"])
-      set_cell(sheet, col+2, row, value["type"])
-      if value["type"] == "boolean"
-          values = "-False\n-True"
-          set_cell(sheet, col+3, row, values)
-      elsif value["type"] == "base64"
-          values = "[base64]"
-          set_cell(sheet, col+3, row, values)
+  if object[1]["commands"]
+    object[1]["commands"].each { |item|
+      set_cell(sheet, 1, row, object[0])           # object type
+      set_cell(sheet, 2, row, item[1]["object"])   # object
+      set_cell(sheet, 3, row, item[0])
+      if options[:short].nil?
+        set_cell(sheet, 4, row, item[1]["description"])
       else
-        description = ""
-        if not value["values"].nil?
-          # Make a list of values and append to description
-          values = ""
-          value["values"].each { |v, desc |
-            values += "-" + v.to_s + "\n"
-            unless desc.empty?
-              description += + v.to_s + ": " + desc + "\n"
-            end
-          }
-        elsif value["type"] == "string"
-          values = "[string]"
-        elsif not value["min"].nil?
-          min = value["min"]
-          max = value["max"]
-          values = "[" + min.to_s + "-" + max.to_s + "]"
-        else
-          values = ""
-        end
-        values.chomp!
-        description.chomp!
-        if value["description"].nil?
-          value["description"] = description
-        else
-          value["description"].concat("\n" + description)
-        end
-        set_cell(sheet, col+3, row, values)
+        set_cell(sheet, 4, row, item[1]["description"].lines.first.chomp)
       end
-      set_cell(sheet, col+4, row, value["description"])
-      col += 5
+   
+      # Arguments
+      col = 5
+      item[1]["arguments"].each { |argument, value|
+        # Remove _list from the type (integer_list)
+        value["type"].gsub!("_list", "")
+  
+        set_cell(sheet, col, row, argument)
+        set_cell(sheet, col+1, row, item[1]["command"])
+        set_cell(sheet, col+2, row, value["type"])
+        if value["type"] == "boolean"
+            values = "-False\n-True"
+            set_cell(sheet, col+3, row, values)
+        elsif value["type"] == "base64"
+            values = "[base64]"
+            set_cell(sheet, col+3, row, values)
+        else
+          description = ""
+          if not value["values"].nil?
+            # Make a list of values and append to description
+            values = ""
+            value["values"].each { |v, desc |
+              values += "-" + v.to_s + "\n"
+              unless desc.empty?
+                description += + v.to_s + ": " + desc + "\n"
+              end
+            }
+          elsif value["type"] == "string"
+            values = "[string]"
+          elsif not value["min"].nil?
+            min = value["min"]
+            max = value["max"]
+            values = "[" + min.to_s + "-" + max.to_s + "]"
+          else
+            values = ""
+          end
+          values.chomp!
+          description.chomp!
+          if value["description"].nil?
+            value["description"] = description
+          else
+            value["description"].concat("\n" + description)
+          end
+          set_cell(sheet, col+3, row, values)
+        end
+        set_cell(sheet, col+4, row, value["description"])
+        col += 5
+      }
+      row += 1
     }
-    row += 1
-  }
+  end
 }
 
 # Save
