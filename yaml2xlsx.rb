@@ -67,7 +67,7 @@ abort("--site needs to be set") if options[:site].nil?
 workbook = RubyXL::Parser.parse(options[:template])
 
 # Read yaml
-sxl = YAML.load_file(options[:objects])
+objects = YAML.load_file(options[:objects])
 site = YAML.load_file(options[:site])
 
 # Version
@@ -86,7 +86,7 @@ set_cell(sheet, 2, 26, site["rsmp-version"]) # RSMP version
 sheet = workbook['Object types']
 gy = find_row(sheet, "Grouped object types")+3
 sy = find_row(sheet, "Single object types")+3
-sxl["objects"].each { |object|
+objects["objects"].each { |object|
   # Is it a grouped object or not
   unless object[1]["aggregated_status"].nil?
     set_cell(sheet, 1, gy, object[0])
@@ -145,7 +145,7 @@ site["sites"].each { |site|
 # Aggregated status
 sheet = workbook['Aggregated status']
 y = 7
-sxl["objects"].each { |object|
+objects["objects"].each { |object|
   unless object[1]["aggregated_status"].nil?
     set_cell(sheet, 1, y, object[0])
     set_cell(sheet, 3, y, object[1]["functional_position"])
@@ -167,73 +167,75 @@ sheet = workbook['Alarms']
 row = 7
 
 # for each object type in yaml, look at all the alarms
-sxl["objects"].each { |object|
-  object[1]["alarms"].each { |item|
-    set_cell(sheet, 1, row, object[0])              # object type
-    set_cell(sheet, 2, row, item[1]["object"])      # object
-    set_cell(sheet, 3, row, item[0])                # alarmCodeId
-    if options[:short].nil?
-      set_cell(sheet, 4, row, item[1]["description"])
-    else
-      set_cell(sheet, 4, row, item[1]["description"].lines.first.chomp)
-    end
-    set_cell(sheet, 5, row, item[1]["externalAlarmCodeId"])
-    set_cell(sheet, 6, row, item[1]["externalNtsAlarmCodeId"])
-    set_cell(sheet, 7, row, item[1]["priority"])
-    set_cell(sheet, 8, row, item[1]["category"])
-
-    # Return values
-    col = 9
-    unless item[1]["arguments"].nil?
-      item[1]["arguments"].each { |argument, value|
-        # Remove _list from the type (integer_list)
-        value["type"].gsub!("_list", "")
-
-        set_cell(sheet, col, row, argument)
-        set_cell(sheet, col+1, row, value["type"])
-        if value["type"] == "boolean"
-            values = "-False\n-True"
-            set_cell(sheet, col+2, row, values)
-        elsif value["type"] == "base64"
-            values = "[base64]"
-            set_cell(sheet, col+2, row, values)
-        else
-          description = ""
-          if not value["values"].nil?
-            # Make a list of values and append to description
-            values = ""
-            value["values"].each { |v, desc |
-              values += "-" + v.to_s + "\n"
-              unless desc.empty?
-                description += + v.to_s + ": " + desc + "\n"
-              end
-            }
-          elsif value["type"] == "string"
-            values = "[string]"
-          elsif not value["min"].nil?
-            min = value["min"]
-            max = value["max"]
-            values = "[" + min.to_s + "-" + max.to_s + "]"
+objects["objects"].each { |object|
+  if object[1]["alarms"]
+    object[1]["alarms"].each { |item|
+      set_cell(sheet, 1, row, object[0])              # object type
+      set_cell(sheet, 2, row, item[1]["object"])      # object
+      set_cell(sheet, 3, row, item[0])                # alarmCodeId
+      if options[:short].nil?
+        set_cell(sheet, 4, row, item[1]["description"])
+      else
+        set_cell(sheet, 4, row, item[1]["description"].lines.first.chomp)
+      end
+      set_cell(sheet, 5, row, item[1]["externalAlarmCodeId"])
+      set_cell(sheet, 6, row, item[1]["externalNtsAlarmCodeId"])
+      set_cell(sheet, 7, row, item[1]["priority"])
+      set_cell(sheet, 8, row, item[1]["category"])
+  
+      # Return values
+      col = 9
+      unless item[1]["arguments"].nil?
+        item[1]["arguments"].each { |argument, value|
+          # Remove _list from the type (integer_list)
+          value["type"].gsub!("_list", "")
+  
+          set_cell(sheet, col, row, argument)
+          set_cell(sheet, col+1, row, value["type"])
+          if value["type"] == "boolean"
+              values = "-False\n-True"
+              set_cell(sheet, col+2, row, values)
+          elsif value["type"] == "base64"
+              values = "[base64]"
+              set_cell(sheet, col+2, row, values)
           else
-            values = ""
+            description = ""
+            if not value["values"].nil?
+              # Make a list of values and append to description
+              values = ""
+              value["values"].each { |v, desc |
+                values += "-" + v.to_s + "\n"
+                unless desc.empty?
+                  description += + v.to_s + ": " + desc + "\n"
+                end
+              }
+            elsif value["type"] == "string"
+              values = "[string]"
+            elsif not value["min"].nil?
+              min = value["min"]
+              max = value["max"]
+              values = "[" + min.to_s + "-" + max.to_s + "]"
+            else
+              values = ""
+            end
+            values.chomp!
+            description.chomp!
+            if value["description"].nil?
+              value["description"] = description
+            else
+              value["description"].concat("\n" + description)
+              value["description"].chomp!
+            end
+            set_cell(sheet, col+2, row, values)
           end
-          values.chomp!
-          description.chomp!
-          if value["description"].nil?
-            value["description"] = description
-          else
-            value["description"].concat("\n" + description)
-            value["description"].chomp!
-          end
-          set_cell(sheet, col+2, row, values)
-        end
-        set_cell(sheet, col+3, row, value["description"])
-        col += 4
-      }
-    end
-
-    row += 1
-  }
+          set_cell(sheet, col+3, row, value["description"])
+          col += 4
+        }
+      end
+  
+      row += 1
+    }
+  end
 }
 
 # Status
@@ -241,7 +243,7 @@ sheet = workbook['Status']
 row = 7
 
 # for each object type in yaml, look at all the statuses
-sxl["objects"].each { |object|
+objects["objects"].each { |object|
   if object[1]["statuses"]
     object[1]["statuses"].each { |item|
       set_cell(sheet, 1, row, object[0])         # object type
@@ -312,7 +314,7 @@ sheet = workbook['Commands']
 row = find_row(sheet, "Parameter")+3
 
 # for each object type in yaml, look at all the commands
-sxl["objects"].each { |object|
+objects["objects"].each { |object|
   if object[1]["commands"]
     object[1]["commands"].each { |item|
       set_cell(sheet, 1, row, object[0])           # object type
