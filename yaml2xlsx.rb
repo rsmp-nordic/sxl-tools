@@ -107,11 +107,11 @@ site["sites"].each { |site|
   set_cell(sheet, 2, 2, site[0])
   set_cell(sheet, 3, 2, site[1]["description"])
 
-  sxl["objects"].each { |object|
+  site[1]["objects"].each { |object|
     # Is it a grouped object or not
     unless object[1]["aggregated_status"].nil?
 
-      site[1]["objects"][object[0]].each { |grouped|
+      object[1].each { |grouped|
         set_cell(sheet, 1, gy, object[0])
         set_cell(sheet, 2, gy, grouped[0])
         if(grouped[1])
@@ -125,7 +125,7 @@ site["sites"].each { |site|
         gy = gy + 1
       }
     else
-      site[1]["objects"][object[0]].each { |single|
+      object[1].each { |single|
         set_cell(sheet, 1, sy, object[0])
         set_cell(sheet, 2, sy, single[0])
         if(single[1])
