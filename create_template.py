@@ -27,6 +27,8 @@ parser.add_argument('--num-command-parameters', default=3, type=int,
     help='Number of commands of type parameter')
 parser.add_argument('--command-args', default=2, type=int,
     help='Number of command arguments')
+parser.add_argument('--ver', default='3.2', type=str,
+    help='Version of RSMP')
 parser.add_argument('--output',
     default='RSMP_Template_SignalExchangeList.xlsx',
     help='Output filename')
@@ -91,7 +93,7 @@ worksheet.write('C23', '', t9_box)
 worksheet.write('B24', '', t9_box)
 worksheet.write('C24', '', t9_box)
 worksheet.write('A26', 'RSMP version:', t9b_r)
-worksheet.write('B26', '3.2', t9_c_box)
+worksheet.write('B26', args.ver, t9_c_box)
 
 # Write comments
 worksheet.write_comment('B2',
