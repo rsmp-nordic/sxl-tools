@@ -313,6 +313,11 @@ sheet = workbook['Commands']
 # since it is not possible to differentiate them further
 row = find_row(sheet, "Parameter")+3
 
+command = Struct.new(:object_type, :object, :cid, :description, :argument)
+arg = Struct.new(:name, :command, :type, :value, :comment)
+c = []
+a_list = []
+
 # for each object type in yaml, look at all the commands
 objects["objects"].each { |object|
   if object[1]["commands"]
@@ -328,7 +333,9 @@ objects["objects"].each { |object|
    
       # Arguments
       col = 5
+      a_list = []
       item[1]["arguments"].each { |argument, value|
+        a = []
         # Remove _list from the type (integer_list)
         value["type"].gsub!("_list", "")
   
@@ -371,11 +378,22 @@ objects["objects"].each { |object|
           set_cell(sheet, col+3, row, values)
         end
         set_cell(sheet, col+4, row, value["description"])
+        a << arg.new(argument, item[1]["command"], value["type"], values, value["description"])
+        a_list.push(a)
         col += 5
       }
+      c << command.new(object[0], item[1]["object"], item[0], item[1]["description"], a_list)
       row += 1
     }
   end
+}
+# Sort by commandId
+c.sort_by! { |co| co.cid }
+c.each { |co|
+  puts " #{co.object_type} #{co.object} #{co.cid} #{co.description}"
+  co.argument.each { |ar|
+    puts "    #{ar[0].name} "
+  }
 }
 
 # Save
