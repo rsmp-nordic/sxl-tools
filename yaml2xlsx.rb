@@ -114,20 +114,28 @@ site["sites"].each { |site|
       site[1]["objects"][object[0]].each { |grouped|
         set_cell(sheet, 1, gy, object[0])
         set_cell(sheet, 2, gy, grouped[0])
-        set_cell(sheet, 3, gy, grouped[1]["componentId"])
-        set_cell(sheet, 4, gy, grouped[1]["ntsObjectId"])
-        set_cell(sheet, 5, gy, grouped[1]["externalNtsId"])
-        set_cell(sheet, 6, gy, grouped[1]["description"])
+        if(grouped[1])
+          set_cell(sheet, 3, gy, grouped[1]["componentId"])
+          set_cell(sheet, 4, gy, grouped[1]["ntsObjectId"])
+          set_cell(sheet, 5, gy, grouped[1]["externalNtsId"])
+          set_cell(sheet, 6, gy, grouped[1]["description"])
+        else
+          STDERR.puts "Warning! componentId is missing"
+        end
         gy = gy + 1
       }
     else
       site[1]["objects"][object[0]].each { |single|
         set_cell(sheet, 1, sy, object[0])
         set_cell(sheet, 2, sy, single[0])
-        set_cell(sheet, 3, sy, single[1]["componentId"])
-        set_cell(sheet, 4, sy, single[1]["ntsObjectId"])
-        set_cell(sheet, 5, sy, single[1]["externalNtsId"])
-        set_cell(sheet, 6, sy, single[1]["description"])
+        if(single[1])
+          set_cell(sheet, 3, sy, single[1]["componentId"])
+          set_cell(sheet, 4, sy, single[1]["ntsObjectId"])
+          set_cell(sheet, 5, sy, single[1]["externalNtsId"])
+          set_cell(sheet, 6, sy, single[1]["description"])
+        else
+          STDERR.puts "Warning! componentId is missing"
+        end
         sy = sy + 1
       }
     end
