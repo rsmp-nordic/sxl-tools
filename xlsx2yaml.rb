@@ -233,7 +233,7 @@ sites = {}
 workbook.each do |sheet|
   case sheet.sheet_name
   when "Version"
-    if options[:site]
+    if options[:object]
       sxl["id"] = sheet[3][1].value if sheet[3]
       sxl["version"] = sheet[20][1].value
       sxl["date"] = sheet[20][2].value
