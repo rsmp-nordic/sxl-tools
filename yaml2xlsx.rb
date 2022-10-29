@@ -307,12 +307,6 @@ objects["objects"].each { |object|
 }
 
 # Commands
-sheet = workbook['Commands']
-
-# When converting from yaml to excel, put all commands under "parameter"
-# since it is not possible to differentiate them further
-row = find_row(sheet, "Parameter")+3
-
 command = Struct.new(:object_type, :object, :cid, :description, :argument)
 arg = Struct.new(:name, :command, :type, :value, :comment)
 c = []
@@ -322,32 +316,18 @@ a_list = []
 objects["objects"].each { |object|
   if object[1]["commands"]
     object[1]["commands"].each { |item|
-      set_cell(sheet, 1, row, object[0])           # object type
-      set_cell(sheet, 2, row, item[1]["object"])   # object
-      set_cell(sheet, 3, row, item[0])
-      if options[:short].nil?
-        set_cell(sheet, 4, row, item[1]["description"])
-      else
-        set_cell(sheet, 4, row, item[1]["description"].lines.first.chomp)
-      end
    
       # Arguments
-      col = 5
       a_list = []
       item[1]["arguments"].each { |argument, value|
         a = []
         # Remove _list from the type (integer_list)
         value["type"].gsub!("_list", "")
   
-        set_cell(sheet, col, row, argument)
-        set_cell(sheet, col+1, row, item[1]["command"])
-        set_cell(sheet, col+2, row, value["type"])
         if value["type"] == "boolean"
             values = "-False\n-True"
-            set_cell(sheet, col+3, row, values)
         elsif value["type"] == "base64"
             values = "[base64]"
-            set_cell(sheet, col+3, row, values)
         else
           description = ""
           if not value["values"].nil?
@@ -375,25 +355,44 @@ objects["objects"].each { |object|
           else
             value["description"].concat("\n" + description)
           end
-          set_cell(sheet, col+3, row, values)
         end
-        set_cell(sheet, col+4, row, value["description"])
         a << arg.new(argument, item[1]["command"], value["type"], values, value["description"])
         a_list.push(a)
-        col += 5
       }
       c << command.new(object[0], item[1]["object"], item[0], item[1]["description"], a_list)
-      row += 1
     }
   end
 }
+
+# When converting from yaml to excel, put all commands under "parameter"
+# since it is not possible to differentiate them further
+sheet = workbook['Commands']
+row = find_row(sheet, "Parameter")+3
+
 # Sort by commandId
 c.sort_by! { |co| co.cid }
 c.each { |co|
-  puts " #{co.object_type} #{co.object} #{co.cid} #{co.description}"
-  co.argument.each { |ar|
-    puts "    #{ar[0].name} "
+  set_cell(sheet, 1, row, co.object_type)
+  set_cell(sheet, 2, row, co.object)
+  set_cell(sheet, 3, row, co.cid)
+  set_cell(sheet, 4, row, co.description)
+  if options[:short].nil?
+    set_cell(sheet, 4, row, co.description)
+  else
+    set_cell(sheet, 4, row, co.description.lines.first.chomp)
+  end
+
+  # Arguments
+  col = 5
+  co.argument[0].each { |ar|
+    set_cell(sheet, col, row, ar.name)
+    set_cell(sheet, col+1, row, ar.command)
+    set_cell(sheet, col+2, row, ar.type)
+    set_cell(sheet, col+3, row, ar.value)
+    set_cell(sheet, col+4, row, ar.comment)
+    col += 5
   }
+  row += 1
 }
 
 # Save
