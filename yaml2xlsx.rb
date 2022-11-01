@@ -239,36 +239,27 @@ objects["objects"].each { |object|
 }
 
 # Status
-sheet = workbook['Status']
-row = 7
+status = Struct.new(:object_type, :object, :sid, :description, :return_value)
+return_value = Struct.new(:name, :type, :value, :comment)
+s = []
+r_list = []
 
 # for each object type in yaml, look at all the statuses
 objects["objects"].each { |object|
   if object[1]["statuses"]
     object[1]["statuses"].each { |item|
-      set_cell(sheet, 1, row, object[0])         # object type
-      set_cell(sheet, 2, row, item[1]["object"]) # object
-      set_cell(sheet, 3, row, item[0])
-      if options[:short].nil?
-        set_cell(sheet, 4, row, item[1]["description"].chomp)
-      else
-        set_cell(sheet, 4, row, item[1]["description"].lines.first.chomp)
-      end
   
       # Return values
-      col = 5
+      r_list = []
       item[1]["arguments"].each { |argument, value|  # in statuses, it's called return value
+        r = []
         # Remove _list from the type (integer_list)
         value["type"].gsub!("_list", "")
   
-        set_cell(sheet, col, row, argument)
-        set_cell(sheet, col+1, row, value["type"])
         if value["type"] == "boolean"
             values = "-False\n-True"
-            set_cell(sheet, col+2, row, values)
         elsif value["type"] == "base64"
             values = "[base64]"
-            set_cell(sheet, col+2, row, values)
         else
           description = ""
           if not value["values"].nil?
@@ -296,15 +287,42 @@ objects["objects"].each { |object|
           else
             value["description"].concat("\n" + description)
           end
-          set_cell(sheet, col+2, row, values)
         end
-        set_cell(sheet, col+3, row, value["description"])
-        col += 4
+        r << return_value.new(argument, value["type"], values, value["description"])
+        r_list.push(r)
       }
-      row += 1
+      s << status.new(object[0], item[1]["object"], item[0], item[1]["description"], r_list)
     }
   end
 }
+
+sheet = workbook['Status']
+row = 7
+
+# Sort by statusId
+s.sort_by { |so| so.sid }
+s.each { |so|
+  set_cell(sheet, 1, row, so.object_type)
+  set_cell(sheet, 2, row, so.object)
+  set_cell(sheet, 3, row, so.sid)
+  if options[:short].nil?
+    set_cell(sheet, 4, row, so.description)
+  else
+    set_cell(sheet, 4, row, so.description.lines.first.chomp)
+  end
+
+  # Arguments
+  col = 5
+  so.return_value[0].each { |rv|
+    set_cell(sheet, col, row, rv.name)
+    set_cell(sheet, col+2, row, rv.type)
+    set_cell(sheet, col+3, row, rv.value)
+    set_cell(sheet, col+4, row, rv.comment)
+    col += 5
+  }
+  row += 1
+}
+
 
 # Commands
 command = Struct.new(:object_type, :object, :cid, :description, :argument)
@@ -375,7 +393,6 @@ c.each { |co|
   set_cell(sheet, 1, row, co.object_type)
   set_cell(sheet, 2, row, co.object)
   set_cell(sheet, 3, row, co.cid)
-  set_cell(sheet, 4, row, co.description)
   if options[:short].nil?
     set_cell(sheet, 4, row, co.description)
   else
