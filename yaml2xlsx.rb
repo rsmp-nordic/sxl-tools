@@ -163,41 +163,29 @@ objects["objects"].each { |object|
 }
 
 # Alarm
-sheet = workbook['Alarms']
-row = 7
+alarm = Struct.new(:object_type, :object, :aid, :description,
+                   :external_alarmcodeid, :external_ntsalarmcodeid, :priority, :category, :return_value)
+return_value = Struct.new(:name, :type, :value, :comment)
+a = []
+r_list = []
 
 # for each object type in yaml, look at all the alarms
 objects["objects"].each { |object|
   if object[1]["alarms"]
     object[1]["alarms"].each { |item|
-      set_cell(sheet, 1, row, object[0])              # object type
-      set_cell(sheet, 2, row, item[1]["object"])      # object
-      set_cell(sheet, 3, row, item[0])                # alarmCodeId
-      if options[:short].nil?
-        set_cell(sheet, 4, row, item[1]["description"])
-      else
-        set_cell(sheet, 4, row, item[1]["description"].lines.first.chomp)
-      end
-      set_cell(sheet, 5, row, item[1]["externalAlarmCodeId"])
-      set_cell(sheet, 6, row, item[1]["externalNtsAlarmCodeId"])
-      set_cell(sheet, 7, row, item[1]["priority"])
-      set_cell(sheet, 8, row, item[1]["category"])
   
       # Return values
-      col = 9
+      r_list = []
       unless item[1]["arguments"].nil?
         item[1]["arguments"].each { |argument, value|
+          r = []
           # Remove _list from the type (integer_list)
           value["type"].gsub!("_list", "")
   
-          set_cell(sheet, col, row, argument)
-          set_cell(sheet, col+1, row, value["type"])
           if value["type"] == "boolean"
               values = "-False\n-True"
-              set_cell(sheet, col+2, row, values)
           elsif value["type"] == "base64"
               values = "[base64]"
-              set_cell(sheet, col+2, row, values)
           else
             description = ""
             if not value["values"].nil?
@@ -226,17 +214,52 @@ objects["objects"].each { |object|
               value["description"].concat("\n" + description)
               value["description"].chomp!
             end
-            set_cell(sheet, col+2, row, values)
           end
-          set_cell(sheet, col+3, row, value["description"])
-          col += 4
+          r << return_value.new(argument, value["type"], values, value["description"])
+          r_list.push(r)
         }
       end
-  
-      row += 1
+    a << alarm.new(object[0], item[1]["object"], item[0], item[1]["description"], 
+                  item[1]["externalAlarmCodeId"], item[1]["externalNtsAlarmCodeId"],
+                  item[1]["priority"], item[1]["category"], r_list)
+
     }
   end
 }
+
+sheet = workbook['Alarms']
+row = 7
+
+# Sort by alarmId
+a.sort_by { |ao| ao.aid }
+a.each { |ao|
+  set_cell(sheet, 1, row, ao.object_type)
+  set_cell(sheet, 2, row, ao.object)
+  set_cell(sheet, 3, row, ao.aid)
+  if options[:short].nil?
+    set_cell(sheet, 4, row, ao.description)
+  else
+    set_cell(sheet, 4, row, ao.description.lines.first.chomp)
+  end
+  set_cell(sheet, 5, row, ao.external_alarmcodeid)
+  set_cell(sheet, 6, row, ao.external_ntsalarmcodeid)
+  set_cell(sheet, 7, row, ao.priority)
+  set_cell(sheet, 8, row, ao.category)
+
+  # Return values
+  col = 9
+  unless ao.return_value[0].nil?
+    ao.return_value[0].each { |rv|
+      set_cell(sheet, col, row, rv.name)
+      set_cell(sheet, col+1, row, rv.type)
+      set_cell(sheet, col+2, row, rv.value)
+      set_cell(sheet, col+3, row, rv.comment)
+      col += 4
+    } 
+  end
+  row += 1
+}
+
 
 # Status
 status = Struct.new(:object_type, :object, :sid, :description, :return_value)
@@ -251,47 +274,50 @@ objects["objects"].each { |object|
   
       # Return values
       r_list = []
-      item[1]["arguments"].each { |argument, value|  # in statuses, it's called return value
-        r = []
-        # Remove _list from the type (integer_list)
-        value["type"].gsub!("_list", "")
+      unless item[1]["arguments"].nil?
+        item[1]["arguments"].each { |argument, value|  # in statuses, it's called return value
+          r = []
+          # Remove _list from the type (integer_list)
+          value["type"].gsub!("_list", "")
   
-        if value["type"] == "boolean"
-            values = "-False\n-True"
-        elsif value["type"] == "base64"
-            values = "[base64]"
-        else
-          description = ""
-          if not value["values"].nil?
-            # Make a list of values and append to description
-            values = ""
-            value["values"].each { |v, desc |
-              values += "-" + v.to_s + "\n"
-              unless desc.empty?
-                description += + v.to_s + ": " + desc + "\n"
-              end
-            }
-          elsif value["type"] == "string"
-            values = "[string]"
-          elsif not value["min"].nil?
-            min = value["min"]
-            max = value["max"]
-            values = "[" + min.to_s + "-" + max.to_s + "]"
+          if value["type"] == "boolean"
+              values = "-False\n-True"
+          elsif value["type"] == "base64"
+              values = "[base64]"
           else
-            values = ""
+            description = ""
+            if not value["values"].nil?
+              # Make a list of values and append to description
+              values = ""
+              value["values"].each { |v, desc |
+                values += "-" + v.to_s + "\n"
+                unless desc.empty?
+                  description += + v.to_s + ": " + desc + "\n"
+                end
+              }
+            elsif value["type"] == "string"
+              values = "[string]"
+            elsif not value["min"].nil?
+              min = value["min"]
+              max = value["max"]
+              values = "[" + min.to_s + "-" + max.to_s + "]"
+            else
+              values = ""
+            end
+            values.chomp!
+            description.chomp!
+            if value["description"].nil?
+              value["description"] = description
+            else
+              value["description"].concat("\n" + description)
+              value["description"].chomp!
+            end
           end
-          values.chomp!
-          description.chomp!
-          if value["description"].nil?
-            value["description"] = description
-          else
-            value["description"].concat("\n" + description)
-          end
-        end
-        r << return_value.new(argument, value["type"], values, value["description"])
-        r_list.push(r)
-      }
-      s << status.new(object[0], item[1]["object"], item[0], item[1]["description"], r_list)
+          r << return_value.new(argument, value["type"], values, value["description"])
+          r_list.push(r)
+        }
+      end
+    s << status.new(object[0], item[1]["object"], item[0], item[1]["description"], r_list)
     }
   end
 }
@@ -311,14 +337,14 @@ s.each { |so|
     set_cell(sheet, 4, row, so.description.lines.first.chomp)
   end
 
-  # Arguments
+  # Return values
   col = 5
   so.return_value[0].each { |rv|
     set_cell(sheet, col, row, rv.name)
-    set_cell(sheet, col+2, row, rv.type)
-    set_cell(sheet, col+3, row, rv.value)
-    set_cell(sheet, col+4, row, rv.comment)
-    col += 5
+    set_cell(sheet, col+1, row, rv.type)
+    set_cell(sheet, col+2, row, rv.value)
+    set_cell(sheet, col+3, row, rv.comment)
+    col += 4
   }
   row += 1
 }
