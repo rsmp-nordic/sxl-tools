@@ -231,7 +231,7 @@ sheet = workbook['Alarms']
 row = 7
 
 # Sort by alarmId
-a.sort_by { |ao| ao.aid }
+a.sort_by! { |ao| ao.aid }
 a.each { |ao|
   set_cell(sheet, 1, row, ao.object_type)
   set_cell(sheet, 2, row, ao.object)
@@ -326,7 +326,7 @@ sheet = workbook['Status']
 row = 7
 
 # Sort by statusId
-s.sort_by { |so| so.sid }
+s.sort_by! { |so| so.sid }
 s.each { |so|
   set_cell(sheet, 1, row, so.object_type)
   set_cell(sheet, 2, row, so.object)
