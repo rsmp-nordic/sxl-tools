@@ -108,7 +108,7 @@ site["sites"].each { |site|
 
   site[1]["objects"].each { |object|
     # Is it a grouped object or not
-    unless object[1]["aggregated_status"].nil?
+    unless objects["objects"][object[0]]["aggregated_status"].nil?
 
       object[1].each { |grouped|
         set_cell(sheet, 1, gy, object[0])
