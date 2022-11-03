@@ -233,16 +233,16 @@ sites = {}
 workbook.each do |sheet|
   case sheet.sheet_name
   when "Version"
-    if options[:object]
-      sxl["id"] = sheet[3][1].value if sheet[3]
-      sxl["version"] = sheet[20][1].value
-      sxl["date"] = sheet[20][2].value
-      sxl["description"] = sheet[5][1].value
-      sxl["constructor"] = sheet[9][1].value if sheet[9]
-      sxl["reviewed"] = sheet[11][1].value if sheet[11][1].value
-      sxl["approved"] = sheet[13][1].value if sheet[13] and sheet[13][1]
-      sxl["created-date"] = sheet[17][1].value if sheet[17]
-      sxl["rsmp-version"] = sheet[25][1].value if sheet[25]
+    if options[:site]
+      @site_yaml["id"] = sheet[3][1].value if sheet[3]
+      @site_yaml["version"] = sheet[20][1].value
+      @site_yaml["date"] = sheet[20][2].value
+      @site_yaml["description"] = sheet[5][1].value
+      @site_yaml["constructor"] = sheet[9][1].value if sheet[9]
+      @site_yaml["reviewed"] = sheet[11][1].value if sheet[11][1].value
+      @site_yaml["approved"] = sheet[13][1].value if sheet[13] and sheet[13][1]
+      @site_yaml["created-date"] = sheet[17][1].value if sheet[17]
+      @site_yaml["rsmp-version"] = sheet[25][1].value if sheet[25]
     end
   when "Object types"
     # grouped objects
