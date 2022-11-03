@@ -415,7 +415,6 @@ workbook.each do |sheet|
               values = sheet[y][x+2].value.tr('[]','').split("-")
               a[sheet[y][x].value]['min'] = values[0].to_i
               a[sheet[y][x].value]['max'] = values[1].to_i
-              a[sheet[y][x].value]['type'] << "_list"	# Add _list to type if min/max is used
             end
           end
         end
@@ -484,7 +483,6 @@ workbook.each do |sheet|
                 values = sheet[y][x+3].value.tr('[]','').split("-")
                 a[sheet[y][x].value]['min'] = values[0].to_i
                 a[sheet[y][x].value]['max'] = values[1].to_i
-                a[sheet[y][x].value]['type'] << "_list"	# Add _list to type if min/max is used
               end
             end
           end
