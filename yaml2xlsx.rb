@@ -14,11 +14,10 @@ def set_cell(sheet, col, row, string)
   return if string == nil
   col -= 1
   row -= 1
-  if sheet[row] == nil or sheet[row][col] == nil
-    sheet.add_cell row, col, string
-  else
-    sheet[row][col].change_contents string
-  end
+  sheet.add_cell row, col if sheet[row] == nil or sheet[row][col] == nil
+  cell = sheet[row][col]
+  cell.change_contents string
+  cell.change_text_wrap(true)
 end
 
 # Find row where first column is equal to string
