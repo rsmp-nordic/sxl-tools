@@ -309,7 +309,7 @@ workbook.each do |sheet|
 
       alarm = {
         'description' => a[3],
-        'priority' => a[6],
+        'priority' => a[6].to_i,
         'category' => a[7]
       }
       alarm.store("object", a[1]) if a[1] != nil
