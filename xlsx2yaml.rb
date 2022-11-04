@@ -370,10 +370,14 @@ workbook.each do |sheet|
     y = 6
     while(sheet[y] and sheet[y][0] and sheet[y][0].value) do
       # Get the basic status info
-      sheet[y][0] ? object_type = sheet[y][0].value : object_type = ''
-      sheet[y][1] ? object = sheet[y][1].value : object = ''
-      sheet[y][2] ? sci = sheet[y][2].value : sid = ''
-      sheet[y][3] ? desc = sheet[y][3].value : desc = ''
+      object_type = ""
+      object = ""
+      sid = ""
+      desc = ""
+      object_type = sheet[y][0].value if sheet[y][0]
+      object = sheet[y][1].value if sheet[y][1]
+      sci = sheet[y][2].value if sheet[y][2]
+      desc = sheet[y][3].value if sheet[y][3]
       s = [ object_type, object, sci, desc ]
 
       # Get each argument
@@ -386,13 +390,15 @@ workbook.each do |sheet|
           exit 1
         end
 
-        a[sheet[y][x].value] = {
+        name = sheet[y][x].value.gsub(/[[:space:]]/, '')
+
+        a[name] = {
           'type' => sheet[y][x+1].value,
           'description' => sheet[y][x+3].value.chomp
         }
 
         # No need to output values if type is boolean
-        unless a[sheet[y][x].value]['type'] == 'boolean'
+        unless a[name]['type'] == 'boolean'
           # Output values in a different way
           if sheet[y][x+2].value and sheet[y][x+2].value.start_with?("-")
             # Values consists of several options
@@ -404,24 +410,24 @@ workbook.each do |sheet|
 
               # Try to find the corresponding description in
               # the description field using "key: value" format
-              desc = get_value(a[sheet[y][x].value]['description'], v)
+              desc = get_value(a[name]['description'], v)
 
               # Add value to return value
-              add_rv_value(a[sheet[y][x].value], v, desc)
+              add_rv_value(a[name], v, desc)
             }
           else
             # Set 'max' and 'min' if type is integer, long or real
-            if a[sheet[y][x].value]['type'] == 'integer' or a[sheet[y][x].value]['type'] == 'long' or a[sheet[y][x].value]['type'] == 'real'
+            if a[name]['type'] == 'integer' or a[name]['type'] == 'long' or a[name]['type'] == 'real'
               values = sheet[y][x+2].value.tr('[]','').split("-")
-              a[sheet[y][x].value]['min'] = values[0].to_i
-              a[sheet[y][x].value]['max'] = values[1].to_i
+              a[name]['min'] = values[0].to_i
+              a[name]['max'] = values[1].to_i
             end
           end
         end
 
         # Remove the description field if it is empty
-        if a[sheet[y][x].value]['description'] and a[sheet[y][x].value]['description'].empty?
-          a[sheet[y][x].value].delete('description')
+        if a[name]['description'] and a[name]['description'].empty?
+          a[name].delete('description')
         end
 
         x = x + 4
@@ -455,7 +461,7 @@ workbook.each do |sheet|
         x = 4
         a = {}
         while(sheet[y][x] != nil and sheet[y][x].value != nil) do
-          a[sheet[y][x].value] = {
+          a[sheet[y][x].value.chomp] = {
             'type' => sheet[y][x+2].value,
             'description' => sheet[y][x+4].value.chomp
           }
