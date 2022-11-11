@@ -192,7 +192,7 @@ objects["objects"].each { |object|
               values = ""
               value["values"].each { |v, desc |
                 values += "-" + v.to_s + "\n"
-                unless desc.empty?
+                unless desc.nil?
                   description += + v.to_s + ": " + desc + "\n"
                 end
               }
@@ -290,7 +290,7 @@ objects["objects"].each { |object|
               values = ""
               value["values"].each { |v, desc |
                 values += "-" + v.to_s + "\n"
-                unless desc.empty?
+                unless desc.nil?
                   description += + v.to_s + ": " + desc + "\n"
                 end
               }
@@ -378,7 +378,7 @@ objects["objects"].each { |object|
             values = ""
             value["values"].each { |v, desc |
               values += "-" + v.to_s + "\n"
-              unless desc.empty?
+              unless desc.nil?
                 description += + v.to_s + ": " + desc + "\n"
               end
             }
