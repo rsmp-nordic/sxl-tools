@@ -214,11 +214,21 @@ objects["objects"].each { |object|
               value["description"].chomp!
             end
           end
+
+          # unsupported tags
+          unsupported = [ "pattern", "items" ]
+          unsupported.each do |u|
+            if value[u]
+              STDERR.puts "Warning! '#{u}' not supported in Excel format in #{item[0]} #{argument}"
+            end
+          end
+
           r << return_value.new(argument, value["type"], values, value["description"])
           r_list.push(r)
         }
       end
-    a << alarm.new(object[0], item[1]["object"], item[0], item[1]["description"], 
+
+      a << alarm.new(object[0], item[1]["object"], item[0], item[1]["description"],
                   item[1]["externalAlarmCodeId"], item[1]["externalNtsAlarmCodeId"],
                   item[1]["priority"], item[1]["category"], r_list)
 
@@ -312,6 +322,15 @@ objects["objects"].each { |object|
               value["description"].chomp!
             end
           end
+
+          # unsupported tags
+          unsupported = [ "pattern", "items" ]
+          unsupported.each do |u|
+            if value[u]
+              STDERR.puts "Warning! '#{u}' not supported in Excel format in #{item[0]} #{argument}"
+            end
+          end
+
           r << return_value.new(argument, value["type"], values, value["description"])
           r_list.push(r)
         }
@@ -399,6 +418,15 @@ objects["objects"].each { |object|
             value["description"].concat("\n" + description)
           end
         end
+
+        # unsupported tags
+        unsupported = [ "pattern", "items" ]
+        unsupported.each do |u|
+          if value[u]
+            STDERR.puts "Warning! '#{u}' not supported in Excel format in #{item[0]} #{argument}"
+          end
+        end
+
         a << arg.new(argument, item[1]["command"], value["type"], values, value["description"])
         a_list.push(a)
       }
