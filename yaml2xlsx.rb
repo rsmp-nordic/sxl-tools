@@ -182,9 +182,11 @@ objects["objects"].each { |object|
           value["type"].gsub!("_list", "")
   
           if value["type"] == "boolean"
-              values = "-False\n-True"
+            values = "-False\n-True"
           elsif value["type"] == "base64"
-              values = "[base64]"
+            values = "[base64]"
+          elsif value["type"] == "array"
+            values = value["items"].to_yaml if value["items"]
           else
             description = ""
             if not value["values"].nil?
@@ -216,11 +218,8 @@ objects["objects"].each { |object|
           end
 
           # unsupported tags
-          unsupported = [ "pattern", "items" ]
-          unsupported.each do |u|
-            if value[u]
-              STDERR.puts "Warning! '#{u}' not supported in Excel format in #{item[0]} #{argument}"
-            end
+          if value["pattern"]
+            STDERR.puts "Warning! 'pattern' not supported in Excel format in #{item[0]} #{argument}"
           end
 
           r << return_value.new(argument, value["type"], values, value["description"])
@@ -290,9 +289,11 @@ objects["objects"].each { |object|
           value["type"].gsub!("_list", "")
   
           if value["type"] == "boolean"
-              values = "-False\n-True"
+            values = "-False\n-True"
           elsif value["type"] == "base64"
-              values = "[base64]"
+            values = "[base64]"
+          elsif value["type"] == "array"
+            values = value["items"].to_yaml if value["items"]
           else
             description = ""
             if not value["values"].nil?
@@ -324,11 +325,8 @@ objects["objects"].each { |object|
           end
 
           # unsupported tags
-          unsupported = [ "pattern", "items" ]
-          unsupported.each do |u|
-            if value[u]
-              STDERR.puts "Warning! '#{u}' not supported in Excel format in #{item[0]} #{argument}"
-            end
+          if value["pattern"]
+            STDERR.puts "Warning! 'pattern' not supported in Excel format in #{item[0]} #{argument}"
           end
 
           r << return_value.new(argument, value["type"], values, value["description"])
@@ -387,9 +385,11 @@ objects["objects"].each { |object|
         value["type"].gsub!("_list", "")
   
         if value["type"] == "boolean"
-            values = "-False\n-True"
+          values = "-False\n-True"
         elsif value["type"] == "base64"
-            values = "[base64]"
+          values = "[base64]"
+        elsif value["type"] == "array"
+          values = value["items"].to_yaml if value["items"]
         else
           description = ""
           if not value["values"].nil?
@@ -420,11 +420,8 @@ objects["objects"].each { |object|
         end
 
         # unsupported tags
-        unsupported = [ "pattern", "items" ]
-        unsupported.each do |u|
-          if value[u]
-            STDERR.puts "Warning! '#{u}' not supported in Excel format in #{item[0]} #{argument}"
-          end
+        if value["pattern"]
+          STDERR.puts "Warning! 'pattern' not supported in Excel format in #{item[0]} #{argument}"
         end
 
         a << arg.new(argument, item[1]["command"], value["type"], values, value["description"])

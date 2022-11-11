@@ -398,7 +398,7 @@ workbook.each do |sheet|
         }
 
         # No need to output values if type is boolean
-        unless a[name]['type'] == 'boolean'
+        unless a[name]['type'] == 'boolean' or a[name]['type'] == 'array'
           # Output values in a different way
           if sheet[y][x+2].value and sheet[y][x+2].value.start_with?("-")
             # Values consists of several options
@@ -422,7 +422,12 @@ workbook.each do |sheet|
               a[name]['min'] = values[0].to_i
               a[name]['max'] = values[1].to_i
             end
+
           end
+        end
+
+        if a[name]['type'] == 'array'
+          a[name]['items'] = YAML.load(sheet[y][x+2].value)
         end
 
         # Remove the description field if it is empty
