@@ -35,7 +35,7 @@ def sort_cid(alarm):
 
 def read_return_value(argument_name, argument):
     name = argument_name
-    type = argument['type'].replace("_list", "")
+    arg_type = argument['type'].replace("_list", "")
 
     # If the 'values' exists, use it to construct a list
     if "values" in argument:
@@ -45,13 +45,13 @@ def read_return_value(argument_name, argument):
         value = " |br|\n".join(val_list)
 
     else:
-        if type == "boolean":
+        if arg_type == "boolean":
             value = "-False |br|\n-True"
-        elif type == "string":
+        elif arg_type == "string":
             value = "[string]"
-        elif type == "base64":
+        elif arg_type == "base64":
             value = "[base64]"
-        elif type == "integer" or type == "long" or type == "float":
+        elif arg_type == "integer" or arg_type == "long" or arg_type == "float":
             if "min" in argument:
                 min = argument['min']
             else:
@@ -80,7 +80,7 @@ def read_return_value(argument_name, argument):
                     comment += " |br|\n"
                 comment += str(n) + ": " + str(desc)
 
-    return name, type, value, comment
+    return name, arg_type, value, comment
 
 
 def start_table(widths,label):
