@@ -74,11 +74,12 @@ def read_return_value(argument_name, argument):
 
     # Add the full description in the comment
     if "values" in argument:
-        for n,desc in argument['values'].items():
-            if desc:
-                if comment != "":
-                    comment += " |br|\n"
-                comment += str(n) + ": " + str(desc)
+        if type(argument['values']) is dict:
+            for n,desc in argument['values'].items():
+                if desc:
+                    if comment != "":
+                        comment += " |br|\n"
+                    comment += str(n) + ": " + str(desc)
 
     return name, arg_type, value, comment
 
