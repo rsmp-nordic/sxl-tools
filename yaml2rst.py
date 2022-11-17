@@ -33,8 +33,7 @@ def rst_line_break_substitution():
 def sort_cid(alarm):
     return alarm[1].translate({ord(i): None for i in 'ASM\`_'})
 
-def read_return_value(argument_name, argument):
-    name = argument_name
+def read_return_value(name, argument):
     arg_type = argument['type'].replace("_list", "")
 
     # If the 'values' exists, use it to construct a list
@@ -51,6 +50,12 @@ def read_return_value(argument_name, argument):
             value = "[string]"
         elif arg_type == "base64":
             value = "[base64]"
+        elif arg_type == "array":
+            if "items" in argument:
+                for name, arg in argument['items'].items():
+                    n,t,v,c = read_return_value(name, arg)
+                    # TODO: Need to print the array
+            value = ""
         elif arg_type == "integer" or arg_type == "long" or arg_type == "float":
             if "min" in argument:
                 min = argument['min']
@@ -82,7 +87,6 @@ def read_return_value(argument_name, argument):
                     comment += str(n) + ": " + str(desc)
 
     return name, arg_type, value, comment
-
 
 def start_table(widths,label):
     print("")
@@ -320,12 +324,7 @@ def print_status():
                     print(status['description'])
                     print("")
 
-        widths = ["0.15", "0.15", "0.20", "0.50"]
-        table_headers = ["Name", "Type", "Value", "Comment"]
-        start_table(widths, status_id)
-
         return_values = []
-        return_values.append(table_headers)
         for object_name,object in yaml_sxl['objects'].items():
             for id,status in object['statuses'].items():
                 if(status_id == id):
@@ -334,9 +333,15 @@ def print_status():
                             name, type, value, comment = read_return_value(argument_name, argument)
                             return_values.append([name, type, value, comment])
 
-        for line in tabulate(return_values, headers="firstrow", tablefmt="rst").splitlines():
-            print('   ' + line)
-        print("")
+        if return_values:
+            widths = ["0.15", "0.15", "0.20", "0.50"]
+            table_headers = ["Name", "Type", "Value", "Comment"]
+            start_table(widths, status_id)
+
+            return_values.insert(0, table_headers)
+            for line in tabulate(return_values, headers="firstrow", tablefmt="rst").splitlines():
+                print('   ' + line)
+            print("")
 
 def print_commands():
     print("")
@@ -378,11 +383,6 @@ def print_commands():
                     print(command['description'])
                     print("")
 
-        widths = ["0.14",  "0.14", "0.20", "0.45"]
-        table_headers = ["Name", "Type", "Value", "Comment"]
-
-        start_table(widths, command_id)
-
         arguments = []
         for object_name,object in yaml_sxl['objects'].items():
             for id,command in object['commands'].items():
@@ -392,11 +392,16 @@ def print_commands():
                             name, type, value, comment = read_return_value(argument_name, argument)
                             arguments.append([name, type, value, comment])
 
-        arguments.insert(0, table_headers)
+        if arguments:
+            widths = ["0.14",  "0.14", "0.20", "0.45"]
+            table_headers = ["Name", "Type", "Value", "Comment"]
+            start_table(widths, command_id)
 
-        for line in tabulate(arguments, headers="firstrow", tablefmt="rst").splitlines():
-            print('   ' + line)
-        print("")
+            arguments.insert(0, table_headers)
+
+            for line in tabulate(arguments, headers="firstrow", tablefmt="rst").splitlines():
+                print('   ' + line)
+            print("")
 
 parser = argparse.ArgumentParser(description='Convert SXL in yaml to rst format')
 parser.add_argument('--extended', action=argparse.BooleanOptionalAction)
