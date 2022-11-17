@@ -96,9 +96,6 @@ def start_table(widths,label):
     print("")
     print("")
 
-def end_table():
-    print("")
-
 def print_version():
     print("Signal Exchange List")
     print("====================")
@@ -140,7 +137,7 @@ def print_object_types():
             grouped.append([object_name, object['description']])
     for line in tabulate(grouped, headers="firstrow", tablefmt="rst").splitlines():
         print('   ' + line)
-    end_table()
+    print("")
 
     print("")
     print("Single objects")
@@ -155,7 +152,7 @@ def print_object_types():
             single.append([object_name, object['description']])
     for line in tabulate(single, headers="firstrow", tablefmt="rst").splitlines():
         print('   ' + line)
-    end_table()
+    print("")
 
 def print_aggregated_status():
     print("")
@@ -198,8 +195,7 @@ def print_aggregated_status():
 
     for line in tabulate(agg_status, headers="firstrow", tablefmt="rst").splitlines():
         print('   ' + line)
-    end_table()
-
+    print("")
 
     widths = ["0.10", "0.30", "0.50"]
     table_headers = ["State-Bit", "Description", "Comment"]
@@ -217,7 +213,7 @@ def print_aggregated_status():
 
     for line in tabulate(state_bits, headers="firstrow", tablefmt="rst").splitlines():
         print('   ' + line)
-    end_table()
+    print("")
 
 
 def print_alarms():
@@ -243,7 +239,7 @@ def print_alarms():
     alarm_table.insert(0, table_headers)
     for line in tabulate(alarm_table, headers="firstrow", tablefmt="rst").splitlines():
         print('   ' + line)
-    end_table()
+    print("")
 
     # Print detailed alarm info
     # incl. return values
@@ -275,7 +271,7 @@ def print_alarms():
             return_values.insert(0, table_headers)
             for line in tabulate(return_values, headers="firstrow", tablefmt="rst").splitlines():
                 print('   ' + line)
-            end_table()
+            print("")
 
 def print_status():
     print("")
@@ -306,7 +302,7 @@ def print_status():
     status_table.insert(0, table_headers)
     for line in tabulate(status_table, headers="firstrow", tablefmt="rst").splitlines():
         print('   ' + line)
-    end_table()
+    print("")
 
     # Print detailed status info
     # incl. return values
@@ -340,7 +336,7 @@ def print_status():
 
         for line in tabulate(return_values, headers="firstrow", tablefmt="rst").splitlines():
             print('   ' + line)
-        end_table()
+        print("")
 
 def print_commands():
     print("")
@@ -365,7 +361,7 @@ def print_commands():
     command_table.insert(0, table_headers)
     for line in tabulate(command_table, headers="firstrow", tablefmt="rst").splitlines():
         print('   ' + line)
-    end_table()
+    print("")
 
     # Arguments
     commands.sort(key=sort_cid)
@@ -400,7 +396,7 @@ def print_commands():
 
         for line in tabulate(arguments, headers="firstrow", tablefmt="rst").splitlines():
             print('   ' + line)
-        end_table()
+        print("")
 
 parser = argparse.ArgumentParser(description='Convert SXL in yaml to rst format')
 parser.add_argument('--extended', action=argparse.BooleanOptionalAction)
