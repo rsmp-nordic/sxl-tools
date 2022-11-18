@@ -33,6 +33,22 @@ def find_row(sheet, string)
   p "Could not find row"
 end
 
+# Check for unknown fields in arguments
+def check_fields_arg(id, arg, field)
+  known_fields = ["type", "description", "values", "items", "min", "max", "priority", "category"]
+
+  # Remove known fields
+  known_fields.each { |key|
+    #STDERR.puts "-> ̣Checking: '#{key}' format in #{id} #{arg}"
+    field.delete(key) if field.key?(key)
+  }
+
+  field.each_key { |key|
+    STDERR.puts "Warning! '#{key}' not supported in Excel format in #{id} #{arg}"
+  }
+
+end
+
 options = {}
 usage = "Usage: yaml2xlsx.rb [OPTIONS]--template <XLSX>] [sxl.yaml] [site.yaml]"
 OptionParser.new do |opts|
@@ -217,16 +233,13 @@ objects["objects"].each { |object|
             end
           end
 
-          # unsupported tags
-          if value["pattern"]
-            STDERR.puts "Warning! 'pattern' not supported in Excel format in #{item[0]} #{argument}"
-          end
+          # check for unsupported fields
+          check_fields_arg(item[0], argument, value)
 
           r << return_value.new(argument, value["type"], values, value["description"])
           r_list.push(r)
         }
       end
-
       a << alarm.new(object[0], item[1]["object"], item[0], item[1]["description"],
                   item[1]["externalAlarmCodeId"], item[1]["externalNtsAlarmCodeId"],
                   item[1]["priority"], item[1]["category"], r_list)
@@ -324,16 +337,14 @@ objects["objects"].each { |object|
             end
           end
 
-          # unsupported tags
-          if value["pattern"]
-            STDERR.puts "Warning! 'pattern' not supported in Excel format in #{item[0]} #{argument}"
-          end
+          # check for unsupported fields
+          check_fields_arg(item[0], argument, value)
 
           r << return_value.new(argument, value["type"], values, value["description"])
           r_list.push(r)
         }
       end
-    s << status.new(object[0], item[1]["object"], item[0], item[1]["description"], r_list)
+      s << status.new(object[0], item[1]["object"], item[0], item[1]["description"], r_list)
     }
   end
 }
@@ -419,10 +430,8 @@ objects["objects"].each { |object|
           end
         end
 
-        # unsupported tags
-        if value["pattern"]
-          STDERR.puts "Warning! 'pattern' not supported in Excel format in #{item[0]} #{argument}"
-        end
+        # check for unsupported fields
+        check_fields_arg(item[0], argument, value)
 
         a << arg.new(argument, item[1]["command"], value["type"], values, value["description"])
         a_list.push(a)
