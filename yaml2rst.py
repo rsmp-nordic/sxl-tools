@@ -36,6 +36,8 @@ def sort_cid(alarm):
 def read_return_value(name, argument):
     arg_type = argument['type'].replace("_list", "")
 
+    array = []
+
     # If the 'values' exists, use it to construct a list
     if "values" in argument:
         val_list = []
@@ -53,8 +55,7 @@ def read_return_value(name, argument):
         elif arg_type == "array":
             if "items" in argument:
                 for name, arg in argument['items'].items():
-                    n,t,v,c = read_return_value(name, arg)
-                    # TODO: Need to print the array
+                    array.append(read_return_value(name, arg))
             value = ""
         elif arg_type == "integer" or arg_type == "long" or arg_type == "float":
             if "min" in argument:
@@ -86,7 +87,7 @@ def read_return_value(name, argument):
                         comment += " |br|\n"
                     comment += str(n) + ": " + str(desc)
 
-    return name, arg_type, value, comment
+    return name, arg_type, value, comment, array
 
 def start_table(widths,label):
     print("")
@@ -264,7 +265,7 @@ def print_alarms():
                 if(alarm_id == id):
                     if "arguments" in alarm:
                         for argument_name, argument in alarm['arguments'].items():
-                            name, type, value, comment = read_return_value(argument_name, argument)
+                            name, type, value, comment, array = read_return_value(argument_name, argument)
                             return_values.append([name, type, value, comment])
 
         if return_values:
@@ -325,13 +326,18 @@ def print_status():
                     print("")
 
         return_values = []
+        array_values = {}
         for object_name,object in yaml_sxl['objects'].items():
             for id,status in object['statuses'].items():
                 if(status_id == id):
                     if "arguments" in status:
                         for argument_name,argument in status['arguments'].items():
-                            name, type, value, comment = read_return_value(argument_name, argument)
+                            array_values[argument_name] = []
+                            name, type, value, comment, array = read_return_value(argument_name, argument)
                             return_values.append([name, type, value, comment])
+                            if(type == "array"):
+                                for a in array:
+                                    array_values[argument_name].append([a[0], a[1], a[2], a[3]])
 
         if return_values:
             widths = ["0.15", "0.15", "0.20", "0.50"]
@@ -342,6 +348,16 @@ def print_status():
             for line in tabulate(return_values, headers="firstrow", tablefmt="rst").splitlines():
                 print('   ' + line)
             print("")
+
+            for name in array_values:
+                widths = ["0.15", "0.15", "0.20", "0.50"]
+                table_headers = ["Name", "Type", "Value", "Comment"]
+                start_table(widths, status_id + " " + name)
+
+                array_values[name].insert(0, table_headers)
+                for line in tabulate(array_values[name], headers="firstrow", tablefmt="rst").splitlines():
+                    print('   ' + line)
+                print("")
 
 def print_commands():
     print("")
@@ -389,7 +405,7 @@ def print_commands():
                 if(command_id == id):
                     if "arguments" in command:
                         for argument_name,argument in command['arguments'].items():
-                            name, type, value, comment = read_return_value(argument_name, argument)
+                            name, type, value, comment, array = read_return_value(argument_name, argument)
                             arguments.append([name, type, value, comment])
 
         if arguments:
