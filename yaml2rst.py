@@ -332,7 +332,6 @@ def print_status():
                 if(status_id == id):
                     if "arguments" in status:
                         for argument_name,argument in status['arguments'].items():
-                            array_values[argument_name] = []
                             name, type, value, comment, array = read_return_value(argument_name, argument)
                             return_values.append([name, type, value, comment])
                             if(type == "array"):
