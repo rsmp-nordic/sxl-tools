@@ -336,6 +336,8 @@ def print_status():
                             return_values.append([name, type, value, comment])
                             if(type == "array"):
                                 for a in array:
+                                    if not argument_name in array_values:
+                                        array_values[argument_name] = []
                                     array_values[argument_name].append([a[0], a[1], a[2], a[3]])
 
         if return_values:
