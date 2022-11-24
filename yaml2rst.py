@@ -81,6 +81,38 @@ def read_return_value(name, argument):
 
     return name, arg_type, min, max, enum, comment, array
 
+def remove_unused_columns(widths, headers, arg):
+    # Remove both max and min if max is unused
+    # ('0' evaluates to False, which min often is)
+    max_unused = True
+    enum_unused = True
+
+    # Check all rows
+    for col in arg:
+        if col[4]:
+            enum_unused = False
+        if col[3]:
+            max_unused = False
+
+    # Remove any unused cols
+    for col in arg:
+        if enum_unused:
+            del col[4]
+        if max_unused:
+            del col[3]
+            del col[2]
+
+    # Update header
+    if enum_unused:
+        del widths[4]
+        del headers[4]
+    if max_unused:
+        del widths[3]
+        del headers[3]
+        del widths[2]
+        del headers[2]
+    return widths, headers, arg
+
 def start_table(widths,label):
     print("")
     print(".. tabularcolumns:: ", end='')
@@ -263,6 +295,10 @@ def print_alarms():
         if return_values:
             widths = ["0.15", "0.15", "0.05", "0.05", "0.10", "0.45"]
             table_headers = ["Name", "Type", "Min", "Max", "Enum", "Comment"]
+
+            # Remove unused columns
+            widths, table_headers, return_values = remove_unused_columns(widths, table_headers, return_values)
+
             start_table(widths, alarm_id)
 
             return_values.insert(0, table_headers)
@@ -337,6 +373,9 @@ def print_status():
             table_headers = ["Name", "Type", "Min", "Max", "Enum", "Comment"]
             start_table(widths, status_id)
 
+            # Remove unused columns
+            widths, table_headers, return_values = remove_unused_columns(widths, table_headers, return_values)
+
             return_values.insert(0, table_headers)
             for line in tabulate(return_values, headers="firstrow", tablefmt="rst").splitlines():
                 print('   ' + line)
@@ -404,6 +443,10 @@ def print_commands():
         if arguments:
             widths = ["0.15", "0.15", "0.05", "0.05", "0.10", "0.50"]
             table_headers = ["Name", "Type", "Min", "Max", "Enum", "Comment"]
+
+            # Remove unused columns
+            widths, table_headers, arguments = remove_unused_columns(widths, table_headers, arguments)
+
             start_table(widths, command_id)
 
             arguments.insert(0, table_headers)
