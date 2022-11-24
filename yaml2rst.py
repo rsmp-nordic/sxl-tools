@@ -37,38 +37,30 @@ def read_return_value(name, argument):
     arg_type = argument['type'].replace("_list", "")
 
     array = []
+    min = ""
+    max = ""
 
     # If the 'values' exists, use it to construct a list
     if "values" in argument:
         val_list = []
         for v in argument['values']:
             val_list.append("-" + str(v))
-        value = " |br|\n".join(val_list)
+        enum = " |br|\n".join(val_list)
 
     else:
-        if arg_type == "boolean":
-            value = "-False |br|\n-True"
-        elif arg_type == "string":
-            value = "[string]"
-        elif arg_type == "base64":
-            value = "[base64]"
-        elif arg_type == "array":
+        enum = ""
+        if arg_type == "array":
             if "items" in argument:
                 for name, arg in argument['items'].items():
                     array.append(read_return_value(name, arg))
-            value = ""
+
         elif arg_type == "integer" or arg_type == "long" or arg_type == "float":
             if "min" in argument:
                 min = argument['min']
-            else:
-                min = ""
+
             if "max" in argument:
                 max = argument['max']
-            else:
-                max = ""
-            value = "[" + str(min) + "-" + str(max) + "]"
-        else:
-            value = ""
+
     if "description" in argument:
         comment = argument['description'].rstrip("\n")
         comment = comment.replace("\n", " |br|\n")
@@ -87,7 +79,7 @@ def read_return_value(name, argument):
                         comment += " |br|\n"
                     comment += str(n) + ": " + str(desc)
 
-    return name, arg_type, value, comment, array
+    return name, arg_type, min, max, enum, comment, array
 
 def start_table(widths,label):
     print("")
@@ -265,12 +257,12 @@ def print_alarms():
                 if(alarm_id == id):
                     if "arguments" in alarm:
                         for argument_name, argument in alarm['arguments'].items():
-                            name, type, value, comment, array = read_return_value(argument_name, argument)
-                            return_values.append([name, type, value, comment])
+                            name, type, min, max, enum, comment, array = read_return_value(argument_name, argument)
+                            return_values.append([name, type, min, max, enum, comment])
 
         if return_values:
-            widths = ["0.15", "0.15", "0.20", "0.35"]
-            table_headers = ["Name","Type","Value","Comment"]
+            widths = ["0.15", "0.15", "0.05", "0.05", "0.10", "0.45"]
+            table_headers = ["Name", "Type", "Min", "Max", "Enum", "Comment"]
             start_table(widths, alarm_id)
 
             return_values.insert(0, table_headers)
@@ -332,8 +324,8 @@ def print_status():
                 if(status_id == id):
                     if "arguments" in status:
                         for argument_name,argument in status['arguments'].items():
-                            name, type, value, comment, array = read_return_value(argument_name, argument)
-                            return_values.append([name, type, value, comment])
+                            name, type, min, max, enum, comment, array = read_return_value(argument_name, argument)
+                            return_values.append([name, type, min, max, enum, comment])
                             if(type == "array"):
                                 for a in array:
                                     if not argument_name in array_values:
@@ -341,8 +333,8 @@ def print_status():
                                     array_values[argument_name].append([a[0], a[1], a[2], a[3]])
 
         if return_values:
-            widths = ["0.15", "0.15", "0.20", "0.50"]
-            table_headers = ["Name", "Type", "Value", "Comment"]
+            widths = ["0.15", "0.15", "0.05", "0.05", "0.10", "0.50"]
+            table_headers = ["Name", "Type", "Min", "Max", "Enum", "Comment"]
             start_table(widths, status_id)
 
             return_values.insert(0, table_headers)
@@ -406,12 +398,12 @@ def print_commands():
                 if(command_id == id):
                     if "arguments" in command:
                         for argument_name,argument in command['arguments'].items():
-                            name, type, value, comment, array = read_return_value(argument_name, argument)
-                            arguments.append([name, type, value, comment])
+                            name, type, min, max, enum, comment, array = read_return_value(argument_name, argument)
+                            arguments.append([name, type, min, max, enum, comment])
 
         if arguments:
-            widths = ["0.14",  "0.14", "0.20", "0.45"]
-            table_headers = ["Name", "Type", "Value", "Comment"]
+            widths = ["0.15", "0.15", "0.05", "0.05", "0.10", "0.50"]
+            table_headers = ["Name", "Type", "Min", "Max", "Enum", "Comment"]
             start_table(widths, command_id)
 
             arguments.insert(0, table_headers)
