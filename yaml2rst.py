@@ -51,9 +51,9 @@ def read_return_value(name, argument):
         enum = ""
         if arg_type == "array":
             if "items" in argument:
-                for name, arg in argument['items'].items():
-                    array.append(read_return_value(name, arg))
-
+                for arg_name, arg in argument['items'].items():
+                    array.append(read_return_value(arg_name, arg))
+            value = ""
         elif arg_type == "integer" or arg_type == "long" or arg_type == "float":
             if "min" in argument:
                 min = argument['min']
