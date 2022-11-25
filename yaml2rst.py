@@ -300,8 +300,8 @@ def print_alarms():
             widths, table_headers, return_values = remove_unused_columns(widths, table_headers, return_values)
 
             start_table(widths, alarm_id)
-
             return_values.insert(0, table_headers)
+
             for line in tabulate(return_values, headers="firstrow", tablefmt="rst").splitlines():
                 print('   ' + line)
             print("")
@@ -371,12 +371,13 @@ def print_status():
         if return_values:
             widths = ["0.15", "0.15", "0.05", "0.05", "0.10", "0.50"]
             table_headers = ["Name", "Type", "Min", "Max", "Enum", "Comment"]
-            start_table(widths, status_id)
 
             # Remove unused columns
             widths, table_headers, return_values = remove_unused_columns(widths, table_headers, return_values)
 
+            start_table(widths, status_id)
             return_values.insert(0, table_headers)
+
             for line in tabulate(return_values, headers="firstrow", tablefmt="rst").splitlines():
                 print('   ' + line)
             print("")
@@ -448,7 +449,6 @@ def print_commands():
             widths, table_headers, arguments = remove_unused_columns(widths, table_headers, arguments)
 
             start_table(widths, command_id)
-
             arguments.insert(0, table_headers)
 
             for line in tabulate(arguments, headers="firstrow", tablefmt="rst").splitlines():
