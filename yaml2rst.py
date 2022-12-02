@@ -37,22 +37,19 @@ def read_return_value(name, argument):
     arg_type = argument['type'].replace("_list", "")
 
     array = []
+    min = ""
+    max = ""
 
     # If the 'values' exists, use it to construct a list
     if "values" in argument:
         val_list = []
         for v in argument['values']:
             val_list.append("-" + str(v))
-        value = " |br|\n".join(val_list)
+        enum = " |br|\n".join(val_list)
 
     else:
-        if arg_type == "boolean":
-            value = "-False |br|\n-True"
-        elif arg_type == "string":
-            value = "[string]"
-        elif arg_type == "base64":
-            value = "[base64]"
-        elif arg_type == "array":
+        enum = ""
+        if arg_type == "array":
             if "items" in argument:
                 for arg_name, arg in argument['items'].items():
                     array.append(read_return_value(arg_name, arg))
@@ -60,15 +57,10 @@ def read_return_value(name, argument):
         elif arg_type == "integer" or arg_type == "long" or arg_type == "float":
             if "min" in argument:
                 min = argument['min']
-            else:
-                min = ""
+
             if "max" in argument:
                 max = argument['max']
-            else:
-                max = ""
-            value = "[" + str(min) + "-" + str(max) + "]"
-        else:
-            value = ""
+
     if "description" in argument:
         comment = argument['description'].rstrip("\n")
         comment = comment.replace("\n", " |br|\n")
@@ -87,7 +79,49 @@ def read_return_value(name, argument):
                         comment += " |br|\n"
                     comment += str(n) + ": " + str(desc)
 
-    return name, arg_type, value, comment, array
+    return name, arg_type, min, max, enum, comment, array
+
+# Remove unused columns when printing arguments/return values
+def remove_unused_columns(arg):
+    # Remove both max and min if max is unused
+    # ('0' evaluates to False, which min often is, so only max is checked)
+
+    widths = ["0.15", "0.10", "0.10", "0.10", "0.20", "0.35"]
+    headers = ["Name", "Type", "Min", "Max", "Enum", "Comment"]
+
+    max_unused = True
+    enum_unused = True
+
+    # Check all rows
+    for col in arg:
+        if col[4]:
+            enum_unused = False
+        if col[3]:
+            max_unused = False
+
+    # Remove any unused cols
+    for col in arg:
+        if enum_unused:
+            del col[4]
+        if max_unused:
+            del col[3]
+            del col[2]
+
+    # Update header
+    if enum_unused:
+        del widths[4]
+        del headers[4]
+        # enum width is 0.20, so if not used, add "0.10" to Name and Comment to fill the page width
+        widths[0] = str(float(widths[0]) + 0.10)
+        widths[4] = str(float(widths[4]) + 0.10)
+    if max_unused:
+        del widths[3]
+        del headers[3]
+        del widths[2]
+        del headers[2]
+        # min and max are 0.10, so if not used add 0.20 to comment to fill the page width
+        widths[-1] = str(float(widths[-1]) + 0.20)
+    return widths, headers, arg
 
 def start_table(widths,label):
     print("")
@@ -164,7 +198,7 @@ def print_aggregated_status():
     print("Aggregated status")
     print("-----------------")
 
-    widths = ["0.15", "0.16", "0.16", "0.40"]
+    widths = ["0.20", "0.20", "0.20", "0.40"]
     table_headers = ["ObjectType","functionalPosition","functionalState","Description"]
     start_table(widths, "Aggregated status")
     agg_status = []
@@ -202,7 +236,7 @@ def print_aggregated_status():
         print('   ' + line)
     print("")
 
-    widths = ["0.10", "0.30", "0.50"]
+    widths = ["0.10", "0.30", "0.60"]
     table_headers = ["State-Bit", "Description", "Comment"]
     start_table(widths, "State bits")
     state_bits = []
@@ -226,7 +260,7 @@ def print_alarms():
     print("Alarms")
     print("------")
 
-    widths = ["0.15", "0.10", "0.45", "0.07", "0.07"]
+    widths = ["0.20", "0.10", "0.50", "0.10", "0.10"]
     table_headers = ["ObjectType","alarmCodeId","Description","Priority","Category"]
     start_table(widths, "Alarms")
 
@@ -265,15 +299,16 @@ def print_alarms():
                 if(alarm_id == id):
                     if "arguments" in alarm:
                         for argument_name, argument in alarm['arguments'].items():
-                            name, type, value, comment, array = read_return_value(argument_name, argument)
-                            return_values.append([name, type, value, comment])
+                            name, type, min, max, enum, comment, array = read_return_value(argument_name, argument)
+                            return_values.append([name, type, min, max, enum, comment])
 
         if return_values:
-            widths = ["0.15", "0.15", "0.20", "0.35"]
-            table_headers = ["Name","Type","Value","Comment"]
-            start_table(widths, alarm_id)
+            # Remove unused columns
+            widths, table_headers, return_values = remove_unused_columns(return_values)
 
+            start_table(widths, alarm_id)
             return_values.insert(0, table_headers)
+
             for line in tabulate(return_values, headers="firstrow", tablefmt="rst").splitlines():
                 print('   ' + line)
             print("")
@@ -289,7 +324,7 @@ def print_status():
     print("    \\newpage")
     print("")
 
-    widths = ["0.24", "0.10", "0.55"]
+    widths = ["0.30", "0.10", "0.60"]
     table_headers = ["ObjectType","statusCodeId","Description"]
     start_table(widths, "Status")
 
@@ -332,8 +367,8 @@ def print_status():
                 if(status_id == id):
                     if "arguments" in status:
                         for argument_name,argument in status['arguments'].items():
-                            name, type, value, comment, array = read_return_value(argument_name, argument)
-                            return_values.append([name, type, value, comment])
+                            name, type, min, max, enum, comment, array = read_return_value(argument_name, argument)
+                            return_values.append([name, type, min, max, enum, comment])
                             if(type == "array"):
                                 for a in array:
                                     if not argument_name in array_values:
@@ -341,11 +376,12 @@ def print_status():
                                     array_values[argument_name].append([a[0], a[1], a[2], a[3]])
 
         if return_values:
-            widths = ["0.15", "0.15", "0.20", "0.50"]
-            table_headers = ["Name", "Type", "Value", "Comment"]
-            start_table(widths, status_id)
+            # Remove unused columns
+            widths, table_headers, return_values = remove_unused_columns(return_values)
 
+            start_table(widths, status_id)
             return_values.insert(0, table_headers)
+
             for line in tabulate(return_values, headers="firstrow", tablefmt="rst").splitlines():
                 print('   ' + line)
             print("")
@@ -365,7 +401,7 @@ def print_commands():
     print("Commands")
     print("--------")
 
-    widths = ["0.24", "0.15", "0.21", "0.21"]
+    widths = ["0.30", "0.15", "0.20", "0.35"]
     table_headers = ["ObjectType","commandCodeId","Command","Description"]
     start_table(widths, "Commands")
 
@@ -406,14 +442,14 @@ def print_commands():
                 if(command_id == id):
                     if "arguments" in command:
                         for argument_name,argument in command['arguments'].items():
-                            name, type, value, comment, array = read_return_value(argument_name, argument)
-                            arguments.append([name, type, value, comment])
+                            name, type, min, max, enum, comment, array = read_return_value(argument_name, argument)
+                            arguments.append([name, type, min, max, enum, comment])
 
         if arguments:
-            widths = ["0.14",  "0.14", "0.20", "0.45"]
-            table_headers = ["Name", "Type", "Value", "Comment"]
-            start_table(widths, command_id)
+            # Remove unused columns
+            widths, table_headers, arguments = remove_unused_columns(arguments)
 
+            start_table(widths, command_id)
             arguments.insert(0, table_headers)
 
             for line in tabulate(arguments, headers="firstrow", tablefmt="rst").splitlines():
