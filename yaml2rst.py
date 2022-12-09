@@ -373,7 +373,7 @@ def print_status():
                                 for a in array:
                                     if not argument_name in array_values:
                                         array_values[argument_name] = []
-                                    array_values[argument_name].append([a[0], a[1], a[2], a[3]])
+                                    array_values[argument_name].append([a[0], a[1], a[2], a[3], a[4], a[5]])
 
         if return_values:
             # Remove unused columns
@@ -387,8 +387,8 @@ def print_status():
             print("")
 
             for name in array_values:
-                widths = ["0.15", "0.15", "0.20", "0.50"]
-                table_headers = ["Name", "Type", "Value", "Comment"]
+                # Remove unused columns
+                widths, table_headers, array_values = remove_unused_columns(array_values)
                 start_table(widths, status_id + " " + name)
 
                 array_values[name].insert(0, table_headers)
