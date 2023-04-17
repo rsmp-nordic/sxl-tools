@@ -50,7 +50,7 @@ def check_fields_arg(id, arg, field)
 end
 
 options = {}
-usage = "Usage: yaml2xlsx.rb [OPTIONS]--template <XLSX>] [sxl.yaml] [site.yaml]"
+usage = "Usage: yaml2xlsx.rb [OPTIONS] --template [XLSX] --objects [YAML] --site [YAML]"
 OptionParser.new do |opts|
   opts.banner = usage
 
