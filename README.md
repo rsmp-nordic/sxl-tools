@@ -55,6 +55,19 @@ Notes about yaml2rst
 * Requires: pip3 install pyyaml tabulate --user (or apt install python3-tabulate)
 * Prints extended fields if the "--extended" option is used.
 
+Creating yaml file for the RSMP simulator
+-----------------------------------------
+The [rsmp_schema](https://github.com/rsmp-nordic/rsmp_schema) repo contains the
+SXLs in YAML format. For instance the [SXL 1.1 for TLCs](https://github.com/rsmp-nordic/rsmp_schema/blob/master/schemas/tlc/1.1/sxl.yaml).
+The SXLs of rsmp_schema contains alarm, statuses and commands, but doesn't contain
+individual components of the local installations, which the RSMP simulator need
+in order to function.
+
+In order to construct a YAML file for the RSMP simulator, one must first combine
+the SXL of rsmp_schema with a YAML containing a set of components. There is an
+[example here](tlc/SXL_Traffic_Controller_ver_1_1-site.yaml). Use the merge_yaml.rb
+tool to do the merge.
+
 <a name="site"></a>
 Site information
 ----------------
