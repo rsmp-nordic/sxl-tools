@@ -5,6 +5,7 @@ Exports signal exchange lists (SXL) used by RSMP from Excel-format (xlsx) to
 various formats.
 
 * **create_template.py** - Creates SXL template in Excel format
+* **merge_yaml.rb** - Merge object and site YAML files
 * **xlsx2csv.rb**  - Reads SXL in Excel format and outputs to CSV format
 * **xlsx2yaml.rb** - Reads SXL in Excel format and outputs to YAML format
 * **yaml2xlsx.rb** - Reads SXL in YAML format and outputs to Excel format
@@ -15,6 +16,10 @@ Notes about create_template.py
 * Requires: pip3 install xlsxwriter --user (or apt install python3-xlsxwriter)
 * Usage: create_template.py [OPTIONS]
 * See create_template.py -h for available options
+
+Notes about merge_yaml.rb
+-------------------------
+Merge object and site yaml files for use with the RSMP simulator
 
 Notes about xlsx2csv
 --------------------
