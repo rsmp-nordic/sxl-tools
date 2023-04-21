@@ -67,6 +67,10 @@ def read_return_value(name, argument, reserved):
 
         # Lines should never start with whitespace
         comment = comment.replace("\n |br|", "\n|br|")
+
+        if "optional" in argument:
+            if argument['optional'] is True:
+                comment = "(Optional) " + comment
     else:
         comment = ""
 
