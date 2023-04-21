@@ -33,7 +33,7 @@ def rst_line_break_substitution():
 def sort_cid(alarm):
     return alarm[1].translate({ord(i): None for i in 'ASM\`_'})
 
-def read_return_value(name, argument):
+def read_return_value(name, argument, reserved):
     arg_type = argument['type'].replace("_list", "")
 
     array = []
@@ -52,7 +52,7 @@ def read_return_value(name, argument):
         if arg_type == "array":
             if "items" in argument:
                 for arg_name, arg in argument['items'].items():
-                    array.append(read_return_value(arg_name, arg))
+                    array.append(read_return_value(arg_name, arg, reserved))
             value = ""
         elif arg_type == "integer" or arg_type == "long" or arg_type == "float":
             if "min" in argument:
@@ -78,6 +78,9 @@ def read_return_value(name, argument):
                     if comment != "":
                         comment += " |br|\n"
                     comment += str(n) + ": " + str(desc)
+
+    if reserved is True:
+        comment = "``Reserved``"
 
     return name, arg_type, min, max, enum, comment, array
 
@@ -269,6 +272,8 @@ def print_alarms():
     # For each object
     for object_name,object in yaml_sxl['objects'].items():
         for alarm_id,alarm in object['alarms'].items():
+            if "reserved" in alarm and alarm['reserved'] is True:
+                alarm['description'] = "``Reserved``"
             alarm_table.append([object_name, '`' + alarm_id + '`_', alarm['description'].splitlines()[0], alarm['priority'], alarm['category']])
             alarms.append([object_name, alarm_id, alarm['description'], alarm['priority'], alarm['category']])
 
@@ -297,9 +302,12 @@ def print_alarms():
         for object_name,object in yaml_sxl['objects'].items():
             for id,alarm in object['alarms'].items():
                 if(alarm_id == id):
+                    reserved = False
+                    if "reserved" in alarm and alarm["reserved"] is True:
+                        reserved = True
                     if "arguments" in alarm:
                         for argument_name, argument in alarm['arguments'].items():
-                            name, type, min, max, enum, comment, array = read_return_value(argument_name, argument)
+                            name, type, min, max, enum, comment, array = read_return_value(argument_name, argument, reserved)
                             return_values.append([name, type, min, max, enum, comment])
 
         if return_values:
@@ -333,6 +341,8 @@ def print_status():
     # For each object
     for object_name,object, in yaml_sxl['objects'].items():
         for status_id,status in object['statuses'].items():
+            if "reserved" in status and status['reserved'] is True:
+                status['description'] = "``Reserved``"
             status_table.append([object_name, '`' + status_id + '`_', status['description'].splitlines()[0]])
             statuses.append([object_name, status_id, status['description']])
 
@@ -357,8 +367,10 @@ def print_status():
         for object_name,object in yaml_sxl['objects'].items():
             for id,status in object['statuses'].items():
                 if(id == status_id):
+
+                    # Don't print if reserved for future use
                     if "reserved" in status and status['reserved'] is True:
-                        print("Reserved")
+                        print("``Reserved``")
                     else:
                         print(status['description'])
                     print("")
@@ -368,9 +380,12 @@ def print_status():
         for object_name,object in yaml_sxl['objects'].items():
             for id,status in object['statuses'].items():
                 if(status_id == id):
+                    reserved = False
+                    if "reserved" in status and status["reserved"] is True:
+                        reserved = True
                     if "arguments" in status:
                         for argument_name,argument in status['arguments'].items():
-                            name, type, min, max, enum, comment, array = read_return_value(argument_name, argument)
+                            name, type, min, max, enum, comment, array = read_return_value(argument_name, argument, reserved)
                             return_values.append([name, type, min, max, enum, comment])
                             if(type == "array"):
                                 for a in array:
@@ -413,6 +428,8 @@ def print_commands():
     # For each object
     for object_name,object, in yaml_sxl['objects'].items():
         for command_id,command in object['commands'].items():
+            if "reserved" in command and command['reserved'] is True:
+                command['description'] = "``Reserved``"
             command_table.append([object_name, '`' + command_id + '`_', command['command'], command['description'].splitlines()[0]])
             commands.append([object_name, command_id, command['description'].replace("\n", " |br| ")])
 
@@ -436,8 +453,10 @@ def print_commands():
         for object_name,object in yaml_sxl['objects'].items():
             for id,command in object['commands'].items():
                 if(id == command_id):
+
+                    # Don't print if reserved for future use
                     if "reserved" in command and command['reserved'] is True:
-                        print("Reserved")
+                        print("``Reserved``")
                     else:
                         print(command['description'])
                     print("")
@@ -446,9 +465,12 @@ def print_commands():
         for object_name,object in yaml_sxl['objects'].items():
             for id,command in object['commands'].items():
                 if(command_id == id):
+                    reserved = False
+                    if "reserved" in command and command["reserved"] is True:
+                        reserved = True
                     if "arguments" in command:
                         for argument_name,argument in command['arguments'].items():
-                            name, type, min, max, enum, comment, array = read_return_value(argument_name, argument)
+                            name, type, min, max, enum, comment, array = read_return_value(argument_name, argument, reserved)
                             arguments.append([name, type, min, max, enum, comment])
 
         if arguments:
