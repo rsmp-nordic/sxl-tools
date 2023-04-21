@@ -231,6 +231,8 @@ objects["objects"].each { |object|
               value["description"].concat("\n" + description)
               value["description"].chomp!
             end
+
+            value["description"] = "Reserved" if value["reserved"]
           end
 
           # check for unsupported fields
@@ -335,6 +337,8 @@ objects["objects"].each { |object|
               value["description"].concat("\n" + description)
               value["description"].chomp!
             end
+
+            value["description"] = "Reserved" if value["reserved"]
           end
 
           # check for unsupported fields
@@ -428,6 +432,8 @@ objects["objects"].each { |object|
           else
             value["description"].concat("\n" + description)
           end
+
+          value["description"] = "Reserved" if value["reserved"]
         end
 
         # check for unsupported fields
