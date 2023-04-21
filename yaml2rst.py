@@ -357,7 +357,7 @@ def print_status():
         for object_name,object in yaml_sxl['objects'].items():
             for id,status in object['statuses'].items():
                 if(id == status_id):
-                    if "reserved" in command and command['reserved'] is True:
+                    if "reserved" in status and status['reserved'] is True:
                         print("Reserved")
                     else:
                         print(status['description'])
