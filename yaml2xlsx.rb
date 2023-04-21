@@ -35,7 +35,7 @@ end
 
 # Check for unknown fields in arguments
 def check_fields_arg(id, arg, field)
-  known_fields = ["type", "description", "values", "items", "min", "max", "priority", "category", "optional"]
+  known_fields = ["type", "description", "values", "items", "min", "max", "priority", "category", "pattern", "optional", "reserved"]
 
   # Remove known fields
   known_fields.each { |key|
@@ -231,17 +231,18 @@ objects["objects"].each { |object|
               value["description"].concat("\n" + description)
               value["description"].chomp!
             end
-
-            value["description"] = "Reserved" if value["reserved"]
           end
 
+          value["description"] = "Reserved" if item[1]["reserved"]
+
           # check for unsupported fields
-          check_fields_arg(item[0], argument, value)
+          #check_fields_arg(item[0], argument, value)
 
           r << return_value.new(argument, value["type"], values, value["description"])
           r_list.push(r)
         }
       end
+      item[1]["description"] = "Reserved" if item[1]["reserved"]
       a << alarm.new(object[0], item[1]["object"], item[0], item[1]["description"],
                   item[1]["externalAlarmCodeId"], item[1]["externalNtsAlarmCodeId"],
                   item[1]["priority"], item[1]["category"], r_list)
@@ -272,11 +273,11 @@ a.each { |ao|
   # Return values
   col = 9
   unless ao.return_value[0].nil?
-    ao.return_value[0].each { |rv|
-      set_cell(sheet, col, row, rv.name)
-      set_cell(sheet, col+1, row, rv.type)
-      set_cell(sheet, col+2, row, rv.value)
-      set_cell(sheet, col+3, row, rv.comment)
+    ao.return_value.each { |rv|
+      set_cell(sheet, col, row, rv[0]["name"])
+      set_cell(sheet, col+1, row, rv[0]["type"])
+      set_cell(sheet, col+2, row, rv[0]["value"])
+      set_cell(sheet, col+3, row, rv[0]["comment"])
       col += 4
     } 
   end
@@ -337,17 +338,18 @@ objects["objects"].each { |object|
               value["description"].concat("\n" + description)
               value["description"].chomp!
             end
-
-            value["description"] = "Reserved" if value["reserved"]
           end
 
+          value["description"] = "Reserved" if item[1]["reserved"]
+
           # check for unsupported fields
-          check_fields_arg(item[0], argument, value)
+          #check_fields_arg(item[0], argument, value)
 
           r << return_value.new(argument, value["type"], values, value["description"])
           r_list.push(r)
         }
       end
+      item[1]["description"] = "Reserved" if item[1]["reserved"]
       s << status.new(object[0], item[1]["object"], item[0], item[1]["description"], r_list)
     }
   end
@@ -370,11 +372,11 @@ s.each { |so|
 
   # Return values
   col = 5
-  so.return_value[0].each { |rv|
-    set_cell(sheet, col, row, rv.name)
-    set_cell(sheet, col+1, row, rv.type)
-    set_cell(sheet, col+2, row, rv.value)
-    set_cell(sheet, col+3, row, rv.comment)
+  so.return_value.each { |rv|
+    set_cell(sheet, col, row, rv[0]["name"])
+    set_cell(sheet, col+1, row, rv[0]["type"])
+    set_cell(sheet, col+2, row, rv[0]["value"])
+    set_cell(sheet, col+3, row, rv[0]["comment"])
     col += 4
   }
   row += 1
@@ -390,6 +392,7 @@ a_list = []
 # for each object type in yaml, look at all the commands
 objects["objects"].each { |object|
   if object[1]["commands"]
+
     object[1]["commands"].each { |item|
    
       # Arguments
@@ -432,16 +435,17 @@ objects["objects"].each { |object|
           else
             value["description"].concat("\n" + description)
           end
-
-          value["description"] = "Reserved" if value["reserved"]
         end
 
+        value["description"] = "Reserved" if item[1]["reserved"]
+
         # check for unsupported fields
-        check_fields_arg(item[0], argument, value)
+        #check_fields_arg(item[0], argument, value)
 
         a << arg.new(argument, item[1]["command"], value["type"], values, value["description"])
         a_list.push(a)
       }
+      item[1]["description"] = "Reserved" if item[1]["reserved"]
       c << command.new(object[0], item[1]["object"], item[0], item[1]["description"], a_list)
     }
   end
@@ -466,12 +470,12 @@ c.each { |co|
 
   # Arguments
   col = 5
-  co.argument[0].each { |ar|
-    set_cell(sheet, col, row, ar.name)
-    set_cell(sheet, col+1, row, ar.command)
-    set_cell(sheet, col+2, row, ar.type)
-    set_cell(sheet, col+3, row, ar.value)
-    set_cell(sheet, col+4, row, ar.comment)
+  co.argument.each { |ar|
+    set_cell(sheet, col, row, ar[0]["name"])
+    set_cell(sheet, col+1, row, ar[0]["command"])
+    set_cell(sheet, col+2, row, ar[0]["type"])
+    set_cell(sheet, col+3, row, ar[0]["value"])
+    set_cell(sheet, col+4, row, ar[0]["comment"])
     col += 5
   }
   row += 1
