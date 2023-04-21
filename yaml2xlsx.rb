@@ -35,7 +35,7 @@ end
 
 # Check for unknown fields in arguments
 def check_fields_arg(id, arg, field)
-  known_fields = ["type", "description", "values", "items", "min", "max", "priority", "category"]
+  known_fields = ["type", "description", "values", "items", "min", "max", "priority", "category", "optional"]
 
   # Remove known fields
   known_fields.each { |key|
