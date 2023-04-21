@@ -357,7 +357,10 @@ def print_status():
         for object_name,object in yaml_sxl['objects'].items():
             for id,status in object['statuses'].items():
                 if(id == status_id):
-                    print(status['description'])
+                    if "reserved" in command and command['reserved'] is True:
+                        print("Reserved")
+                    else:
+                        print(status['description'])
                     print("")
 
         return_values = []
@@ -433,7 +436,10 @@ def print_commands():
         for object_name,object in yaml_sxl['objects'].items():
             for id,command in object['commands'].items():
                 if(id == command_id):
-                    print(command['description'])
+                    if "reserved" in command and command['reserved'] is True:
+                        print("Reserved")
+                    else:
+                        print(command['description'])
                     print("")
 
         arguments = []
