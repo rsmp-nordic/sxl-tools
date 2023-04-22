@@ -71,6 +71,10 @@ def read_return_value(name, argument, reserved):
         if "optional" in argument:
             if argument['optional'] is True:
                 comment = "(Optional) " + comment
+
+        if "deprecated" in argument:
+            if argument['deprecated'] is True:
+                comment = "``Deprecated`` " + comment
     else:
         comment = ""
 
