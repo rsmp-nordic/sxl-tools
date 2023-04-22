@@ -194,6 +194,7 @@ objects["objects"].each { |object|
       unless item[1]["arguments"].nil?
         item[1]["arguments"].each { |argument, value|
           r = []
+          optional = false
           # Remove _list from the type (integer_list)
           value["type"].gsub!("_list", "")
   
@@ -231,6 +232,14 @@ objects["objects"].each { |object|
               value["description"].concat("\n" + description)
               value["description"].chomp!
             end
+
+            if value["optional"]
+              optional = true
+            end
+          end
+
+          if optional
+            value["description"] = "(Optional) " + value["description"]
           end
 
           value["description"] = "Reserved" if item[1]["reserved"]
@@ -301,6 +310,7 @@ objects["objects"].each { |object|
       unless item[1]["arguments"].nil?
         item[1]["arguments"].each { |argument, value|  # in statuses, it's called return value
           r = []
+          optional = false
           # Remove _list from the type (integer_list)
           value["type"].gsub!("_list", "")
   
@@ -338,6 +348,14 @@ objects["objects"].each { |object|
               value["description"].concat("\n" + description)
               value["description"].chomp!
             end
+
+            if value["optional"]
+              optional = true
+            end
+          end
+
+          if optional
+            value["description"] = "(Optional) " + value["description"]
           end
 
           value["description"] = "Reserved" if item[1]["reserved"]
@@ -399,6 +417,7 @@ objects["objects"].each { |object|
       a_list = []
       item[1]["arguments"].each { |argument, value|
         a = []
+        optional = false
         # Remove _list from the type (integer_list)
         value["type"].gsub!("_list", "")
   
@@ -435,6 +454,14 @@ objects["objects"].each { |object|
           else
             value["description"].concat("\n" + description)
           end
+
+          if value["optional"]
+            optional = true
+          end
+        end
+
+        if optional
+          value["description"] = "(Optional) " + value["description"]
         end
 
         value["description"] = "Reserved" if item[1]["reserved"]
