@@ -33,6 +33,31 @@ def rst_line_break_substitution():
 def sort_cid(alarm):
     return alarm[1].translate({ord(i): None for i in 'ASM\`_'})
 
+def trim_description(description):
+    return add_blank(rm_dot(description))
+
+# Removes trailing "." on first line
+def rm_dot(description):
+    desc = []
+    desc = description.split("\n")
+
+    # Strip "."
+    if len(desc) > 0:
+        if desc[0].endswith("."):
+            desc[0] = desc[0].rstrip(".")
+    return '\n'.join(desc)
+
+# Adds a empty line after first line
+def add_blank(description):
+    desc = []
+    desc = description.split("\n")
+
+    # If second line is not empty, and line
+    if len(desc) > 1 and desc[1] != "":
+        desc.insert(1, "")
+
+    return '\n'.join(desc)
+
 def read_return_value(name, argument, reserved):
     arg_type = argument['type'].replace("_list", "")
 
@@ -63,6 +88,10 @@ def read_return_value(name, argument, reserved):
 
     if "description" in argument:
         comment = argument['description'].rstrip("\n")
+
+        # First line should not end with "."
+        comment = rm_dot(comment)
+
         comment = comment.replace("\n", " |br|\n")
 
         # Lines should never start with whitespace
@@ -282,8 +311,9 @@ def print_alarms():
         for alarm_id,alarm in object['alarms'].items():
             if "reserved" in alarm and alarm['reserved'] is True:
                 alarm['description'] = "``Reserved``"
-            alarm_table.append([object_name, '`' + alarm_id + '`_', alarm['description'].splitlines()[0], alarm['priority'], alarm['category']])
-            alarms.append([object_name, alarm_id, alarm['description'], alarm['priority'], alarm['category']])
+            desc = rm_dot(alarm['description'])
+            alarm_table.append([object_name, '`' + alarm_id + '`_', desc.splitlines()[0], alarm['priority'], alarm['category']])
+            alarms.append([object_name, alarm_id, desc, alarm['priority'], alarm['category']])
 
     # Print alarm table
     # Sort and insert headers
@@ -303,7 +333,7 @@ def print_alarms():
         print("^^^^^")
         print("")
 
-        print(description)
+        print(trim_description(description))
         print("")
 
         return_values = []
@@ -351,8 +381,9 @@ def print_status():
         for status_id,status in object['statuses'].items():
             if "reserved" in status and status['reserved'] is True:
                 status['description'] = "``Reserved``"
-            status_table.append([object_name, '`' + status_id + '`_', status['description'].splitlines()[0]])
-            statuses.append([object_name, status_id, status['description']])
+            desc = rm_dot(status['description'])
+            status_table.append([object_name, '`' + status_id + '`_', desc.splitlines()[0]]) 
+            statuses.append([object_name, status_id, desc])
 
     # Print status table
     # Sort and insert headers
@@ -380,7 +411,7 @@ def print_status():
                     if "reserved" in status and status['reserved'] is True:
                         print("``Reserved``")
                     else:
-                        print(status['description'])
+                        print(trim_description(status['description']))
                     print("")
 
         return_values = []
@@ -438,8 +469,9 @@ def print_commands():
         for command_id,command in object['commands'].items():
             if "reserved" in command and command['reserved'] is True:
                 command['description'] = "``Reserved``"
-            command_table.append([object_name, '`' + command_id + '`_', command['command'], command['description'].splitlines()[0]])
-            commands.append([object_name, command_id, command['description'].replace("\n", " |br| ")])
+            desc = rm_dot(command['description'])
+            command_table.append([object_name, '`' + command_id + '`_', command['command'], desc.splitlines()[0]])
+            commands.append([object_name, command_id, desc.replace("\n", " |br| ")])
 
     # Print command table
     # Sort and insert headers
@@ -466,7 +498,7 @@ def print_commands():
                     if "reserved" in command and command['reserved'] is True:
                         print("``Reserved``")
                     else:
-                        print(command['description'])
+                        print(trim_description(command['description']))
                     print("")
 
         arguments = []
