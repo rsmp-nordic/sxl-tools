@@ -3,6 +3,7 @@
 
 import sys
 import argparse
+import pypandoc
 import yaml
 from yaml.resolver import Resolver
 import re
@@ -33,8 +34,17 @@ def rst_line_break_substitution():
 def sort_cid(alarm):
     return alarm[1].translate({ord(i): None for i in 'ASM\`_'})
 
+# Process description of alarm, status and command
+# (description of each attribute/return value treated separately)
+# - Removes last dot of first line
+# - Inserts blank second line
+# - Converts any markdown to RST
 def trim_description(description):
-    return add_blank(rm_dot(description))
+    return md2rst(add_blank(rm_dot(description)))
+
+# Convert markdown to restructuredText
+def md2rst(description):
+    return pypandoc.convert_text(description, 'rst', format='md')
 
 # Removes trailing "." on first line
 def rm_dot(description):
