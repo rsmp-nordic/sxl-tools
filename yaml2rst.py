@@ -267,8 +267,10 @@ def print_aggregated_status():
 
             # Aggregated status description
             as_desc = ""
-            if "aggregated_status_description" in object:
-                as_desc = object['aggregated_status_description']
+            if not object['functional_position']:
+                as_desc = "functionalPosition not used (set to null)"
+            if not object['functional_state']:
+                as_desc += " |br|\nfunctionalState not used (set to null)"
 
             agg_status.append([object_name, fP, fS, as_desc])
 
