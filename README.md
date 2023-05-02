@@ -52,7 +52,7 @@ Notes about yaml2xlsx
 Notes about yaml2rst
 --------------------
 
-* Requires: pip3 install pyyaml tabulate --user (or apt install python3-tabulate)
+* Requires: pip3 install pyyaml tabulate pypandoc --user (or apt install python3-tabulate python3-pypandoc)
 * Prints extended fields if the "--extended" option is used.
 
 Creating yaml file for the RSMP simulator
