@@ -40,6 +40,8 @@ objects = YAML.load_file(options[:objects])
 site = YAML.load_file(options[:site])
 
 # Merge
-objects["sites"] = site["sites"]
+#objects["sites"] = site["sites"]
+site["objects"] = objects["objects"]
 
-reindent(objects.to_yaml)
+#reindent(objects.to_yaml)
+reindent(site.to_yaml)

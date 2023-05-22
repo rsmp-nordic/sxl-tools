@@ -6,6 +6,7 @@ description: Plant name
 constructor: RSMP Nordic
 created-date: '2010-04-20'
 rsmp-version: '3.2'
+objects:
 sites:
   AA+BBCC:
     description: Anl. ??
