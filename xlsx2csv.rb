@@ -7,7 +7,7 @@ require 'rubyXL/convenience_methods'
 xlsx = ARGV[0].dup
 workbook = RubyXL::Parser.parse(xlsx)
 
-system("mkdir Objects")
+Dir.mkdir("Objects")
 workbook.each do |sheet|
   oname = sheet.sheet_name.gsub(/ /, '_')
 
@@ -56,11 +56,3 @@ workbook.each do |sheet|
     end
   end
 end
-
-system("zip -q -j Objects.zip Objects/*")
-system("rm -rf Objects")
-
-# Rename after source file
-xlsx.gsub!(/ /, '_')
-xlsx.gsub!(/.xlsx/, '')
-system("mv Objects.zip " + xlsx + ".zip")
