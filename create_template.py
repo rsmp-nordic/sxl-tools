@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import xlsxwriter
+import XlsxWriter
 import argparse
 
 parser = argparse.ArgumentParser(description='Create SXL template')
