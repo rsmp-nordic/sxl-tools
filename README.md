@@ -26,8 +26,8 @@ Notes about xlsx2csv
 
 * Requires: gem install rubyXL
 * Usage: xlsx2csv [XLSX]
-* Exports SXL from XLSX format to CSV files, zip compressed.
-  Suitable for use with the RSMP simulators
+* Exports SXL from XLSX format to CSV files
+  Suitable for use with the RSMP simulator
 
 Notes about xlsx2yaml
 ---------------------
