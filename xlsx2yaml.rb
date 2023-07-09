@@ -94,7 +94,7 @@ def get_command_section(sheet)
     if sheet[y] != nil and sheet[y][0] != nil
       sections.append(y+2) if sheet[y][0].value.eql?("Functional position")
       sections.append(y+2) if sheet[y][0].value.eql?("Functional state")
-      sections.append(y+2) if sheet[y][0].value.eql?("Manouver")
+      sections.append(y+2) if sheet[y][0].value.eql?("Maneuver")
       sections.append(y+2) if sheet[y][0].value.eql?("Parameter")
     end
     y = y + 1
