@@ -82,7 +82,7 @@ abort("--site needs to be set") if options[:site].nil?
 workbook = RubyXL::Parser.parse(options[:template])
 
 # Read yaml
-objects = YAML.load_file(options[:objects])
+objects = YAML.load_file(options[:sxl])
 site = YAML.load_file(options[:site])
 
 # Version
