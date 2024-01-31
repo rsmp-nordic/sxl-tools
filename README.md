@@ -34,8 +34,8 @@ Notes about xlsx2yaml
 
 * Requires: gem install rubyXL
 * Usage: xlsx2yaml [options] [XLSX]
-* -o, --objects. Print the alarms, status and commands
-* -s, --site. Prints [site information](#site). Includes also id, version and date
+* -o, --sxl. Print the signal exchange list (SXL. Alarms, status and commands
+* -s, --site. Prints [site configuration](#site). Includes also id, version and date
 * Typical usage:
   * Output to rsmp_schema: No extra options needed
   * Output to rst-format for the SXL TLC specification: No extra options needed

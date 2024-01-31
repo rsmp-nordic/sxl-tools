@@ -23,20 +23,20 @@ usage = "Usage: mergeyaml.rb --objects [objects.yaml] --site [site.yaml]"
 OptionParser.new do |opts|
   opts.banner = usage
 
-  opts.on("--objects [YAML]", "Signal Exchange List (objects)") do |x|
-    options[:objects] = x
+  opts.on("--sxl [YAML]", "Signal Exchange List") do |x|
+    options[:sxl] = x
   end
 
-  opts.on("--site [YAML]", "Signal Exchange List (site)") do |t|
+  opts.on("--site [YAML]", "Site configuration") do |t|
     options[:site] = t
   end
 end.parse!
 
-abort("--objects needs to be set") if options[:objects].nil?
+abort("--sxl needs to be set") if options[:sxl].nil?
 abort("--site needs to be set") if options[:site].nil?
 
 # Read yaml
-objects = YAML.load_file(options[:objects])
+objects = YAML.load_file(options[:sxl])
 site = YAML.load_file(options[:site])
 
 # Merge

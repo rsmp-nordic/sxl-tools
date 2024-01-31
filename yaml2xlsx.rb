@@ -50,7 +50,7 @@ def check_fields_arg(id, arg, field)
 end
 
 options = {}
-usage = "Usage: yaml2xlsx.rb [OPTIONS] --template [XLSX] --objects [YAML] --site [YAML]"
+usage = "Usage: yaml2xlsx.rb [OPTIONS] --template [XLSX] --sxl [YAML] --site [YAML]"
 OptionParser.new do |opts|
   opts.banner = usage
 
@@ -58,11 +58,11 @@ OptionParser.new do |opts|
     options[:template] = p
   end
 
-  opts.on("--objects [YAML]", "Signal Exchange List (objects)") do |x|
-    options[:objects] = x
+  opts.on("--sxl [YAML]", "Signal Exchange List") do |x|
+    options[:sxl] = x
   end
 
-  opts.on("--site [YAML]", "Signal Exchange List (site)") do |t|
+  opts.on("--site [YAML]", "Site configuration") do |t|
     options[:site] = t
   end
 
@@ -76,7 +76,7 @@ OptionParser.new do |opts|
 end.parse!
 
 abort("--template needs to be set") if options[:template].nil?
-abort("--objects needs to be set") if options[:objects].nil?
+abort("--sxl needs to be set") if options[:sxl].nil?
 abort("--site needs to be set") if options[:site].nil?
 
 workbook = RubyXL::Parser.parse(options[:template])

@@ -208,11 +208,11 @@ usage = "Usage: xlsx2yaml.rb [options] [XLSX]"
 OptionParser.new do |opts|
   opts.banner = usage
 
-  opts.on("-o", "--object", "Output object information") do |o|
+  opts.on("-o", "--sxl", "Output signal exchange list (SXL)") do |o|
     options[:object] = o
   end
 
-  opts.on("-s", "--site", "Output site information") do |s|
+  opts.on("-s", "--site", "Output site configuration") do |s|
     options[:site] = s
   end
 
