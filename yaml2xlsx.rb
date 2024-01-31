@@ -163,8 +163,23 @@ y = 7
 objects["objects"].each { |object|
   unless object[1]["aggregated_status"].nil?
     set_cell(sheet, 1, y, object[0])
-    set_cell(sheet, 3, y, object[1]["functional_position"])
-    set_cell(sheet, 4, y, object[1]["functional_state"])
+
+    # Functional position
+    unless object[1]["functional_position"].nil?
+      positions = ""
+      object[1]["functional_position"].each {|p|
+        positions += "-" + p + "\n"
+      }
+      set_cell(sheet, 3, y, positions)
+    end
+    # Functional state
+    unless object[1]["functional_state"].nil?
+      positions = ""
+      object[1]["functional_state"].each {|p|
+        positions += "-" + p + "\n"
+      }
+      set_cell(sheet, 4, y, positions)
+    end
     set_cell(sheet, 5, y, object[1]["aggregated_status_description"])
     set_cell(sheet, 3, 17, object[1]["aggregated_status"][1]["description"])
     set_cell(sheet, 3, 18, object[1]["aggregated_status"][2]["description"])

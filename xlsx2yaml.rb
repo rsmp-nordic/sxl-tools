@@ -359,8 +359,24 @@ workbook.each do |sheet|
         STDERR.puts "Object #{agg[0]} not found"
       end
 
-      sxl["objects"][agg[0]]["functional_position"] = agg[2]
-      sxl["objects"][agg[0]]["functional_state"] = agg[3]
+      # Functional position
+      if agg[2].start_with?("-")
+        fields = agg[2].split("\n")
+        fields.each {|v|
+          v.delete!("-")
+        }
+        sxl["objects"][agg[0]]["functional_position"] = fields
+      end
+
+      # Functional state
+      if agg[3].start_with?("-")
+        fields = agg[3].split("\n")
+        fields.each {|v|
+          v.delete!("-")
+        }
+        sxl["objects"][agg[0]]["functional_state"] = fields
+      end
+
       sxl["objects"][agg[0]]["aggregated_status_description"] = agg[4]
       
       y = y + 1
