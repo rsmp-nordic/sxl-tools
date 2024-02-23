@@ -360,7 +360,7 @@ workbook.each do |sheet|
       end
 
       # Functional position
-      if agg[2].start_with?("-")
+      if agg[2] and agg[2].start_with?("-")
         fields = agg[2].split("\n")
         fields.each {|v|
           v.delete!("-")
@@ -369,7 +369,7 @@ workbook.each do |sheet|
       end
 
       # Functional state
-      if agg[3].start_with?("-")
+      if agg[3] and agg[3].start_with?("-")
         fields = agg[3].split("\n")
         fields.each {|v|
           v.delete!("-")
