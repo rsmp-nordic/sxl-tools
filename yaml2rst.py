@@ -89,7 +89,7 @@ def read_return_value(name, argument, reserved):
                 for arg_name, arg in argument['items'].items():
                     array.append(read_return_value(arg_name, arg, reserved))
             value = ""
-        elif arg_type == "integer" or arg_type == "long" or arg_type == "float":
+        elif arg_type == "integer" or arg_type == "long" or arg_type == "float" or arg_type == "integer_as_string":
             if "min" in argument:
                 min = argument['min']
 
