@@ -32,7 +32,7 @@ def rst_line_break_substitution():
     print("")
 
 def sort_cid(alarm):
-    return alarm[1].translate({ord(i): None for i in 'ASM\`_'})
+    return alarm[1].translate({ord(i): None for i in 'ASM\\`_'})
 
 # Process description of alarm, status and command
 # (description of each attribute/return value treated separately)
@@ -177,7 +177,7 @@ def start_table(widths,label):
     print("")
     print(".. tabularcolumns:: ", end='')
     for width in widths:
-        print("|\Yl{", width, "}", sep='', end='')
+        print("|\\Yl{", width, "}", sep='', end='')
     print("|")
     print("")
     print(".. table:: " + label)
