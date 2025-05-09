@@ -69,7 +69,7 @@ def add_blank(description):
     return '\n'.join(desc)
 
 def read_return_value(name, argument, reserved):
-    arg_type = argument['type'].replace("_list", "")
+    arg_type = argument['type']
 
     array = []
     min = ""
