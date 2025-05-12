@@ -72,18 +72,16 @@ def read_return_value(name, argument, reserved):
     arg_type = argument['type']
 
     array = []
+    enum = {}
     min = ""
     max = ""
 
-    # If the 'values' exists, use it to construct a list
+    # If the 'values' exists, use it to construct a dictionary
     if "values" in argument:
-        val_list = []
-        for v in argument['values']:
-            val_list.append("-" + str(v))
-        enum = " |br|\n".join(val_list)
-
+        if type(argument['values']) is dict:
+            for n,desc in argument['values'].items():
+                enum[n] = desc;
     else:
-        enum = ""
         if arg_type == "array":
             if "items" in argument:
                 for arg_name, arg in argument['items'].items():
@@ -116,15 +114,6 @@ def read_return_value(name, argument, reserved):
                 comment = "``Deprecated`` " + comment
     else:
         comment = ""
-
-    # Add the full description in the comment
-    if "values" in argument:
-        if type(argument['values']) is dict:
-            for n,desc in argument['values'].items():
-                if desc:
-                    if comment != "":
-                        comment += " |br|\n"
-                    comment += str(n) + ": " + str(desc)
 
     if reserved is True:
         comment = "``Reserved``"
