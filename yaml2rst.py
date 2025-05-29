@@ -72,18 +72,21 @@ def read_return_value(name, argument, reserved):
     arg_type = argument['type']
 
     array = []
+    enum = {}
     min = ""
     max = ""
 
-    # If the 'values' exists, use it to construct a list
+    # If the 'values' exists, use it to construct a dictionary
     if "values" in argument:
-        val_list = []
-        for v in argument['values']:
-            val_list.append("-" + str(v))
-        enum = " |br|\n".join(val_list)
+        if type(argument['values']) is dict:
+            for n,desc in argument['values'].items():
+                enum[n] = desc;
+
+        if type(argument['values']) is list:
+            for n in argument['values']:
+                enum[n] = "";
 
     else:
-        enum = ""
         if arg_type == "array":
             if "items" in argument:
                 for arg_name, arg in argument['items'].items():
@@ -116,15 +119,6 @@ def read_return_value(name, argument, reserved):
                 comment = "``Deprecated`` " + comment
     else:
         comment = ""
-
-    # Add the full description in the comment
-    if "values" in argument:
-        if type(argument['values']) is dict:
-            for n,desc in argument['values'].items():
-                if desc:
-                    if comment != "":
-                        comment += " |br|\n"
-                    comment += str(n) + ": " + str(desc)
 
     if reserved is True:
         comment = "``Reserved``"
@@ -356,20 +350,36 @@ def print_alarms():
                     if "reserved" in alarm and alarm["reserved"] is True:
                         reserved = True
                     if "arguments" in alarm:
+
+                        print("**Return values**")
+
                         for argument_name, argument in alarm['arguments'].items():
                             name, type, min, max, enum, comment, array = read_return_value(argument_name, argument, reserved)
-                            return_values.append([name, type, min, max, enum, comment])
+                           
+                            print("")
+                            print(name)
+                            print("")
+                            print("    " + comment)
+                            print("")
+                            argument_table = [["type", "``" + type + "``"]]
+                            if min:
+                                argument_table.append(["min", "``" + str(min) + "``"])
+                            if max:
+                                argument_table.append(["max", "``" + str(max) + "``"])
+                            for line in tabulate(argument_table, tablefmt="rst").splitlines():
+                                print('    ' + line)
 
-        if return_values:
-            # Remove unused columns
-            widths, table_headers, return_values = remove_unused_columns(return_values)
+                            # Debug
+                            print(str(enum))
 
-            start_table(widths, alarm_id)
-            return_values.insert(0, table_headers)
+                            if enum:
+                                print("")
+                                enum_table = [["Enum", "Description"]]
+                                for name,desc in enum.items():
+                                    enum_table.append([name, desc])
+                                for line in tabulate(enum_table, headers="firstrow", tablefmt="rst").splitlines():
+                                    print('    ' + line)
 
-            for line in tabulate(return_values, headers="firstrow", tablefmt="rst").splitlines():
-                print('   ' + line)
-            print("")
 
 def print_status():
     print("")
