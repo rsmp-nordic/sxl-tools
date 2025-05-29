@@ -369,9 +369,6 @@ def print_alarms():
                             for line in tabulate(argument_table, tablefmt="rst").splitlines():
                                 print('    ' + line)
 
-                            # Debug
-                            print(str(enum))
-
                             if enum:
                                 print("")
                                 enum_table = [["Enum", "Description"]]
