@@ -125,6 +125,29 @@ def read_return_value(name, argument, reserved):
 
     return name, arg_type, min, max, enum, comment, array
 
+def print_return_value(name, type, min, max, enum, comment, array):
+    print("")
+    print(name)
+    print("")
+    print("    " + comment)
+    print("")
+    argument_table = [["type", "``" + type + "``"]]
+    if min:
+        argument_table.append(["min", "``" + str(min) + "``"])
+    if max:
+        argument_table.append(["max", "``" + str(max) + "``"])
+    for line in tabulate(argument_table, tablefmt="rst").splitlines():
+        print('    ' + line)
+
+    if enum:
+        print("")
+        enum_table = [["Enum", "Description"]]
+        for name,desc in enum.items():
+            enum_table.append([name, desc])
+        for line in tabulate(enum_table, headers="firstrow", tablefmt="rst").splitlines():
+            print('    ' + line)
+
+#TODO: Should be removed
 # Remove unused columns when printing arguments/return values
 def remove_unused_columns(arg):
     # Remove both max and min if max is unused
@@ -342,7 +365,6 @@ def print_alarms():
         print(trim_description(description))
         print("")
 
-        return_values = []
         for object_name,object in yaml_sxl['objects'].items():
             for id,alarm in object['alarms'].items():
                 if(alarm_id == id):
@@ -355,28 +377,7 @@ def print_alarms():
 
                         for argument_name, argument in alarm['arguments'].items():
                             name, type, min, max, enum, comment, array = read_return_value(argument_name, argument, reserved)
-                           
-                            print("")
-                            print(name)
-                            print("")
-                            print("    " + comment)
-                            print("")
-                            argument_table = [["type", "``" + type + "``"]]
-                            if min:
-                                argument_table.append(["min", "``" + str(min) + "``"])
-                            if max:
-                                argument_table.append(["max", "``" + str(max) + "``"])
-                            for line in tabulate(argument_table, tablefmt="rst").splitlines():
-                                print('    ' + line)
-
-                            if enum:
-                                print("")
-                                enum_table = [["Enum", "Description"]]
-                                for name,desc in enum.items():
-                                    enum_table.append([name, desc])
-                                for line in tabulate(enum_table, headers="firstrow", tablefmt="rst").splitlines():
-                                    print('    ' + line)
-
+                            print_return_value(name, type, min, max, enum, comment, array)
 
 def print_status():
     print("")
