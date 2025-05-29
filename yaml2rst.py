@@ -147,6 +147,13 @@ def print_return_value(name, type, min, max, enum, comment, array):
         for line in tabulate(enum_table, headers="firstrow", tablefmt="rst").splitlines():
             print('    ' + line)
 
+    if(type == "array"):
+        for a in array:
+            print(a)
+            print_return_value(a[0], a[1], a[2], a[3], a[4], a[5], '')
+
+
+
 #TODO: Should be removed
 # Remove unused columns when printing arguments/return values
 def remove_unused_columns(arg):
@@ -445,33 +452,7 @@ def print_status():
                     if "arguments" in status:
                         for argument_name,argument in status['arguments'].items():
                             name, type, min, max, enum, comment, array = read_return_value(argument_name, argument, reserved)
-                            return_values.append([name, type, min, max, enum, comment])
-                            if(type == "array"):
-                                for a in array:
-                                    if not argument_name in array_values:
-                                        array_values[argument_name] = []
-                                    array_values[argument_name].append([a[0], a[1], a[2], a[3], a[4], a[5]])
-
-        if return_values:
-            # Remove unused columns
-            widths, table_headers, return_values = remove_unused_columns(return_values)
-
-            start_table(widths, status_id)
-            return_values.insert(0, table_headers)
-
-            for line in tabulate(return_values, headers="firstrow", tablefmt="rst").splitlines():
-                print('   ' + line)
-            print("")
-
-            for name in array_values:
-                # Remove unused columns
-                widths, table_headers, array_values = remove_unused_columns(array_values)
-                start_table(widths, status_id + " " + name)
-
-                array_values[name].insert(0, table_headers)
-                for line in tabulate(array_values[name], headers="firstrow", tablefmt="rst").splitlines():
-                    print('   ' + line)
-                print("")
+                            print_return_value(name, type, min, max, enum, comment, array)
 
 def print_commands():
     print("")
