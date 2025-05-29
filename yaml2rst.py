@@ -81,6 +81,11 @@ def read_return_value(name, argument, reserved):
         if type(argument['values']) is dict:
             for n,desc in argument['values'].items():
                 enum[n] = desc;
+
+        if type(argument['values']) is list:
+            for n in argument['values']:
+                enum[n] = "";
+
     else:
         if arg_type == "array":
             if "items" in argument:
