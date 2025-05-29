@@ -531,18 +531,7 @@ def print_commands():
                     if "arguments" in command:
                         for argument_name,argument in command['arguments'].items():
                             name, type, min, max, enum, comment, array = read_return_value(argument_name, argument, reserved)
-                            arguments.append([name, type, min, max, enum, comment])
-
-        if arguments:
-            # Remove unused columns
-            widths, table_headers, arguments = remove_unused_columns(arguments)
-
-            start_table(widths, command_id)
-            arguments.insert(0, table_headers)
-
-            for line in tabulate(arguments, headers="firstrow", tablefmt="rst").splitlines():
-                print('   ' + line)
-            print("")
+                            print_return_value(name, type, min, max, enum, comment, array)
 
 parser = argparse.ArgumentParser(description='Convert SXL in yaml to rst format')
 parser.add_argument('--extended', action=argparse.BooleanOptionalAction)
