@@ -355,9 +355,6 @@ def print_alarms():
 
                         for argument_name, argument in alarm['arguments'].items():
                             name, type, min, max, enum, comment, array = read_return_value(argument_name, argument, reserved)
-                            enum_formatted = enum_format(enum)
-                            return_values.append([name, comment])
-                            data_types.append([name, type, min, max, enum_formatted])
                            
                             print("")
                             print(name)
