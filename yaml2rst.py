@@ -130,8 +130,8 @@ def remove_unused_columns(arg):
     # Remove both max and min if max is unused
     # ('0' evaluates to False, which min often is, so only max is checked)
 
-    widths = ["0.15", "0.10", "0.10", "0.10", "0.20"]
-    headers = ["Name", "Type", "Min", "Max", "Enum"]
+    widths = ["0.15", "0.10", "0.10", "0.10", "0.20", "0.35"]
+    headers = ["Name", "Type", "Min", "Max", "Enum", "Comment"]
 
     max_unused = True
     enum_unused = True
@@ -155,8 +155,9 @@ def remove_unused_columns(arg):
     if enum_unused:
         del widths[4]
         del headers[4]
-        # enum width is 0.20, so if not used, add "0.20" to Name to fill the page width
-        widths[0] = str(float(widths[0]) + 0.20)
+        # enum width is 0.20, so if not used, add "0.10" to Name and Comment to fill the page width
+        widths[0] = str(float(widths[0]) + 0.10)
+        widths[4] = str(float(widths[4]) + 0.10)
     if max_unused:
         del widths[3]
         del headers[3]
@@ -342,7 +343,6 @@ def print_alarms():
         print("")
 
         return_values = []
-        data_types = []
         for object_name,object in yaml_sxl['objects'].items():
             for id,alarm in object['alarms'].items():
                 if(alarm_id == id):
@@ -352,44 +352,18 @@ def print_alarms():
                     if "arguments" in alarm:
                         for argument_name, argument in alarm['arguments'].items():
                             name, type, min, max, enum, comment, array = read_return_value(argument_name, argument, reserved)
-                            enum_formatted = enum_format(enum)
-                            return_values.append([name, comment])
-                            data_types.append([name, type, min, max, enum_formatted])
+                            return_values.append([name, type, min, max, enum, comment])
 
         if return_values:
-            print("Return values")
-            print('"""""""""""""')
-            print("")
-            widths = ["0.20", "0.80"]
-            table_headers = ["Name", "Description"]
+            # Remove unused columns
+            widths, table_headers, return_values = remove_unused_columns(return_values)
 
-            start_table(widths, alarm_id + ": return values")
+            start_table(widths, alarm_id)
             return_values.insert(0, table_headers)
 
             for line in tabulate(return_values, headers="firstrow", tablefmt="rst").splitlines():
                 print('   ' + line)
             print("")
-
-
-            print("Data types")
-            print('""""""""""')
-
-            # Remove unused columns
-            widths, table_headers, return_values = remove_unused_columns(data_types)
-
-            start_table(widths, alarm_id + ": data types")
-            data_types.insert(0, table_headers)
-
-            for line in tabulate(data_types, headers="firstrow", tablefmt="rst").splitlines():
-                print('   ' + line)
-            print("")
-
-def enum_format(enum):
-    enum_string = ""
-    if enum:
-        for name,desc in enum.items():
-            enum_string = enum_string + "``" + name + "`` " + desc + " |br| "
-    return enum_string
 
 def print_status():
     print("")
@@ -465,8 +439,6 @@ def print_status():
                                     array_values[argument_name].append([a[0], a[1], a[2], a[3], a[4], a[5]])
 
         if return_values:
-            print("**Return values**")
-
             # Remove unused columns
             widths, table_headers, return_values = remove_unused_columns(return_values)
 
@@ -548,8 +520,6 @@ def print_commands():
                             arguments.append([name, type, min, max, enum, comment])
 
         if arguments:
-            print("**Arguments**")
-
             # Remove unused columns
             widths, table_headers, arguments = remove_unused_columns(arguments)
 
