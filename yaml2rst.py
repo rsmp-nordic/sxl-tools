@@ -350,20 +350,39 @@ def print_alarms():
                     if "reserved" in alarm and alarm["reserved"] is True:
                         reserved = True
                     if "arguments" in alarm:
+
+                        print("**Return values**")
+
                         for argument_name, argument in alarm['arguments'].items():
                             name, type, min, max, enum, comment, array = read_return_value(argument_name, argument, reserved)
-                            return_values.append([name, type, min, max, enum, comment])
+                            enum_formatted = enum_format(enum)
+                            return_values.append([name, comment])
+                            data_types.append([name, type, min, max, enum_formatted])
+                           
+                            print("")
+                            print(name)
+                            print("")
+                            print("    " + comment)
+                            print("")
+                            argument_table = [["type", "``" + type + "``"]]
+                            if min:
+                                argument_table.append(["min", "``" + str(min) + "``"])
+                            if max:
+                                argument_table.append(["max", "``" + str(max) + "``"])
+                            for line in tabulate(argument_table, tablefmt="rst").splitlines():
+                                print('    ' + line)
 
-        if return_values:
-            # Remove unused columns
-            widths, table_headers, return_values = remove_unused_columns(return_values)
+                            # Debug
+                            print(str(enum))
 
-            start_table(widths, alarm_id)
-            return_values.insert(0, table_headers)
+                            if enum:
+                                print("")
+                                enum_table = [["Enum", "Description"]]
+                                for name,desc in enum.items():
+                                    enum_table.append([name, desc])
+                                for line in tabulate(enum_table, headers="firstrow", tablefmt="rst").splitlines():
+                                    print('    ' + line)
 
-            for line in tabulate(return_values, headers="firstrow", tablefmt="rst").splitlines():
-                print('   ' + line)
-            print("")
 
 def print_status():
     print("")
