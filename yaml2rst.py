@@ -129,7 +129,6 @@ def print_return_value(name, type, min, max, enum, comment, array):
     print("")
     print(name)
     print("")
-    # print("    " + comment)
     for line in comment.splitlines():
         print('    ' + line)
     print("")
@@ -153,7 +152,6 @@ def print_return_value(name, type, min, max, enum, comment, array):
 
     if(type == "array"):
         for a in array:
-            print(a)
             print_return_value(a[0], a[1], a[2], a[3], a[4], a[5], '')
 
 
