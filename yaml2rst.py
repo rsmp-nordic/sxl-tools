@@ -134,9 +134,9 @@ def print_return_value(name, type, min, max, enum, comment, array):
     print("")
     argument_table = [["type", "``" + type + "``"]]
 
-    # ('0' evaluates to False, which min often is, so only max is checked)
-    if max:
+    if max != "":
         argument_table.append(["max", "``" + str(max) + "``"])
+    if min != "":
         argument_table.append(["min", "``" + str(min) + "``"])
 
     for line in tabulate(argument_table, tablefmt="rst").splitlines():
