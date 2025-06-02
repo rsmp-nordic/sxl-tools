@@ -161,51 +161,6 @@ def print_return_value(name, type, min, max, enum, comment, array):
         for a in array:
             print_return_value(name + ": " + a[0], a[1], a[2], a[3], a[4], a[5], '')
 
-
-
-#TODO: Should be removed
-# Remove unused columns when printing arguments/return values
-def remove_unused_columns(arg):
-    # Remove both max and min if max is unused
-    # ('0' evaluates to False, which min often is, so only max is checked)
-
-    widths = ["0.15", "0.10", "0.10", "0.10", "0.20", "0.35"]
-    headers = ["Name", "Type", "Min", "Max", "Enum", "Comment"]
-
-    max_unused = True
-    enum_unused = True
-
-    # Check all rows
-    for col in arg:
-        if col[4]:
-            enum_unused = False
-        if col[3]:
-            max_unused = False
-
-    # Remove any unused cols
-    for col in arg:
-        if enum_unused:
-            del col[4]
-        if max_unused:
-            del col[3]
-            del col[2]
-
-    # Update header
-    if enum_unused:
-        del widths[4]
-        del headers[4]
-        # enum width is 0.20, so if not used, add "0.10" to Name and Comment to fill the page width
-        widths[0] = str(float(widths[0]) + 0.10)
-        widths[4] = str(float(widths[4]) + 0.10)
-    if max_unused:
-        del widths[3]
-        del headers[3]
-        del widths[2]
-        del headers[2]
-        # min and max are 0.10, so if not used add 0.20 to comment to fill the page width
-        widths[-1] = str(float(widths[-1]) + 0.20)
-    return widths, headers, arg
-
 def start_table(widths,label):
     print("")
     print(".. tabularcolumns:: ", end='')
