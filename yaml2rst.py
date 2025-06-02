@@ -454,6 +454,9 @@ def print_status():
                     if "reserved" in status and status["reserved"] is True:
                         reserved = True
                     if "arguments" in status:
+
+                        print("**Return values**")
+
                         for argument_name,argument in status['arguments'].items():
                             name, type, min, max, enum, comment, array = read_return_value(argument_name, argument, reserved)
                             print_return_value(name, type, min, max, enum, comment, array)
