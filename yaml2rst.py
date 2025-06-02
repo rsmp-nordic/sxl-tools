@@ -151,8 +151,15 @@ def print_return_value(name, type, min, max, enum, comment, array):
             print('    ' + line)
 
     if(type == "array"):
+        print("")
+        array_table = [["Name", "Description"]]
         for a in array:
-            print_return_value(a[0], a[1], a[2], a[3], a[4], a[5], '')
+            array_table.append([a[0], a[5]])
+        for line in tabulate(array_table, headers="firstrow", tablefmt="rst").splitlines():
+            print('    ' + line)
+
+        for a in array:
+            print_return_value(name + ": " + a[0], a[1], a[2], a[3], a[4], a[5], '')
 
 
 
