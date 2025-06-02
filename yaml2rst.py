@@ -129,7 +129,9 @@ def print_return_value(name, type, min, max, enum, comment, array):
     print("")
     print(name)
     print("")
-    print("    " + comment)
+    # print("    " + comment)
+    for line in comment.splitlines():
+        print('    ' + line)
     print("")
     argument_table = [["type", "``" + type + "``"]]
     if min:
