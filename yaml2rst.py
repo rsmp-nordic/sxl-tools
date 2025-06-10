@@ -34,39 +34,38 @@ def rst_line_break_substitution():
 def sort_cid(alarm):
     return alarm[1].translate({ord(i): None for i in 'ASM\\`_'})
 
-# Process description of alarm, status and command
-# (description of each attribute/return value treated separately)
-# - Removes last dot of first line
-# - Inserts blank second line
-# - Converts any markdown to RST
-def trim_description(description):
-    return md2rst(add_blank(rm_dot(description)))
+# Returns first line of description
+# Converts markdown to rst
+def short_description(description):
+    return md2rst(first_line(description)).rstrip()
+
+# Returns first line of description
+# Converts markdown to rst
+def long_description(description):
+    return md2rst(strip_first_line(description)).rstrip()
+
+def header(header):
+    print(header)
+    underline = ""
+    for a in list(header):
+        underline = underline + "^"
+    print(underline)
 
 # Convert markdown to restructuredText
 def md2rst(description):
     return pypandoc.convert_text(description, 'rst', format='md')
 
-# Removes trailing "." on first line
-def rm_dot(description):
+# Strip first line
+def strip_first_line(description):
     desc = []
     desc = description.split("\n")
-
-    # Strip "."
-    if len(desc) > 0:
-        if desc[0].endswith("."):
-            desc[0] = desc[0].rstrip(".")
+    desc.pop(0)
     return '\n'.join(desc)
 
-# Adds a empty line after first line
-def add_blank(description):
+def first_line(description):
     desc = []
     desc = description.split("\n")
-
-    # If second line is not empty, and line
-    if len(desc) > 1 and desc[1] != "":
-        desc.insert(1, "")
-
-    return '\n'.join(desc)
+    return desc.pop(0)
 
 def read_return_value(name, argument, reserved):
     arg_type = argument['type']
@@ -101,9 +100,6 @@ def read_return_value(name, argument, reserved):
 
     if "description" in argument:
         comment = argument['description'].rstrip("\n")
-
-        # First line should not end with "."
-        comment = rm_dot(comment)
 
         comment = comment.replace("\n", " |br|\n")
 
@@ -311,9 +307,9 @@ def print_alarms():
         for alarm_id,alarm in object['alarms'].items():
             if "reserved" in alarm and alarm['reserved'] is True:
                 alarm['description'] = "``Reserved``"
-            desc = rm_dot(alarm['description'])
+            desc = alarm['description']
             alarm_table.append([object_name, '`' + alarm_id + '`_', desc.splitlines()[0], alarm['priority'], alarm['category']])
-            alarms.append([object_name, alarm_id, desc, alarm['priority'], alarm['category']])
+            alarms.append([object_name, alarm_id, desc, alarm['priority'], alarm['category'], alarm['from_version']])
 
     # Print alarm table
     # Sort and insert headers
@@ -326,14 +322,17 @@ def print_alarms():
     # Print detailed alarm info
     # incl. return values
     alarms.sort(key=sort_cid)
-    for object_name,alarm_id,description,priority,category in alarms:
+    for object_name,alarm_id,description,priority,category,version in alarms:
 
         print("")
-        print(alarm_id)
-        print("^^^^^")
+        print(".. _" + alarm_id + ":")
+        print("")
+        header(alarm_id + " " + short_description(description))
+        print("")
+        print("Added in version: ``" + version + "``")
         print("")
 
-        print(trim_description(description))
+        print(long_description(description))
         print("")
 
         for object_name,object in yaml_sxl['objects'].items():
@@ -372,9 +371,10 @@ def print_status():
         for status_id,status in object['statuses'].items():
             if "reserved" in status and status['reserved'] is True:
                 status['description'] = "``Reserved``"
-            desc = rm_dot(status['description'])
+            desc = status['description']
+            version = status['from_version']
             status_table.append([object_name, '`' + status_id + '`_', desc.splitlines()[0]]) 
-            statuses.append([object_name, status_id, desc])
+            statuses.append([object_name, status_id, desc, version])
 
     # Print status table
     # Sort and insert headers
@@ -387,10 +387,13 @@ def print_status():
     # Print detailed status info
     # incl. return values
     statuses.sort(key=sort_cid)
-    for object_name,status_id,description in statuses:
+    for object_name,status_id,description,version in statuses:
         print("")
-        print(status_id)
-        print("^^^^^^^^")
+        print(".. _" + status_id + ":")
+        print("")
+        header(status_id + " " + short_description(description))
+        print("")
+        print("Added in version: ``" + version + "``")
         print("")
 
         # Print status description
@@ -402,7 +405,7 @@ def print_status():
                     if "reserved" in status and status['reserved'] is True:
                         print("``Reserved``")
                     else:
-                        print(trim_description(status['description']))
+                        print(long_description(status['description']))
                     print("")
 
         return_values = []
@@ -437,9 +440,10 @@ def print_commands():
         for command_id,command in object['commands'].items():
             if "reserved" in command and command['reserved'] is True:
                 command['description'] = "``Reserved``"
-            desc = rm_dot(command['description'])
+            desc = command['description']
+            version = command['from_version']
             command_table.append([object_name, '`' + command_id + '`_', command['command'], desc.splitlines()[0]])
-            commands.append([object_name, command_id, desc.replace("\n", " |br| ")])
+            commands.append([object_name, command_id, desc.replace("\n", " |br| "), version])
 
     # Print command table
     # Sort and insert headers
@@ -451,10 +455,13 @@ def print_commands():
 
     # Arguments
     commands.sort(key=sort_cid)
-    for object_name,command_id,description in commands:
+    for object_name,command_id,description,version in commands:
         print("")
-        print(command_id)
-        print("^^^^^")
+        print(".. _" + command_id + ":")
+        print("")
+        header(command_id + " " + short_description(description))
+        print("")
+        print("Added in version: ``" + version + "``")
         print("")
 
         # Print command description
@@ -466,7 +473,7 @@ def print_commands():
                     if "reserved" in command and command['reserved'] is True:
                         print("``Reserved``")
                     else:
-                        print(trim_description(command['description']))
+                        print(long_description(command['description']))
                     print("")
 
         arguments = []
