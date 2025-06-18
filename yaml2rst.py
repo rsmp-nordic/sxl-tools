@@ -313,7 +313,7 @@ def print_alarms():
                 alarm['description'] = "``Reserved``"
             desc = rm_dot(alarm['description'])
             alarm_table.append([object_name, '`' + alarm_id + '`_', desc.splitlines()[0], alarm['priority'], alarm['category']])
-            alarms.append([object_name, alarm_id, desc, alarm['priority'], alarm['category']])
+            alarms.append([object_name, alarm_id, desc, alarm['priority'], alarm['category'], alarm['from_version']])
 
     # Print alarm table
     # Sort and insert headers
@@ -326,12 +326,15 @@ def print_alarms():
     # Print detailed alarm info
     # incl. return values
     alarms.sort(key=sort_cid)
-    for object_name,alarm_id,description,priority,category in alarms:
+    for object_name,alarm_id,description,priority,category,from_version in alarms:
 
         print("")
         print(alarm_id)
         print("^^^^^")
         print("")
+        print("Added in version: ``" + from_version + "``")
+        print("")
+
 
         print(trim_description(description))
         print("")
@@ -374,7 +377,7 @@ def print_status():
                 status['description'] = "``Reserved``"
             desc = rm_dot(status['description'])
             status_table.append([object_name, '`' + status_id + '`_', desc.splitlines()[0]]) 
-            statuses.append([object_name, status_id, desc])
+            statuses.append([object_name, status_id, desc, status['from_version']])
 
     # Print status table
     # Sort and insert headers
@@ -387,10 +390,12 @@ def print_status():
     # Print detailed status info
     # incl. return values
     statuses.sort(key=sort_cid)
-    for object_name,status_id,description in statuses:
+    for object_name,status_id,description,from_version in statuses:
         print("")
         print(status_id)
         print("^^^^^^^^")
+        print("")
+        print("Added in version: ``" + from_version + "``")
         print("")
 
         # Print status description
@@ -439,7 +444,7 @@ def print_commands():
                 command['description'] = "``Reserved``"
             desc = rm_dot(command['description'])
             command_table.append([object_name, '`' + command_id + '`_', command['command'], desc.splitlines()[0]])
-            commands.append([object_name, command_id, desc.replace("\n", " |br| ")])
+            commands.append([object_name, command_id, desc.replace("\n", " |br| "), command['from_version']])
 
     # Print command table
     # Sort and insert headers
@@ -451,10 +456,12 @@ def print_commands():
 
     # Arguments
     commands.sort(key=sort_cid)
-    for object_name,command_id,description in commands:
+    for object_name,command_id,description,from_version in commands:
         print("")
         print(command_id)
         print("^^^^^")
+        print("")
+        print("Added in version: ``" + from_version + "``")
         print("")
 
         # Print command description
