@@ -332,7 +332,7 @@ def print_alarms():
         print(alarm_id)
         print("^^^^^")
         print("")
-        print("Added in version: ``" + from_version + "``")
+        print("Available from SXL version: ``" + from_version + "``")
         print("")
 
 
@@ -395,7 +395,7 @@ def print_status():
         print(status_id)
         print("^^^^^^^^")
         print("")
-        print("Added in version: ``" + from_version + "``")
+        print("Available from SXL version: ``" + from_version + "``")
         print("")
 
         # Print status description
@@ -461,7 +461,7 @@ def print_commands():
         print(command_id)
         print("^^^^^")
         print("")
-        print("Added in version: ``" + from_version + "``")
+        print("Available from SXL version: ``" + from_version + "``")
         print("")
 
         # Print command description
