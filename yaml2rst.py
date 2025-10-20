@@ -133,12 +133,12 @@ def read_return_value(name, argument, reserved):
 
 def print_return_value(name, type, min, max, enum, comment, array):
     print("")
-    print(name)
+    print("**" + name + "**" + " ``" + type + "``")
     print("")
     for line in comment.splitlines():
         print('    ' + line)
     print("")
-    argument_table = [["type", "``" + type + "``"]]
+    argument_table = []
 
     if max != "":
         argument_table.append(["max", "``" + str(max) + "``"])
