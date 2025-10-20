@@ -36,11 +36,10 @@ def sort_cid(alarm):
 
 # Process description of alarm, status and command
 # (description of each attribute/return value treated separately)
-# - Removes last dot of first line
-# - Inserts blank second line
+# - Removes first line
 # - Converts any markdown to RST
 def trim_description(description):
-    return md2rst(add_blank(rm_dot(description)))
+    return md2rst(rm_first(description))
 
 # Convert markdown to restructuredText
 def md2rst(description):
@@ -55,6 +54,13 @@ def rm_dot(description):
     if len(desc) > 0:
         if desc[0].endswith("."):
             desc[0] = desc[0].rstrip(".")
+    return '\n'.join(desc)
+
+# Remove first line
+def rm_first(description):
+    desc = []
+    desc = description.split("\n")
+    desc.pop(0)
     return '\n'.join(desc)
 
 # Adds a empty line after first line
@@ -312,7 +318,8 @@ def print_alarms():
             if "reserved" in alarm and alarm['reserved'] is True:
                 alarm['description'] = "``Reserved``"
             desc = rm_dot(alarm['description'])
-            alarm_table.append([object_name, '`' + alarm_id + '`_', desc.splitlines()[0], alarm['priority'], alarm['category']])
+            short_desc = desc.splitlines()[0]
+            alarm_table.append([object_name, '`' + alarm_id + '`_', short_desc, alarm['priority'], alarm['category']])
             alarms.append([object_name, alarm_id, desc, alarm['priority'], alarm['category'], alarm['from_version']])
 
     # Print alarm table
@@ -327,9 +334,11 @@ def print_alarms():
     # incl. return values
     alarms.sort(key=sort_cid)
     for object_name,alarm_id,description,priority,category,from_version in alarms:
-
+        short_desc = rm_dot(description).splitlines()[0]
         print("")
-        print(alarm_id)
+        print(".. _" + alarm_id + ":")
+        print("")
+        print(alarm_id + " " + short_desc)
         print("^^^^^")
         print("")
         print("Available from SXL version: ``" + from_version + "``")
@@ -376,7 +385,8 @@ def print_status():
             if "reserved" in status and status['reserved'] is True:
                 status['description'] = "``Reserved``"
             desc = rm_dot(status['description'])
-            status_table.append([object_name, '`' + status_id + '`_', desc.splitlines()[0]]) 
+            short_desc = desc.splitlines()[0]
+            status_table.append([object_name, '`' + status_id + '`_', short_desc])
             statuses.append([object_name, status_id, desc, status['from_version']])
 
     # Print status table
@@ -391,8 +401,11 @@ def print_status():
     # incl. return values
     statuses.sort(key=sort_cid)
     for object_name,status_id,description,from_version in statuses:
+        short_desc = rm_dot(description).splitlines()[0]
         print("")
-        print(status_id)
+        print(".. _" + status_id + ":")
+        print("")
+        print(status_id + " " + short_desc)
         print("^^^^^^^^")
         print("")
         print("Available from SXL version: ``" + from_version + "``")
@@ -443,8 +456,9 @@ def print_commands():
             if "reserved" in command and command['reserved'] is True:
                 command['description'] = "``Reserved``"
             desc = rm_dot(command['description'])
-            command_table.append([object_name, '`' + command_id + '`_', command['command'], desc.splitlines()[0]])
-            commands.append([object_name, command_id, desc.replace("\n", " |br| "), command['from_version']])
+            short_desc = desc.splitlines()[0]
+            command_table.append([object_name, '`' + command_id + '`_', command['command'], short_desc])
+            commands.append([object_name, command_id, desc, command['from_version']])
 
     # Print command table
     # Sort and insert headers
@@ -457,8 +471,11 @@ def print_commands():
     # Arguments
     commands.sort(key=sort_cid)
     for object_name,command_id,description,from_version in commands:
+        short_desc = rm_dot(description).splitlines()[0]
         print("")
-        print(command_id)
+        print(".. _" + command_id + ":")
+        print("")
+        print(command_id + " " + short_desc)
         print("^^^^^")
         print("")
         print("Available from SXL version: ``" + from_version + "``")
