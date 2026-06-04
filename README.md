@@ -57,9 +57,9 @@ Notes about yaml2rst
 
 Creating yaml file for the RSMP simulator
 -----------------------------------------
-The [rsmp_schema](https://github.com/rsmp-nordic/rsmp_schema) repo contains the
-SXLs in YAML format. For instance the [SXL 1.1 for TLCs](https://github.com/rsmp-nordic/rsmp_schema/blob/master/schemas/tlc/1.1/sxl.yaml).
-The SXLs of rsmp_schema contains alarm, statuses and commands, but doesn't contain
+The [rsmp_sxl_traffic_lights](https://github.com/rsmp-nordic/rsmp_sxl_traffic_lights)
+repo contains the SXL in [YAML format](https://github.com/rsmp-nordic/rsmp_sxl_traffic_lights/blob/1.3.0/schema/sxl.yaml).
+The YAML SXL contains alarm, statuses and commands, but doesn't contain
 individual components of the local installations, which the RSMP simulator need
 in order to function.
 
