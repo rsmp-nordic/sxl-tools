@@ -41,12 +41,16 @@ Notes about xlsx2yaml
   * Output to rst-format for the SXL TLC specification: No extra options needed
   * Output to yaml-format and back to Excel-format: Use -s flag
 
+Only SXL's for RSMP <= 3.2.1 is supported.
+
 Notes about yaml2xlsx
 ---------------------
 
 * Requires: gem install rubyXL
 * Needs an excel template
 * The Excel file is written to "output.xlsx"
+
+Only SXL's for RSMP <= 3.2.1 is supported.
 
 
 Notes about yaml2rst
