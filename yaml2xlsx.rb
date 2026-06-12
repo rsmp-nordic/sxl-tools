@@ -93,7 +93,7 @@ set_cell(sheet, 2, 10, site["constructor"])  # Constructor
 set_cell(sheet, 2, 12, site["reviewed"])     # Reviewed
 set_cell(sheet, 2, 15, site["approved"])     # Approved
 set_cell(sheet, 2, 18, site["created-date"]) # Created date
-set_cell(sheet, 2, 21, site["version"])      # SXL revision number
+set_cell(sheet, 2, 21, objects["meta"]["version"]) # SXL revision number
 set_cell(sheet, 3, 21, site["date"])         # SXL revision date
 set_cell(sheet, 2, 26, site["rsmp-version"]) # RSMP version
 
