@@ -82,17 +82,17 @@ Mapping between XLSX and YAML format of the SXL
 -----------------------------------------------
 Version sheet
 
-| Cell 	| Name in Excel   	| YAML                      |
+| Cell 	| Name in Excel   	| YAML (meta)               |
 |------	|-----------------	|---------------------------|
-| B2   	| Plant id        	| id                        |
-| B6   	| Plant name      	| description               |
-| B10  	| Constructor     	| constructor               |
-| B12  	| Reviewed        	| reviewed                  |
-| B15  	| Approved        	| approved                  |
-| B18  	| Created date    	| created-date              |
-| B21  	| Revision number 	| meta/version              |
-| C21  	| Revision date   	| date                      |
-| B26  	| RSMP version    	| meta/minimum_core_version |
+| B2   	| Plant id        	| (none)                    |
+| B6   	| Plant name      	| (none)                    |
+| B10  	| Constructor     	| (none)                    |
+| B12  	| Reviewed        	| (none)                    |
+| B15  	| Approved        	| (none)                    |
+| B18  	| Created date    	| (none)                    |
+| B21  	| Revision number 	| version                   |
+| C21  	| Revision date   	| (none)                    |
+| B26  	| RSMP version    	| minimum_core_version      |
 
 Object types
 
