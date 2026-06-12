@@ -182,24 +182,6 @@ def start_table(widths,label):
 def print_version():
     print("Signal Exchange List")
     print("====================")
-    if "id" in yaml_sxl and args.extended:
-        print("+ **Plant Id**: "   + yaml_sxl['id'])
-    if "description" in yaml_sxl and args.extended:
-        print("+ **Plant Name**: " + yaml_sxl['description'])
-    if "constructor" in yaml_sxl and args.extended:
-        print("+ **Constructor**: " + yaml_sxl['constructor'])
-    if "reviewed" in yaml_sxl and args.extended:
-        print("+ **Reviewed**: " + yaml_sxl['reviewed'])
-    if "approved" in yaml_sxl and args.extended:
-        print("+ **Approved**: " + yaml_sxl['approved'])
-    if "created-date" in yaml_sxl and args.extended:
-        print("+ **Created date**: " + yaml_sxl['created-date'])
-    if "version-date" in yaml_sxl and args.extended:
-        print("+ **SXL revision**: " + yaml_sxl['version'])
-    if "date" in yaml_sxl and args.extended:
-        print("+ **Revision date**: " + yaml_sxl['date'])
-    if "rsmp_version" in yaml_sxl and args.extended:
-        print("+ **RSMP version**: " + yaml_sxl['rsmp-version'])
 
 def print_object_types():
     print("")
@@ -509,7 +491,6 @@ def print_commands():
                             print_return_value(name, type, min, max, enum, comment, array)
 
 parser = argparse.ArgumentParser(description='Convert SXL in yaml to rst format')
-parser.add_argument('--extended', action=argparse.BooleanOptionalAction)
 args = parser.parse_args()
 
 # Read the yaml from stdin
