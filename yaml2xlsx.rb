@@ -95,7 +95,7 @@ set_cell(sheet, 2, 15, site["approved"])     # Approved
 set_cell(sheet, 2, 18, site["created-date"]) # Created date
 set_cell(sheet, 2, 21, objects["meta"]["version"]) # SXL revision number
 set_cell(sheet, 3, 21, site["date"])         # SXL revision date
-set_cell(sheet, 2, 26, site["rsmp-version"]) # RSMP version
+set_cell(sheet, 2, 26, objects["meta"]["minimum_core_version"]) # RSMP version
 
 # Object types
 sheet = workbook['Object types']

@@ -241,11 +241,11 @@ workbook.each do |sheet|
       @site_yaml["reviewed"] = sheet[11][1].value if sheet[11][1].value
       @site_yaml["approved"] = sheet[13][1].value if sheet[13] and sheet[13][1]
       @site_yaml["created-date"] = sheet[17][1].value if sheet[17]
-      @site_yaml["rsmp-version"] = sheet[25][1].value if sheet[25]
     end
 
     if options[:object]
       sxl["meta"] = { 'version' => sheet[20][1].value }
+      sxl["meta"]['minimum_core_version'] = sheet[25][1].value if sheet[25]
     end
   when "Object types"
     # grouped objects
