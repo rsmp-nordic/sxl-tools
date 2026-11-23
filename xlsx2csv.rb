@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+gem 'rubyXL', '<=3.4.40'
 require 'rubyXL'
 require 'rubyXL/convenience_methods'
 
